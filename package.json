@@ -1,0 +1,29 @@
+{
+  "name": "dual-interface-examination-system",
+  "version": "1.0.0",
+  "description": "Full-stack Dual-Interface Examination System with Student and Admin Panels",
+  "scripts": {
+    "install:all": "cd backend && npm install && npx prisma generate && npx prisma db push && cd ../frontend && npm install",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "seed": "cd backend && npm run prisma:seed",
+    "build": "cd backend && npm run build && cd ../frontend && npm run build",
+    "build:all": "cd backend && npm install && npx prisma generate && npx prisma db push && npm run build && cd ../frontend && npm install && npm run build",
+    "start": "cd backend && node dist/server.js",
+    "test:auth": "cd backend && npx tsx ../scripts/verify-auth-rbac.ts",
+    "test:lifecycle": "cd backend && npx tsx ../scripts/verify-exam-lifecycle.ts",
+    "test:admin": "cd backend && npx tsx ../scripts/verify-admin-flow.ts",
+    "test:question-types": "cd backend && npx tsx ../scripts/verify-all-question-types.ts",
+    "test:all": "npm run test:auth && npm run test:lifecycle && npm run test:admin && npm run test:question-types"
+  },
+  "keywords": [
+    "examination-system",
+    "online-exam",
+    "student-panel",
+    "admin-panel",
+    "proctoring",
+    "focus-loss"
+  ],
+  "author": "Antigravity Engineering",
+  "license": "MIT"
+}

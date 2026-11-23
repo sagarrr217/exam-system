@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: dual-interface-examination-system
+    env: node
+    plan: free
+    buildCommand: npm run build:all && npm run seed
+    startCommand: npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        value: file:./dev.db

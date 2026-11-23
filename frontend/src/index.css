@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-bg-primary: #f8fafc;
+    --color-bg-card: #ffffff;
+    --color-border: #e2e8f0;
+  }
+
+  .dark {
+    --color-bg-primary: #020617;
+    --color-bg-card: #0f172a;
+    --color-border: #1e293b;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    letter-spacing: -0.011em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.025em;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Smooth fade in */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Pulse alert for timer warnings & focus loss */
+@keyframes pulseDanger {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 0.85;
+  }
+}
+
+.animate-pulse-danger {
+  animation: pulseDanger 1.2s infinite ease-in-out;
+}
+
+/* Google Forms-like accent card styling */
+.gform-card {
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.gform-card:focus-within,
+.gform-card.is-active {
+  border-left-width: 6px;
+  border-left-color: #7c3aed;
+  box-shadow: 0 4px 12px -2px rgba(124, 58, 237, 0.12), 0 2px 6px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Examination mode restricted viewport rules */
+.exam-restricted-body {
+  user-select: none;
+  -webkit-user-select: none;
+  overflow-x: hidden;
+}
+
+/* Subtle print styles for results */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}

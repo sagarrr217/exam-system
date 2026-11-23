@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String        @id @default(uuid())
+  email       String        @unique
+  password    String
+  name        String
+  role        String        @default("STUDENT") // ADMIN or STUDENT
+  studentId   String?       @unique              // e.g. STU-2026-001
+  department  String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  attempts    ExamAttempt[]
+}
+
+model Exam {
+  id                 String        @id @default(uuid())
+  title              String
+  subject            String
+  description        String?
+  instructions       String?
+  durationMinutes    Int           @default(60)
+  totalMarks         Int           @default(100)
+  passingMarks       Int           @default(40)
+  startDate          DateTime?
+  endDate            DateTime?
+  isPublished        Boolean       @default(false)
+  randomizeQuestions Boolean       @default(false)
+  randomizeOptions   Boolean       @default(false)
+  allowReview        Boolean       @default(true)
+  autoSubmit         Boolean       @default(true)
+  focusLossThreshold Int           @default(3)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  questions          Question[]
+  attempts           ExamAttempt[]
+}
+
+model Question {
+  id           String          @id @default(uuid())
+  examId       String
+  exam         Exam            @relation(fields: [examId], references: [id], onDelete: Cascade)
+  text         String
+  type         String          @default("MCQ") // MCQ, TRUE_FALSE, SHORT_ANSWER
+  orderIndex   Int             @default(0)
+  marks        Int             @default(1)
+  isRequired   Boolean         @default(true)
+  imageUrl     String?
+  explanation  String?
+  options      Option[]
+  answers      StudentAnswer[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
+
+model Option {
+  id           String          @id @default(uuid())
+  questionId   String
+  question     Question        @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  text         String
+  isCorrect    Boolean         @default(false)
+  orderIndex   Int             @default(0)
+  answers      StudentAnswer[]
+}
+
+model ExamAttempt {
+  id                 String          @id @default(uuid())
+  examId             String
+  exam               Exam            @relation(fields: [examId], references: [id], onDelete: Cascade)
+  studentId          String
+  student            User            @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  startTime          DateTime        @default(now())
+  endTime            DateTime?
+  submittedAt        DateTime?
+  status             String          @default("IN_PROGRESS") // IN_PROGRESS, SUBMITTED, EXPIRED
+  score              Float           @default(0)
+  percentage         Float           @default(0)
+  passed             Boolean         @default(false)
+  totalAnswered      Int             @default(0)
+  totalUnanswered    Int             @default(0)
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  answers            StudentAnswer[]
+  focusLossLogs      FocusLossLog[]
+
+  @@unique([examId, studentId, status])
+}
+
+model StudentAnswer {
+  id                 String       @id @default(uuid())
+  attemptId          String
+  attempt            ExamAttempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  questionId         String
+  question           Question     @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  selectedOptionId   String?
+  selectedOption     Option?      @relation(fields: [selectedOptionId], references: [id], onDelete: SetNull)
+  textAnswer         String?
+  isCorrect          Boolean?
+  marksAwarded       Float        @default(0)
+  isMarkedForReview  Boolean      @default(false)
+  updatedAt          DateTime     @updatedAt
+
+  @@unique([attemptId, questionId])
+}
+
+model FocusLossLog {
+  id              String      @id @default(uuid())
+  attemptId       String
+  attempt         ExamAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  eventType       String      // WINDOW_BLUR, VISIBILITY_HIDDEN, WINDOW_RESIZE
+  timestamp       DateTime    @default(now())
+  details         String?
+  durationSeconds Float?
+}
