@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  BookOpen, 
-  CheckCircle2, 
-  Users, 
-  FileCheck, 
-  Award, 
-  TrendingUp, 
-  AlertTriangle, 
-  PlusCircle, 
-  Eye, 
-  ArrowRight, 
+import {
+  LayoutDashboard,
+  BookOpen,
+  CheckCircle2,
+  Users,
+  FileCheck,
+  Award,
+  TrendingUp,
+  AlertTriangle,
+  PlusCircle,
+  Eye,
+  ArrowRight,
   RefreshCw,
   ExternalLink,
   ShieldAlert,
@@ -237,25 +237,22 @@ export const AdminDashboardPage: React.FC = () => {
         </div>
 
         {/* Card 7: High Risk Attempts Count */}
-        <div className={`apple-card p-5 col-span-2 sm:col-span-2 lg:col-span-2 ${
-          (stats?.highRiskAttemptsCount ?? 0) > 0 ? 'border-rose-500/30' : ''
-        }`}>
+        <div className={`apple-card p-5 col-span-2 sm:col-span-2 lg:col-span-2 ${(stats?.highRiskAttemptsCount ?? 0) > 0 ? 'border-rose-500/30' : ''
+          }`}>
           <div className="flex items-center justify-between mb-2.5">
             <span className="text-[10px] font-semibold uppercase tracking-wider text-[#86868b]">
               Integrity & Proctoring Alerts
             </span>
-            <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
-              (stats?.highRiskAttemptsCount ?? 0) > 0
-                ? 'bg-rose-500/10 text-[#ff3b30]'
-                : 'bg-black/5 dark:bg-white/10 text-[#86868b]'
-            }`}>
+            <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${(stats?.highRiskAttemptsCount ?? 0) > 0
+              ? 'bg-rose-500/10 text-[#ff3b30]'
+              : 'bg-black/5 dark:bg-white/10 text-[#86868b]'
+              }`}>
               <AlertTriangle className="w-4 h-4" />
             </div>
           </div>
           <div className="flex items-baseline gap-2.5">
-            <div className={`text-2xl sm:text-3xl font-bold ${
-              (stats?.highRiskAttemptsCount ?? 0) > 0 ? 'text-[#ff3b30] dark:text-[#ff453a]' : 'text-[#1d1d1f] dark:text-[#f5f5f7]'
-            }`}>
+            <div className={`text-2xl sm:text-3xl font-bold ${(stats?.highRiskAttemptsCount ?? 0) > 0 ? 'text-[#ff3b30] dark:text-[#ff453a]' : 'text-[#1d1d1f] dark:text-[#f5f5f7]'
+              }`}>
               {loading ? '—' : stats?.highRiskAttemptsCount ?? 0}
             </div>
             <span className="text-xs text-[#86868b]">

@@ -27,7 +27,12 @@
     background-color: var(--color-bg-primary);
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     letter-spacing: -0.028em;
   }
 }
@@ -217,6 +222,7 @@
     opacity: 0;
     transform: scale(0.94) translateY(6px);
   }
+
   100% {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -233,6 +239,7 @@
     opacity: 0;
     transform: translateY(6px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -292,6 +299,7 @@
   .no-print {
     display: none !important;
   }
+
   body {
     background: white !important;
     color: black !important;

@@ -25,6 +25,7 @@ import {
 import { api } from '../../api/client';
 import { useToast } from '../../context/ToastContext';
 import { QuestionType } from '../../types';
+import { AIChatAssistantModal, GeneratedQuestion } from '../../components/admin/AIChatAssistantModal';
 
 interface BuilderOption {
   id?: string;
@@ -96,52 +97,47 @@ export const QuestionBuilderPage: React.FC = () => {
 
   // AI Question Generator Modal State
   const [showAIModal, setShowAIModal] = useState(false);
-  const [aiTopic, setAiTopic] = useState('');
-  const [aiCount, setAiCount] = useState(3);
-  const [aiDifficulty, setAiDifficulty] = useState<'easy' | 'medium' | 'hard'>('medium');
-  const [generatingAI, setGeneratingAI] = useState(false);
 
   const handleOpenAIModal = () => {
-    setAiTopic(subject || title || '');
     setShowAIModal(true);
   };
 
-  const handleGenerateAI = async () => {
-    const queryTopic = aiTopic.trim() || subject.trim() || title.trim();
-    if (!queryTopic) {
-      toast.error('Please enter a topic or subject for question generation.');
-      return;
-    }
+  const handleAddAIQuestion = (q: GeneratedQuestion) => {
+    const newQuestion: BuilderQuestion = {
+      text: q.text,
+      type: (q.type as QuestionType) || 'MCQ',
+      marks: q.marks || 10,
+      isRequired: true,
+      imageUrl: '',
+      explanation: q.explanation || '',
+      orderIndex: questions.length,
+      options: (q.options || []).map((opt, oIdx) => ({
+        text: opt.text,
+        isCorrect: Boolean(opt.isCorrect),
+        orderIndex: oIdx
+      }))
+    };
+    setQuestions(prev => [...prev, newQuestion]);
+    setActiveQuestionIndex(questions.length);
+  };
 
-    setGeneratingAI(true);
-    try {
-      const res = await api.generateAIQuestions(queryTopic, aiCount, aiDifficulty);
-      if (res.questions && res.questions.length > 0) {
-        const formatted = res.questions.map((q: any, idx: number) => ({
-          text: q.text,
-          type: q.type || 'MCQ',
-          marks: q.marks || 10,
-          isRequired: true,
-          imageUrl: '',
-          explanation: q.explanation || '',
-          orderIndex: questions.length + idx,
-          options: q.options.map((opt: any, oIdx: number) => ({
-            text: opt.text,
-            isCorrect: Boolean(opt.isCorrect),
-            orderIndex: oIdx
-          }))
-        }));
-
-        setQuestions(prev => [...prev, ...formatted]);
-        toast.success(`Generated ${formatted.length} questions with Gemini AI!`);
-        setShowAIModal(false);
-        setActiveQuestionIndex(questions.length);
-      }
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to generate questions with Gemini AI.');
-    } finally {
-      setGeneratingAI(false);
-    }
+  const handleAddAllAIQuestions = (aiQuestions: GeneratedQuestion[]) => {
+    const formatted = aiQuestions.map((q, idx) => ({
+      text: q.text,
+      type: (q.type as QuestionType) || 'MCQ',
+      marks: q.marks || 10,
+      isRequired: true,
+      imageUrl: '',
+      explanation: q.explanation || '',
+      orderIndex: questions.length + idx,
+      options: (q.options || []).map((opt, oIdx) => ({
+        text: opt.text,
+        isCorrect: Boolean(opt.isCorrect),
+        orderIndex: oIdx
+      }))
+    }));
+    setQuestions(prev => [...prev, ...formatted]);
+    setActiveQuestionIndex(questions.length);
   };
   const [totalMarks, setTotalMarks] = useState(100);
   const [passingMarks, setPassingMarks] = useState(40);
@@ -1393,101 +1389,16 @@ export const QuestionBuilderPage: React.FC = () => {
         </button>
       </div>
 
-      {/* AI Question Generator Modal */}
-      {showAIModal && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-md w-full border border-slate-200 dark:border-slate-800 overflow-hidden">
-            <div className="p-6 bg-gradient-to-br from-indigo-900 to-slate-900 text-white relative">
-              <div className="flex items-center gap-2.5 mb-2">
-                <div className="p-2 bg-amber-400/20 text-amber-300 rounded-xl">
-                  <Sparkles className="w-5 h-5" />
-                </div>
-                <h3 className="text-lg font-bold">AI Question Generator</h3>
-              </div>
-              <p className="text-xs text-indigo-200">
-                Powered by Google Gemini 3.5. Automatically draft academically sound MCQs with options and answer keys.
-              </p>
-            </div>
-
-            <div className="p-6 space-y-4">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                  Subject or Topic *
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. Binary Search Trees, Computer Networks, SQL Joins..."
-                  value={aiTopic}
-                  onChange={(e) => setAiTopic(e.target.value)}
-                  className="w-full text-sm p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                    Question Count
-                  </label>
-                  <select
-                    value={aiCount}
-                    onChange={(e) => setAiCount(Number(e.target.value))}
-                    className="w-full text-sm p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-                  >
-                    <option value={1}>1 Question</option>
-                    <option value={3}>3 Questions</option>
-                    <option value={5}>5 Questions</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                    Difficulty Level
-                  </label>
-                  <select
-                    value={aiDifficulty}
-                    onChange={(e) => setAiDifficulty(e.target.value as any)}
-                    className="w-full text-sm p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-                  >
-                    <option value="easy">Easy</option>
-                    <option value="medium">Medium</option>
-                    <option value="hard">Hard</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="pt-2 flex items-center justify-end gap-2.5">
-                <button
-                  type="button"
-                  onClick={() => setShowAIModal(false)}
-                  disabled={generatingAI}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors disabled:opacity-50"
-                >
-                  Cancel
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleGenerateAI}
-                  disabled={generatingAI}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-600 hover:to-indigo-700 text-white shadow-md transition-all disabled:opacity-50"
-                >
-                  {generatingAI ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Generating with Gemini...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-4 h-4 text-amber-200" />
-                      <span>Generate & Append</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* AI Question Studio Assistant Modal (with PDF, Image & Prompt Chat) */}
+      <AIChatAssistantModal
+        isOpen={showAIModal}
+        onClose={() => setShowAIModal(false)}
+        examTitle={title}
+        examSubject={subject}
+        existingQuestionsCount={questions.length}
+        onAddQuestion={handleAddAIQuestion}
+        onAddAllQuestions={handleAddAllAIQuestions}
+      />
     </div>
   );
 };

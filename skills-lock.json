@@ -1,0 +1,306 @@
+{
+  "version": 2,
+  "skills": {
+    "agent-md-refactor": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/agent-md-refactor/SKILL.md",
+      "computedHash": "3793d347098a9a74ee692c8ad237fd5b860f092455d598ea8f50f2b773429378"
+    },
+    "backend-to-frontend-handoff-docs": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/backend-to-frontend-handoff-docs/SKILL.md",
+      "computedHash": "ef950971321fb417bc1722d6a4b8b1c8aa72e55776a50f37400706638574c1d0"
+    },
+    "c4-architecture": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/c4-architecture/SKILL.md",
+      "computedHash": "2528e8ea65472b188f160cd95ae6737d6305b8afb6c384a3cc48fcd5284ae768"
+    },
+    "codex": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/codex/SKILL.md",
+      "computedHash": "fcf0ea8ed576067da06dbc00a4c35e92bd0cb65319bf249e3539dbbc17832172"
+    },
+    "command-creator": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/command-creator/SKILL.md",
+      "computedHash": "5254916f928e83b4de38c2f90c681793251a4f396d037adb972a5db058d7d6aa"
+    },
+    "commit-work": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/commit-work/SKILL.md",
+      "computedHash": "9df7a6fa2b73587e0be1034a2c00bd72157bef546a0f724be589c3612e862383"
+    },
+    "crafting-effective-readmes": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/crafting-effective-readmes/SKILL.md",
+      "computedHash": "e4c5a3ec30f44906b1333d2f6d27011b50631bf024295cb068f422382fdb5b5a"
+    },
+    "daily-meeting-update": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/daily-meeting-update/SKILL.md",
+      "computedHash": "0f0406bd291210712af40e33ede1dfbdc84c7d4a84863cf5a8dc3408453c8122"
+    },
+    "database-schema-designer": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/database-schema-designer/SKILL.md",
+      "computedHash": "45844be469e96fb9ca60d0cb820e0702db70ab24fc8158663502fbd1ec3008fc"
+    },
+    "datadog-cli": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/datadog-cli/SKILL.md",
+      "computedHash": "5c1d834812548f923c168a891103d6c8b7c94adbd1aa72c2b68ac47d7711bd56"
+    },
+    "dependency-updater": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/dependency-updater/SKILL.md",
+      "computedHash": "12dfd3ffb6f21ac5505bbdf0be4f9d43c492ba8d78620ccb6b613a7cff7a55fd"
+    },
+    "design-system-starter": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/design-system-starter/SKILL.md",
+      "computedHash": "1fe666d588750f487f2d7c41c8f5eac9303c2d0b8fa0bc81ab1e35ddf6f35fce"
+    },
+    "difficult-workplace-conversations": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/difficult-workplace-conversations/SKILL.md",
+      "computedHash": "bc6928388268877fcfbbec569d2c5a5138bb1595b2166a82c641946f3902250f"
+    },
+    "domain-name-brainstormer": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/domain-name-brainstormer/SKILL.md",
+      "computedHash": "297c777d0aba970e4b3ff81d937d8edb450f030ec7c0ef4a4aff977f06b4328d"
+    },
+    "draw-io": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/draw-io/SKILL.md",
+      "computedHash": "35d0322a2fd051d94b4df9df7e54a225ff0fe277c6311fb47eb992f96cecd287"
+    },
+    "excalidraw": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/excalidraw/SKILL.md",
+      "computedHash": "1eafca88fc64b2fae7f5950fc8c2bb453c579c22e9be0107f41a5f6cb9d86331"
+    },
+    "feedback-mastery": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/feedback-mastery/SKILL.md",
+      "computedHash": "d6006681ed637ecbcb0a839e59e33b28f29727eeed8035e44b1efe4d6a689f9c"
+    },
+    "frontend-to-backend-requirements": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-to-backend-requirements/SKILL.md",
+      "computedHash": "00189ddb2d70ad68145a048de946b49562cbcd67942ced1c53d2db8d69564c23"
+    },
+    "game-changing-features": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/game-changing-features/SKILL.md",
+      "computedHash": "2eb3343c1631be8f93c1d9808d25740a66ef998445bf554ba0d13b04e148690c"
+    },
+    "gemini": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/gemini/SKILL.md",
+      "computedHash": "7bee2cc6e2e7ad8d86e0f31aae84a640eaa6577db249ce4320735bddc5c670ce"
+    },
+    "gepetto": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/gepetto/SKILL.md",
+      "computedHash": "80de6f6e132b336358dba07bcace9faf42d1d0f5de7992519456cee765af282d"
+    },
+    "humanizer": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/humanizer/SKILL.md",
+      "computedHash": "9f0b3facf471c3f5ac21e11ef4cd258abe12f484d971e17b5ed922fc18f1a553"
+    },
+    "jira": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/jira/SKILL.md",
+      "computedHash": "3f0504ce6f74a72f322e372640f80ad1240448347ddd23cd4169b3ae9facd2bd"
+    },
+    "lesson-learned": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/lesson-learned/SKILL.md",
+      "computedHash": "58a63ecda867f44cfe27f5af7390caf127d54b676d7924692fb18c0312e133fa"
+    },
+    "marp-slide": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/marp-slide/SKILL.md",
+      "computedHash": "46f96b839987e9e33d8fb1f15d1227bcc21cbd21d4e803a51d28b0952c29ac6d"
+    },
+    "meme-factory": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/meme-factory/SKILL.md",
+      "computedHash": "0e0ae321fc2b2d8f99faed6810d37c5446c505122a4f6f07069606a6f1b7c0aa"
+    },
+    "mermaid-diagrams": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/mermaid-diagrams/SKILL.md",
+      "computedHash": "c425d7bc17756e5c0538e57286a008b18a45d0967401695c003692badf0cb37a"
+    },
+    "mui": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/mui/SKILL.md",
+      "computedHash": "a9632281547ca520c3e633145bdaf6ac40e4717d7fe7bf2e29b788c4d7767465"
+    },
+    "naming-analyzer": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/naming-analyzer/SKILL.md",
+      "computedHash": "7e502fa2f5846207f1335b8e6a373f03e9b77c9377d1d81d00efc83305225991"
+    },
+    "openapi-to-typescript": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/openapi-to-typescript/SKILL.md",
+      "computedHash": "25ce746e02c8c3bc81eeb594dcf2cd1dd5c9bada1cebe08d5d2f9295d659416c"
+    },
+    "perplexity": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/perplexity/SKILL.md",
+      "computedHash": "ae95740f10210e99a303b329a864e24bba5699bd424acf90d6c2700eb07fc775"
+    },
+    "plugin-forge": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/plugin-forge/SKILL.md",
+      "computedHash": "8758c0673d948449fb941cc19a3683546047903a0ba33a5b1847459eb1fa8998"
+    },
+    "professional-communication": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/professional-communication/SKILL.md",
+      "computedHash": "79ff4ec0a0e1211d73e92082b0d3a29f750560ab423df3c201395630f8b2e592"
+    },
+    "qa-test-planner": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/qa-test-planner/SKILL.md",
+      "computedHash": "6bd81c44579a303c493f7f3024e820d944663bb23b8b7bb3263faadd8fc3b889"
+    },
+    "react-dev": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/react-dev/SKILL.md",
+      "computedHash": "a2cb4f9d511edecc89b1e83277ec6721be72c764221775e141baa21e1f775e68"
+    },
+    "react-useeffect": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/react-useeffect/SKILL.md",
+      "computedHash": "e450f31d028a1a2670dae02473b1ce8f7c8c2bfa212e7e656c58b444d272bd45"
+    },
+    "reducing-entropy": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/reducing-entropy/SKILL.md",
+      "computedHash": "a6f8030665c23b307630640ebec4824064f92110c2e6450c3946cad7765ac79a"
+    },
+    "requirements-clarity": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/requirements-clarity/SKILL.md",
+      "computedHash": "7061c61cc747a3ac257d808c6e82f37e92caa1ef4b25fde310f286b1c4fc7626"
+    },
+    "session-handoff": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/session-handoff/SKILL.md",
+      "computedHash": "24d5fb0af311e83368849c65eb75908a32d9b902c12e12f7a91c7387be085f46"
+    },
+    "ship-learn-next": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/ship-learn-next/SKILL.md",
+      "computedHash": "51ec5f843ae9b4672220d5e6d0c8ba5d7027212c5f99a7bec7ed033880d1b8cd"
+    },
+    "skill-judge": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/skill-judge/SKILL.md",
+      "computedHash": "3e651f7a3d8c238bf8ae3d34da22498b1510294a35ec4b14eedfa07937f84ea7"
+    },
+    "web-to-markdown": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/web-to-markdown/SKILL.md",
+      "computedHash": "081698f3a2e51a06a7b92c97e526f13d31bed47a21bc4907051169a02073ad73"
+    },
+    "writing-clearly-and-concisely": {
+      "source": "softaworks/agent-toolkit",
+      "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/writing-clearly-and-concisely/SKILL.md",
+      "computedHash": "054d0502e8adb60b0b62c3b144bae30b27e9bcc3d4089b33404f10b5a9a27bb4"
+    }
+  }
+}

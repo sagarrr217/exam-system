@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { 
-  X, 
-  CheckCircle2, 
-  AlertCircle, 
-  Clock, 
-  ShieldAlert, 
-  FileText, 
-  Award, 
-  User, 
+import {
+  X,
+  CheckCircle2,
+  AlertCircle,
+  Clock,
+  ShieldAlert,
+  FileText,
+  Award,
+  User,
   Calendar,
   EyeOff
 } from 'lucide-react';
@@ -51,7 +51,7 @@ export const SubmissionDetailModal: React.FC<SubmissionDetailModalProps> = ({ at
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xl flex items-center justify-center p-4 sm:p-6 animate-fade-in">
-      <div 
+      <div
         className="apple-card max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden animate-apple-spring border border-black/10 dark:border-white/15"
         onClick={(e) => e.stopPropagation()}
       >
@@ -174,22 +174,20 @@ export const SubmissionDetailModal: React.FC<SubmissionDetailModalProps> = ({ at
               <div className="inline-flex p-1 rounded-full bg-black/5 dark:bg-white/10 border border-black/5 dark:border-white/5">
                 <button
                   onClick={() => setActiveTab('questions')}
-                  className={`flex items-center gap-2 px-4 py-1 rounded-full text-xs font-medium transition-all ${
-                    activeTab === 'questions'
-                      ? 'bg-white dark:bg-[#2c2c2e] text-[#1d1d1f] dark:text-white shadow-sm'
-                      : 'text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white'
-                  }`}
+                  className={`flex items-center gap-2 px-4 py-1 rounded-full text-xs font-medium transition-all ${activeTab === 'questions'
+                    ? 'bg-white dark:bg-[#2c2c2e] text-[#1d1d1f] dark:text-white shadow-sm'
+                    : 'text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white'
+                    }`}
                 >
                   <FileText className="w-3.5 h-3.5" />
                   <span>Question Responses ({attempt.exam.questions?.length || 0})</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('logs')}
-                  className={`flex items-center gap-2 px-4 py-1 rounded-full text-xs font-medium transition-all ${
-                    activeTab === 'logs'
-                      ? 'bg-white dark:bg-[#2c2c2e] text-[#1d1d1f] dark:text-white shadow-sm'
-                      : 'text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white'
-                  }`}
+                  className={`flex items-center gap-2 px-4 py-1 rounded-full text-xs font-medium transition-all ${activeTab === 'logs'
+                    ? 'bg-white dark:bg-[#2c2c2e] text-[#1d1d1f] dark:text-white shadow-sm'
+                    : 'text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white'
+                    }`}
                 >
                   <EyeOff className="w-3.5 h-3.5" />
                   <span>Focus-Loss Logs ({attempt.focusLossLogs?.length || 0})</span>
@@ -207,13 +205,12 @@ export const SubmissionDetailModal: React.FC<SubmissionDetailModalProps> = ({ at
                     return (
                       <div
                         key={q.id}
-                        className={`p-4 sm:p-5 rounded-2xl border transition-all ${
-                          isCorrect
-                            ? 'bg-emerald-500/[0.04] border-emerald-500/20'
-                            : isAnswered
+                        className={`p-4 sm:p-5 rounded-2xl border transition-all ${isCorrect
+                          ? 'bg-emerald-500/[0.04] border-emerald-500/20'
+                          : isAnswered
                             ? 'bg-rose-500/[0.04] border-rose-500/20'
                             : 'bg-black/[0.015] dark:bg-white/[0.02] border-black/5 dark:border-white/10'
-                        }`}
+                          }`}
                       >
                         <div className="flex items-start justify-between gap-3 mb-2.5">
                           <div className="flex items-center gap-2">
@@ -286,13 +283,12 @@ export const SubmissionDetailModal: React.FC<SubmissionDetailModalProps> = ({ at
                                 >
                                   <div className="flex items-center gap-2">
                                     <div
-                                      className={`w-4 h-4 rounded-full border flex items-center justify-center text-[10px] ${
-                                        isCorrectAnswer
-                                          ? 'border-emerald-500 bg-emerald-500 text-white'
-                                          : isSelectedByStudent
+                                      className={`w-4 h-4 rounded-full border flex items-center justify-center text-[10px] ${isCorrectAnswer
+                                        ? 'border-emerald-500 bg-emerald-500 text-white'
+                                        : isSelectedByStudent
                                           ? 'border-rose-500 bg-rose-500 text-white'
                                           : 'border-black/20 dark:border-white/20'
-                                      }`}
+                                        }`}
                                     >
                                       {isCorrectAnswer ? '✓' : isSelectedByStudent ? '✗' : ''}
                                     </div>

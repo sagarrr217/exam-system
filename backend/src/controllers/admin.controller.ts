@@ -695,3 +695,31 @@ export const generateAIQuestions = async (req: AuthenticatedRequest, res: Respon
     res.status(500).json({ error: error.message || 'Failed to generate questions with Gemini AI.' });
   }
 };
+
+export const chatAIQuestions = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  try {
+    const { prompt, history, file, examContext } = req.body;
+    if (!prompt && !file) {
+      res.status(400).json({ error: 'Prompt or uploaded file is required.' });
+      return;
+    }
+
+    const { chatWithGeminiForQuestions } = await import('../services/gemini.service.js');
+    const result = await chatWithGeminiForQuestions({
+      prompt: prompt || 'Analyze the attached document and generate relevant exam questions.',
+      history,
+      file,
+      examContext
+    });
+
+    res.json({
+      message: 'AI assistant response generated successfully.',
+      reply: result.reply,
+      questions: result.questions
+    });
+  } catch (error: any) {
+    console.error('Error in AI Chat with Gemini:', error);
+    res.status(500).json({ error: error.message || 'Failed to process AI chat with Gemini.' });
+  }
+};
+

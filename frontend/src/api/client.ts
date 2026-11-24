@@ -115,6 +115,16 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ topic, count, difficulty })
     }),
+  chatAIQuestions: (payload: {
+    prompt: string;
+    history?: { role: 'user' | 'model'; text: string }[];
+    file?: { filename: string; mimeType: string; base64Data: string };
+    examContext?: { title?: string; subject?: string; existingQuestionCount?: number };
+  }) =>
+    request<{ message: string; reply: string; questions: any[] }>('/admin/ai/chat', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    }),
 
   // Student
   getStudentExams: () => request<{ exams: any[] }>('/student/exams'),

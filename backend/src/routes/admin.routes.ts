@@ -14,7 +14,8 @@ import {
   getFocusLossLogs,
   getStudents,
   uploadImage,
-  generateAIQuestions
+  generateAIQuestions,
+  chatAIQuestions
 } from '../controllers/admin.controller.js';
 import { authenticate, requireAdmin } from '../middleware/auth.middleware.js';
 
@@ -38,5 +39,7 @@ router.get('/focus-loss-logs', getFocusLossLogs);
 router.get('/students', getStudents);
 router.post('/upload-image', uploadImage);
 router.post('/generate-questions', generateAIQuestions);
+router.post('/chat-questions', chatAIQuestions);
+router.post('/ai/chat', chatAIQuestions);
 
 export default router;

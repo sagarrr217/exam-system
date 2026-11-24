@@ -79,7 +79,7 @@ export const ExamPortalPage: React.FC = () => {
 
         // Populate answers map
         const answersMap: Record<string, StudentAnswer> = {};
-        data.answers.forEach((ans) => {
+        (data.answers || []).forEach((ans: any) => {
           answersMap[ans.questionId] = ans;
         });
         setAnswers(answersMap);
@@ -145,13 +145,13 @@ export const ExamPortalPage: React.FC = () => {
       lastFocusLossTimestampRef.current = now;
 
       try {
-        const res = await api.logFocusLoss({
-          attemptId,
-          reason,
-          durationSeconds: 1
+        const eventType = reason === 'BLUR' ? 'WINDOW_BLUR' : reason === 'VISIBILITY_CHANGE' ? 'VISIBILITY_HIDDEN' : 'WINDOW_RESIZE';
+        const res = await api.logFocusLoss(attemptId, {
+          eventType,
+          details: 'Focus lost from exam environment'
         });
 
-        setFocusLossCount(res.totalIncidents);
+        setFocusLossCount(res.focusLossCount);
         setWarningLimitExceeded(res.warningLimitExceeded);
         setShowFocusModal(true);
       } catch (err) {
@@ -193,8 +193,7 @@ export const ExamPortalPage: React.FC = () => {
     setSaveStatus('saving');
 
     try {
-      const res = await api.saveAnswer({
-        attemptId,
+      await api.saveAnswer(attemptId, {
         questionId,
         selectedOptionId: optionId !== undefined ? optionId : answers[questionId]?.selectedOptionId,
         textAnswer: textAnswer !== undefined ? textAnswer : answers[questionId]?.textAnswer,
@@ -203,7 +202,12 @@ export const ExamPortalPage: React.FC = () => {
 
       setAnswers((prev) => ({
         ...prev,
-        [questionId]: res.savedAnswer
+        [questionId]: {
+          questionId,
+          selectedOptionId: optionId !== undefined ? optionId : prev[questionId]?.selectedOptionId,
+          textAnswer: textAnswer !== undefined ? textAnswer : prev[questionId]?.textAnswer,
+          isMarkedForReview: isMarkedForReview !== undefined ? isMarkedForReview : prev[questionId]?.isMarkedForReview || false
+        }
       }));
       setSaveStatus('saved');
     } catch (err) {
