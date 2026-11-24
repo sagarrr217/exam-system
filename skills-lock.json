@@ -1,12 +1,285 @@
 {
   "version": 2,
   "skills": {
+    "3d-modeling": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/3d-modeling/SKILL.md",
+      "computedHash": "2a63740c43d74cfced2b7ff84a17a6d4959374a6e65acdb0b1e3767c193eb08b"
+    },
+    "3d-web-experience": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/3d-web-experience/SKILL.md",
+      "computedHash": "f65ee97ab9782c8127c9d18c796895c968fd3417c089c762a51b1fd184fd8ddf"
+    },
+    "a-b-testing": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/a-b-testing/SKILL.md",
+      "computedHash": "0bdbd64d10288ac22fc29e29510a6fcab7118bc85c05d035a1a8bac70fb8be93"
+    },
+    "absurdist-voice": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/absurdist-voice/SKILL.md",
+      "computedHash": "256c2e048491130b39119705530ca601b46b9614ae410c6da7cf7b6acd99842f"
+    },
+    "account-abstraction": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/account-abstraction/SKILL.md",
+      "computedHash": "4269205c829c013bd408f3c99f8f4d5683588381e5b177109de07775aabd84bf"
+    },
+    "agent-based-modeling": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/agent-based-modeling/SKILL.md",
+      "computedHash": "a989ed1af1483a056e70569eb1371537ba05ca173542d2a82b0c0752e406afab"
+    },
+    "agent-communication": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/agent-communication/SKILL.md",
+      "computedHash": "cbb82eb7b1ce13212f49783d445444b217a578f8b8bf19de70b164b084d87c62"
+    },
+    "agent-evaluation": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/agent-evaluation/SKILL.md",
+      "computedHash": "2b3dc9e751ca7f57a7c3b6d9962baffc9ccd71407c3a49c69ad99bf95a12558d"
+    },
     "agent-md-refactor": {
       "source": "softaworks/agent-toolkit",
       "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
       "sourceType": "github",
       "skillPath": "skills/agent-md-refactor/SKILL.md",
       "computedHash": "3793d347098a9a74ee692c8ad237fd5b860f092455d598ea8f50f2b773429378"
+    },
+    "ai-agents-architect": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/ai-agents-architect/SKILL.md",
+      "computedHash": "7db02c5bef88f9f95fd952eb3ab090ffb1f40a0dc971d70f90e5d3514fd0ba66"
+    },
+    "ai-brand-kit": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/ai-brand-kit/SKILL.md",
+      "computedHash": "98b225a33c3fa783ccf8b59ab0a362c493bd32adfc2f60fdfec0f60086a214e8"
+    },
+    "ai-code-generation": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/ai-code-generation/SKILL.md",
+      "computedHash": "892e88f851396e17a0dbeaf4563b67ed15e045c82e15b350dffd55b2e6f35dbb"
+    },
+    "ai-code-security": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/ai-code-security/SKILL.md",
+      "computedHash": "ac1af83ca78531203e7362398f8298c8b591897a1844d1907e2f5e2bf104d5f6"
+    },
+    "ai-creative-director": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/ai-creative-director/SKILL.md",
+      "computedHash": "4c764e65124db78ee93b50e3249d055dc6b4e6da115d3e977ef8420a0cd86dd5"
+    },
+    "ai-for-learning": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/ai-for-learning/SKILL.md",
+      "computedHash": "95e3b1db8a17117ed76ca68725a690f88ebe4a5f3118f81b0c0c57c91c475d39"
+    },
+    "ai-game-art-generation": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/ai-game-art-generation/SKILL.md",
+      "computedHash": "65adc84978c8c6fb0f51723685e700f034fbac110d25dd20a57d72db66489c30"
+    },
+    "ai-image-editing": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/ai-image-editing/SKILL.md",
+      "computedHash": "aa35b2fd8e22bcf66c071bca51a11b094bdbeda260da5d99dfd6dc29dd855ce9"
+    },
+    "ai-music-audio": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/ai-music-audio/SKILL.md",
+      "computedHash": "aa6a9b3888e82750ea3ad62de3a81a310c6965a6735f3c9078f4e44ae20e43db"
+    },
+    "ai-observability": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/ai-observability/SKILL.md",
+      "computedHash": "64b99f8173f49ffaa6113d250cef156acb48069d1ba11fd1da6397bbfb5cf72f"
+    },
+    "ai-product": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/ai-product/SKILL.md",
+      "computedHash": "a4e56479475c62e7ca61e5362d2673866561c08982d7d216e84dd0ac54b63941"
+    },
+    "ai-safety-alignment": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/ai-safety-alignment/SKILL.md",
+      "computedHash": "6c77c8abdc384954159d27f5f5353d9b0a15f88e31041e150587c0e0a7e98baa"
+    },
+    "ai-visual-effects": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/ai-visual-effects/SKILL.md",
+      "computedHash": "e98ed39fe9d22481f356e7e6f9284ada14c19e11675437073f9fe1ebe987b6f4"
+    },
+    "ai-workflow-automation": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/ai-workflow-automation/SKILL.md",
+      "computedHash": "7d2687bfac39143f4b3e93470bf4ce8f96c1da645545019e5b7abe250651cd57"
+    },
+    "ai-wrapper-product": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/ai-wrapper-product/SKILL.md",
+      "computedHash": "d567984db42bce571f3b0ed31f07db2d3799d22583efeea345614d5ceb0c04bb"
+    },
+    "algolia-search": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/algolia-search/SKILL.md",
+      "computedHash": "91edd5555653fb74f52f1017e2ed2cb565701490d67e60a56b8514fcdcb025d1"
+    },
+    "algorithmic-trading": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/algorithmic-trading/SKILL.md",
+      "computedHash": "3e8c1d1a4c7ef21ab9722a15ea6db8fbcb4ef5e18e34df7c40b4eb6314eb0ac8"
+    },
+    "ambassador-programs": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/ambassador-programs/SKILL.md",
+      "computedHash": "39fbf7dd3d9fa764198a104b540954261d3be3df79c09b9b00d3562ee16185b1"
+    },
+    "analytics": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/analytics/SKILL.md",
+      "computedHash": "368ed08afad8bd78ed535e733a31a4b26382bac537d206dc821a2a15f005437d"
+    },
+    "analytics-architecture": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/analytics-architecture/SKILL.md",
+      "computedHash": "33efe586ffc10f9fec0eae35f135c165ffa14d709c32af4b7d71b3598bc9061d"
+    },
+    "animation-systems": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/animation-systems/SKILL.md",
+      "computedHash": "96bde18e3d68a3e649932a9da8e21ab6b84dde917fd7baa5e687a3baf4fbca8e"
+    },
+    "anti-marketing": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/anti-marketing/SKILL.md",
+      "computedHash": "689db0251ed2f8d6a6f6b53eedc31c3315f4c4a7d8a953c51aa5d256031c7047"
+    },
+    "api-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/api-design/SKILL.md",
+      "computedHash": "56e2ba4a9cc29411cd645dab68a4d59a5c9ac6a548d0c5f7ef1338038569a668"
+    },
+    "api-designer": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/api-designer/SKILL.md",
+      "computedHash": "e0a6c3b4dfab9621297719f61945f0f8182be536e45be7bf640b092f62c81fd0"
+    },
+    "art-consistency": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/art-consistency/SKILL.md",
+      "computedHash": "954ea496fc6a1c13e275574e511b7a7760624fc9f6a4a888438397d13506b641"
+    },
+    "auth-specialist": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/auth-specialist/SKILL.md",
+      "computedHash": "2bc7dec452eb98cc179b7f198de1e04d8b42c28b37b00166cad2c9fc0254b7a4"
+    },
+    "authentication-oauth": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/authentication-oauth/SKILL.md",
+      "computedHash": "9fe35a8da732e08caeab5d91aa7be788e7d9bbf059a5198074842dad741d490d"
+    },
+    "automation-ai-tools": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/automation/SKILL.md",
+      "computedHash": "bdce76835ab387ae99606bb2c30b374162ddc4c8820227c4828583b4757870d7"
+    },
+    "aws-serverless": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/aws-serverless/SKILL.md",
+      "computedHash": "a80a423558135c72ae93aac2b194042d58dd2812de1748ff74c55625a693834b"
+    },
+    "azure-functions": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/azure-functions/SKILL.md",
+      "computedHash": "07902acf234a762793ed2a5f5c67da3b8d5e005aa182cbccf921b2941b1c3709"
+    },
+    "backend": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/backend/SKILL.md",
+      "computedHash": "7676aa1345a6c38b18ac2cfac8c8552a0e00606832506771ca93d0f6ec1ce8af"
     },
     "backend-to-frontend-handoff-docs": {
       "source": "softaworks/agent-toolkit",
@@ -15,6 +288,76 @@
       "skillPath": "skills/backend-to-frontend-handoff-docs/SKILL.md",
       "computedHash": "ef950971321fb417bc1722d6a4b8b1c8aa72e55776a50f37400706638574c1d0"
     },
+    "bioinformatics-workflows": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/bioinformatics-workflows/SKILL.md",
+      "computedHash": "e150da3ee1d70d1e756ae257571ff765384fae1aad3694e0fe3ec9e3305fb853"
+    },
+    "blockchain-defi": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/blockchain-defi/SKILL.md",
+      "computedHash": "485592df8ca4c8c281073e9cdee67a9d9633468f7a849062e2dd0043ecb5deae"
+    },
+    "blockchain-privacy": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/blockchain-privacy/SKILL.md",
+      "computedHash": "43ed69a61d1170e3c312e40cd80fd1ac336212273ea8a1ed5a96377ec88ce666"
+    },
+    "board-game-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/board-game-design/SKILL.md",
+      "computedHash": "03a7719d4449b0b379b1ec272da5ca45007f703348419892d663cfc057c586c1"
+    },
+    "brand-storytelling": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/brand-storytelling/SKILL.md",
+      "computedHash": "33e62b9034f1f7b52e25b30c8dd49e600b41a5efc65b7cc97c923f6b35fb73d2"
+    },
+    "branding": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/branding/SKILL.md",
+      "computedHash": "25713e52f24f20c8283886b6888ae724c13b4853d52745e9ce01803f19af2d5a"
+    },
+    "browser-extension-builder": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/browser-extension-builder/SKILL.md",
+      "computedHash": "cfab6f1a6f49bb6d998241f6f49aaa48a6a99374abb83734ab9b14d8d4277af2"
+    },
+    "bullmq-specialist": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/bullmq-specialist/SKILL.md",
+      "computedHash": "20a3d5d91384dd29d6972a86b5b64af3207a51ab36d903e0c0d9f4a96d075b28"
+    },
+    "burn-rate-management": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/burn-rate-management/SKILL.md",
+      "computedHash": "f7135c6da6aebd38f6059ed2d715bd714c21cf8feac8648267d6fafce6cf246e"
+    },
+    "business-model-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/business-model-design/SKILL.md",
+      "computedHash": "7e875548f88acfdc6fca6386b29082b3f274c79eeef83bf5b730352a7adc16fc"
+    },
     "c4-architecture": {
       "source": "softaworks/agent-toolkit",
       "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
@@ -22,12 +365,173 @@
       "skillPath": "skills/c4-architecture/SKILL.md",
       "computedHash": "2528e8ea65472b188f160cd95ae6737d6305b8afb6c384a3cc48fcd5284ae768"
     },
+    "caching-patterns": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/caching-patterns/SKILL.md",
+      "computedHash": "461237e142d89edc99e7b0a08509a61bc4b40d244287054fbfce5c6b544f7ddd"
+    },
+    "carbon-accounting": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/carbon-accounting/SKILL.md",
+      "computedHash": "c651322ba073c97578d5e4a675b014286901b150348dc6f54266aa38d9afe1cc"
+    },
+    "card-game-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/card-game-design/SKILL.md",
+      "computedHash": "9e2f2ed5f15710f07113cd4afd4a99a5b42ae7b248aa5d1158e56e99902b8cf7"
+    },
+    "causal-scientist": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/causal-scientist/SKILL.md",
+      "computedHash": "e7c687ef8632bde333b672d739676c4bea344a037dcd93d94a5e56365a691ce0"
+    },
+    "channel-partnerships": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/channel-partnerships/SKILL.md",
+      "computedHash": "efcd31e34421511838c5099666fff4a74c588f5b57d89f4c6ee7656772429a46"
+    },
+    "chaos-engineer": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/chaos-engineer/SKILL.md",
+      "computedHash": "76142c5cf416798af569ab018e8f439039b03697a265e493da47efbc60d26ad5"
+    },
+    "character-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/character-design/SKILL.md",
+      "computedHash": "57f5a3e4c2ee8875a12a936af17e3d0474b2d90ba955c620812dc381877e9858"
+    },
+    "ci-cd-pipeline": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/ci-cd-pipeline/SKILL.md",
+      "computedHash": "5f33e18dcb31fbe3dd957756d8820daad38f70bf16fe30105e87b5f90696bab7"
+    },
+    "claude-code-cicd": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/claude-code-cicd/SKILL.md",
+      "computedHash": "50a68462eb4b00093dc390449ea8f7175f979ba9b739374911c2054e86db694e"
+    },
+    "claude-code-commands": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/claude-code-commands/SKILL.md",
+      "computedHash": "aae8e9bbda0788095402005c013341d03c6f5dbb9510f4dd46ec8e9c9365d8d9"
+    },
+    "claude-code-hooks": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/claude-code-hooks/SKILL.md",
+      "computedHash": "083b546b5825fc7b8a4c1301342dd6309db923020923ce687dedec6d6f5ec2ef"
+    },
+    "clerk-auth": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/clerk-auth/SKILL.md",
+      "computedHash": "bf45a5f724c0bd831bc5a3fca870829cf02178d998ba29ab76df97543ce531fa"
+    },
+    "cliffhanger-craft": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/cliffhanger-craft/SKILL.md",
+      "computedHash": "fc75173f7edd59f88fa346c321da88073e0647f41d10fcd747b2132865533fcb"
+    },
+    "climate-modeling": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/climate-modeling/SKILL.md",
+      "computedHash": "a21b0c5c5aa709e2eb3aed1f8dad35a0b592746dd8252a692e1fbc339fdb4a1a"
+    },
+    "clinical-trial-analysis": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/clinical-trial-analysis/SKILL.md",
+      "computedHash": "afaba62727c6ff7f0aadd17719a1f01bbe3cae230c6cc53799931d4d2377e4cc"
+    },
+    "code-architecture-review": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/code-architecture-review/SKILL.md",
+      "computedHash": "fe404a318035e6c4920fd8ae004947723719309759ef9683bd70720e3a471612"
+    },
+    "code-quality": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/code-quality/SKILL.md",
+      "computedHash": "3d91c901e8893097e19f43ccb3149195356a3e836838ad20665ea59c9507a67a"
+    },
+    "code-review": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/code-review/SKILL.md",
+      "computedHash": "b2a4c35005139f7cf1ce0ad102d47a990009d5e752d1337e79e8fb0e6af1ab5d"
+    },
+    "code-review-diplomacy": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/code-review-diplomacy/SKILL.md",
+      "computedHash": "3451cf9dd9b7119c565fd156d4654513a5622b29664648c6f591983e65b12ecc"
+    },
+    "code-reviewer": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/code-reviewer/SKILL.md",
+      "computedHash": "c0c2a2b45780a387a35a2f019c965e7a42a4cb63ebdf1a23490331758298d7a7"
+    },
+    "codebase-optimization": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/codebase-optimization/SKILL.md",
+      "computedHash": "9009e4e9d673d8750ee95ca33633fa697157760e2fb4698772cc9fd01b3b539e"
+    },
     "codex": {
       "source": "softaworks/agent-toolkit",
       "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
       "sourceType": "github",
       "skillPath": "skills/codex/SKILL.md",
       "computedHash": "fcf0ea8ed576067da06dbc00a4c35e92bd0cb65319bf249e3539dbbc17832172"
+    },
+    "color-theory": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/color-theory/SKILL.md",
+      "computedHash": "456d299d7e955bb3767d8cd8b8ff30fbf222d85cb4ee83f66ca36cbd6453342f"
+    },
+    "combat-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/combat-design/SKILL.md",
+      "computedHash": "5b3f89eb1538edf24e316d39d934c28be740f4bd77967da1071150e940bb8b85"
     },
     "command-creator": {
       "source": "softaworks/agent-toolkit",
@@ -43,6 +547,132 @@
       "skillPath": "skills/commit-work/SKILL.md",
       "computedHash": "9df7a6fa2b73587e0be1034a2c00bd72157bef546a0f724be589c3612e862383"
     },
+    "community-analytics": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/community-analytics/SKILL.md",
+      "computedHash": "eb772635db278b0a914991e9d15cf7e3a4940ee938a890f6a606059e6592143d"
+    },
+    "community-growth": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/community-growth/SKILL.md",
+      "computedHash": "7391d23d4f7507a643536a9f2156dcf4b6d5fc853fcca1db3d9163d5a239df7c"
+    },
+    "community-led-growth": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/community-led-growth/SKILL.md",
+      "computedHash": "97ca2647afa46763955072c6619aa8a2fd64a77e0307febfbbd76282ae5105ed"
+    },
+    "community-operations": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/community-operations/SKILL.md",
+      "computedHash": "0082f8b1f00ea83c24bef832a44510bf504f85fb6b11fc661a6c4bbe76955d00"
+    },
+    "community-strategy": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/community-strategy/SKILL.md",
+      "computedHash": "ae4694867b908f8e8176a5d1421aec7cedb5fc163ac4d6a9e26bf0c868a08141"
+    },
+    "community-tooling": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/community-tooling/SKILL.md",
+      "computedHash": "b1406a4f68de8d1fff3fd5ef90ef4d44a12dddc85c3fac06723f56a842a24eea"
+    },
+    "competitive-intelligence": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/competitive-intelligence/SKILL.md",
+      "computedHash": "ae36b22acd877071d32dc031b3ac4eefb1d066967d51ecaba9e47d18cd8babf2"
+    },
+    "compliance-automation": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/compliance-automation/SKILL.md",
+      "computedHash": "88582eb1ac32d038cf8515440ec27f23d8b49b9663136e3e2dff7f64daed450e"
+    },
+    "computer-use-agents": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/computer-use-agents/SKILL.md",
+      "computedHash": "cd79a69b757a7ca345db0959173c7ad0ad97b89a3a120656ba65a29a69844989"
+    },
+    "computer-vision-deep": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/computer-vision-deep/SKILL.md",
+      "computedHash": "5f9244a1b95061a16b8168d30ffabebf5a76af72c9fc8d5b9533b5466fb80dcd"
+    },
+    "content-creation-ai-tools": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/content-creation/SKILL.md",
+      "computedHash": "63ae05c54f01d9fbb0477f89f8f7a4c76efa08167ee9776ee239aafddc1c2efd"
+    },
+    "content-strategy": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/content-strategy/SKILL.md",
+      "computedHash": "3cced570ae967ddb3bfbbacfd152211bcb8aa637830bd60d10d12051925de5f8"
+    },
+    "context-window-management": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/context-window-management/SKILL.md",
+      "computedHash": "5008402fa742bea1df5328ec420ba9ba312fb7d28096f6ec0492a40b0de7ec81"
+    },
+    "contract-analysis": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/contract-analysis/SKILL.md",
+      "computedHash": "010e264285e86d8a48cef2bfdc7eb2ae0c5f7f3fe25d2a1887e9d863fbdbef0e"
+    },
+    "control-systems": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/control-systems/SKILL.md",
+      "computedHash": "9bc6ea34dbf4dbaab2cec74a37b05d38a19dc513a42a17444f76b5dc907e226d"
+    },
+    "conversation-memory": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/conversation-memory/SKILL.md",
+      "computedHash": "b04f857ddb5962e8f40c31f34b2835e08df2798ce7515c4c3c4b9076022767c9"
+    },
+    "copywriting": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/copywriting/SKILL.md",
+      "computedHash": "3fa50d2d2b44e20dbe488c9b851a18b19bcd9dd2c340ab97cd506db71a85b07b"
+    },
+    "course-creation": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/course-creation/SKILL.md",
+      "computedHash": "cf0a3f35c3d1625e687eb9171ade241b8e0db8deec840f2c6bd54360dfc4dc2b"
+    },
     "crafting-effective-readmes": {
       "source": "softaworks/agent-toolkit",
       "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
@@ -50,12 +680,145 @@
       "skillPath": "skills/crafting-effective-readmes/SKILL.md",
       "computedHash": "e4c5a3ec30f44906b1333d2f6d27011b50631bf024295cb068f422382fdb5b5a"
     },
+    "creative-communications": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/creative-communications/SKILL.md",
+      "computedHash": "e7f77cd4a674281d21c78ea025debec10c46edf289f1402ea8d6b6e594c9b886"
+    },
+    "creative-strategy": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/creative-strategy/SKILL.md",
+      "computedHash": "348c63e0bf24ad4c7697c6fd0c374f96d82a9214b7dda64e7523e5391772a3e9"
+    },
+    "creature-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/creature-design/SKILL.md",
+      "computedHash": "84214b7b408cf3a47f398e103e359d2a16298bea6b33a9b46ba2da1415080348"
+    },
+    "crewai": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/crewai/SKILL.md",
+      "computedHash": "3db6946aa633f8aedf8791666db822bb543ec153a46700b058dcc9c8d73a1fcc"
+    },
+    "crisis-communications": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/crisis-communications/SKILL.md",
+      "computedHash": "cc74e4db4deaae8feb531175077bc91122e2f71adca759155de7536b5b3bf3a3"
+    },
+    "cross-chain": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/cross-chain/SKILL.md",
+      "computedHash": "27b0e95418316cd86967708685377ea990ba4fb816485a8ff2e682c3df143844"
+    },
+    "crypto-trading-bots": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/crypto-trading-bots/SKILL.md",
+      "computedHash": "f11ef8513acf9b00eaca7c8f217b7a048a9a42c2efa310a7d96be09ab8022cc0"
+    },
+    "cultural-remix": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/cultural-remix/SKILL.md",
+      "computedHash": "3b681ac06eb8125d226bb7d378c587c132747d50dcb10aeda95b84016691fe66"
+    },
+    "cursor-ai": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/cursor-ai/SKILL.md",
+      "computedHash": "06bea4eb4acd5297b86cba3e28eb0a3361bbaf06df833bb2f3d1e3ba1a7a9fcd"
+    },
+    "customer-success": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/customer-success/SKILL.md",
+      "computedHash": "1af42d55e8043a9dbe24837a466dd0fb014b78bd79a9c5dad83d964db010f3ba"
+    },
+    "customer-support-ai-tools": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/customer-support/SKILL.md",
+      "computedHash": "3755edd19069152d99482b9546d4b33c2eae9ebd5cbf54d1ec1840da0bce0b53"
+    },
+    "cybersecurity": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/cybersecurity/SKILL.md",
+      "computedHash": "bab566c20a60a00fa01e8378ea15216c288eaf966db4d00f7456ac25459f4eb4"
+    },
     "daily-meeting-update": {
       "source": "softaworks/agent-toolkit",
       "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
       "sourceType": "github",
       "skillPath": "skills/daily-meeting-update/SKILL.md",
       "computedHash": "0f0406bd291210712af40e33ede1dfbdc84c7d4a84863cf5a8dc3408453c8122"
+    },
+    "dao-governance": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/dao-governance/SKILL.md",
+      "computedHash": "f9ec7eb49b89ca0545d7f86043620a967b91204001dad8d687c65365c8ff251c"
+    },
+    "data-engineer": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/data-engineer/SKILL.md",
+      "computedHash": "eef6653c9ccd85caf397e2519c20163695329e9ecc30baa2357226f0cac97cb7"
+    },
+    "data-governance": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/data-governance/SKILL.md",
+      "computedHash": "f8919a45b678e22697a7dc0dbad4041bac40ed5b532ae984780477859cefafcb"
+    },
+    "data-reproducibility": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/data-reproducibility/SKILL.md",
+      "computedHash": "c079a0b06ea2d400b5f4ab23c1b522896827877e34d299719206adae79b37e2f"
+    },
+    "database-architect": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/database-architect/SKILL.md",
+      "computedHash": "68efd7b4401f59668b5710a23992bb40c321e1500c758008e5ae53fbc2b4fc1b"
+    },
+    "database-migrations": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/database-migrations/SKILL.md",
+      "computedHash": "5b94e5429b6bc2512a885cd5987883551a11fdf02415a5d62b9790b772e90245"
+    },
+    "database-schema-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/database-schema-design/SKILL.md",
+      "computedHash": "7ae1fd0e62e2756db68b1789f88a1f3168fffc6a3fe82f8434aad66d199b0ec4"
     },
     "database-schema-designer": {
       "source": "softaworks/agent-toolkit",
@@ -71,12 +834,68 @@
       "skillPath": "skills/datadog-cli/SKILL.md",
       "computedHash": "5c1d834812548f923c168a891103d6c8b7c94adbd1aa72c2b68ac47d7711bd56"
     },
+    "debugging-master": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/debugging-master/SKILL.md",
+      "computedHash": "a7c919512be1d5b761b40b253255097357b6eb00fef80e9ebc6f0ae7e01569e0"
+    },
+    "decision-frameworks": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/decision-frameworks/SKILL.md",
+      "computedHash": "82d978b4576b876bffedd557d738340b65f31fc6bbbd6327c35f34d315b0894d"
+    },
+    "decision-maker": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/decision-maker/SKILL.md",
+      "computedHash": "7f9f9bda70e92f12a4046186ebe7a169477288a240b77a3d70d5edd40d58ec14"
+    },
+    "defi-architect": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/defi-architect/SKILL.md",
+      "computedHash": "de654a13de88e5b07c06610bd6e3712bc9832d3e68c8f22a3d971c3cc2fb57ee"
+    },
+    "demo-day-theater": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/demo-day-theater/SKILL.md",
+      "computedHash": "9fd628bcebe829ca41e02b4347419278ba58c52b691330c6fb7da2a0f8f5c45f"
+    },
+    "demoscene-coding": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/demoscene-coding/SKILL.md",
+      "computedHash": "bcf94f5a82b2cfe1cc91b3498cdc674d59dd2ada72db3942ab68df57c8aa314c"
+    },
     "dependency-updater": {
       "source": "softaworks/agent-toolkit",
       "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
       "sourceType": "github",
       "skillPath": "skills/dependency-updater/SKILL.md",
       "computedHash": "12dfd3ffb6f21ac5505bbdf0be4f9d43c492ba8d78620ccb6b613a7cff7a55fd"
+    },
+    "derivatives-pricing": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/derivatives-pricing/SKILL.md",
+      "computedHash": "cac8b517ab92a50f6ad4543828158e0a7ed7a1191d7483be405849d863556ade"
+    },
+    "design-ai-tools": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/design/SKILL.md",
+      "computedHash": "1f05097cbef7cf374ff5bdf4bfece8f0f813c07da4b504f4bf19cca048820c6f"
     },
     "design-system-starter": {
       "source": "softaworks/agent-toolkit",
@@ -85,12 +904,124 @@
       "skillPath": "skills/design-system-starter/SKILL.md",
       "computedHash": "1fe666d588750f487f2d7c41c8f5eac9303c2d0b8fa0bc81ab1e35ddf6f35fce"
     },
+    "design-systems": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/design-systems/SKILL.md",
+      "computedHash": "8c9c40c057cc5210bd677d36df2913f4b84d726e8ad171fa28b7f7cacd075b61"
+    },
+    "dev-communications": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/dev-communications/SKILL.md",
+      "computedHash": "95c8226a5800e5870a48bdaf24c00d6a59134a5653258b1229fe2d2f125298f8"
+    },
+    "developer-community": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/developer-community/SKILL.md",
+      "computedHash": "d3f1463164a8930b6915a953fae6688b8be234b2734b54e713de520d730eef97"
+    },
+    "development-ai-tools": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/development/SKILL.md",
+      "computedHash": "1b6a3f0fa73729b691461d768388e923a268c171f5ee22ee2ee32b4adfc18733"
+    },
+    "devops": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/devops/SKILL.md",
+      "computedHash": "886451eaf21b58cc7ec55dbfc2338dcfa45cc57ccced6a7918e41d7809a5fabc"
+    },
     "difficult-workplace-conversations": {
       "source": "softaworks/agent-toolkit",
       "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
       "sourceType": "github",
       "skillPath": "skills/difficult-workplace-conversations/SKILL.md",
       "computedHash": "bc6928388268877fcfbbec569d2c5a5138bb1595b2166a82c641946f3902250f"
+    },
+    "digital-humans": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/digital-humans/SKILL.md",
+      "computedHash": "002f09589e8f8d39e65d98a3118472d3571deddcd4b9751086a17481dce2e673"
+    },
+    "digital-twin": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/digital-twin/SKILL.md",
+      "computedHash": "211c72724cb6dcc16013675bdd53a6d6254dbdba07e002bf726655c3ff90bcce"
+    },
+    "disaster-recovery": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/disaster-recovery/SKILL.md",
+      "computedHash": "5c19812e43318a3555cb1332e6c2f55439715da170443f1fb6fd2e806dea2eab"
+    },
+    "discord-bot-architect": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/discord-bot-architect/SKILL.md",
+      "computedHash": "5b281d7397d84d0e0bfd005be107aad46fe0bdf5a94fdeba262b60cff74f91ca"
+    },
+    "discord-mastery": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/discord-mastery/SKILL.md",
+      "computedHash": "cf4ff69cf2f0459664bdba3f704e0271031d91547afea1d43b460812a597516c"
+    },
+    "distributed-training": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/distributed-training/SKILL.md",
+      "computedHash": "f960820f6f12a5337cd34e8da409b23bba67a56d16ad6339206695d019348098"
+    },
+    "docker-containerization": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/docker-containerization/SKILL.md",
+      "computedHash": "1abb90d85fb6940efbb29c6eb921aabf10e463e81a797717a04a44b4d3a11b12"
+    },
+    "docker-specialist": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/docker-specialist/SKILL.md",
+      "computedHash": "becde2fcdd8a2545de7ff7b3845a1278302a59bd2c1a3ecb05c19ce71ed7b2d0"
+    },
+    "docs-engineer": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/docs-engineer/SKILL.md",
+      "computedHash": "b682844c2f3828d0626a05fe078170877270214c3a5817f0ab50c85fb8a806c1"
+    },
+    "document-ai": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/document-ai/SKILL.md",
+      "computedHash": "c66560e72bf69d30ba873097588c32e0bbc8af049187a14dc95e2889ef4c1d33"
+    },
+    "documentation-that-slaps": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/documentation-that-slaps/SKILL.md",
+      "computedHash": "40f7be65ca5d1a1e1a4238eec139d192bacf5c4e66422f5ba954afb855b2cf9e"
     },
     "domain-name-brainstormer": {
       "source": "softaworks/agent-toolkit",
@@ -106,12 +1037,152 @@
       "skillPath": "skills/draw-io/SKILL.md",
       "computedHash": "35d0322a2fd051d94b4df9df7e54a225ff0fe277c6311fb47eb992f96cecd287"
     },
+    "drizzle-orm": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/drizzle-orm/SKILL.md",
+      "computedHash": "43cbb2056859155c7675078d3e5ee010af659be630d45ecc3021a7eba8ae6317"
+    },
+    "drug-discovery-informatics": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/drug-discovery-informatics/SKILL.md",
+      "computedHash": "b64ac94067c3894121393bc4c645d79cd434d5b6ab18adac6b6d703d551f1007"
+    },
+    "early-stage-hustle": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/early-stage-hustle/SKILL.md",
+      "computedHash": "a4302879c120cd09fd38e8ef24872c291b4e9dc05858d61ee551c79b4d5feb35"
+    },
+    "easter-egg-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/easter-egg-design/SKILL.md",
+      "computedHash": "00437eeff697502b70959a3d2f939e607c9348030a9828c7b60df593e895910a"
+    },
+    "education-business": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/education-business/SKILL.md",
+      "computedHash": "4befc1199146e61420450be9697d68e7966b6bfca9854cfe21b1f2956a0d313e"
+    },
+    "education-platforms": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/education-platforms/SKILL.md",
+      "computedHash": "50f4824a86dc7404c9c78d3d258d2c61b41af242ecfff4810e3b0c02589ae188"
+    },
+    "email-systems": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/email-systems/SKILL.md",
+      "computedHash": "0b9ba47c7f446354dd9357f7d8bb6c713388223fe71e552381619141a6acc36c"
+    },
+    "embedded-systems": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/embedded-systems/SKILL.md",
+      "computedHash": "b68afcf5e48b0092c09012e09bd8eac906a807bbf6459663b14977c191b92c9c"
+    },
+    "energy-systems": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/energy-systems/SKILL.md",
+      "computedHash": "f58c4e3b0d27180f83dbb79eb22b9150ddeea0bd3134412c65345125803b2115"
+    },
+    "enterprise-architecture": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/enterprise-architecture/SKILL.md",
+      "computedHash": "6d3000b980dc6fd54db8c299ba6a08b9fc26753c9d653e4619805b40f7556e4e"
+    },
+    "environment-art": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/environment-art/SKILL.md",
+      "computedHash": "8c2178740265c6c93c62e0b46b17844c10d90abe797408ac291f9ce03f2ab17f"
+    },
+    "error-handling": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/error-handling/SKILL.md",
+      "computedHash": "3a6590f9c6f1e8e667598452070207a314f033c5bbd2f7370bfae4d3f6523cb4"
+    },
+    "event-architect": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/event-architect/SKILL.md",
+      "computedHash": "37f0b5849bfd71c552b5c6b2bb13bd8a1b79cb44db084cd1f7cf7eb1dd25ce65"
+    },
+    "evm-deep-dive": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/evm-deep-dive/SKILL.md",
+      "computedHash": "4f4706ce57f49aeab8ab6285db0c2302d2334ff9e5df372eafea9ab348a95dfe"
+    },
     "excalidraw": {
       "source": "softaworks/agent-toolkit",
       "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
       "sourceType": "github",
       "skillPath": "skills/excalidraw/SKILL.md",
       "computedHash": "1eafca88fc64b2fae7f5950fc8c2bb453c579c22e9be0107f41a5f6cb9d86331"
+    },
+    "execution-algorithms": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/execution-algorithms/SKILL.md",
+      "computedHash": "c632c1657abf45d9190d6c782259bd4527647c99da1b38356eed5c1b6df78ff7"
+    },
+    "experimental-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/experimental-design/SKILL.md",
+      "computedHash": "1fdcc3565421b54771a96021d14e8684c55063c60fd4c58ad963a2465205edba"
+    },
+    "explainer-videos": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/explainer-videos/SKILL.md",
+      "computedHash": "11c7e9aa09dbfa98deb2a30b84b783f9642f167e397702beac17a9fa1f09b3ba"
+    },
+    "expo": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/expo/SKILL.md",
+      "computedHash": "feef8d5d6815b8adf79238fa48c072291aa3bef3e0205e3a0cb62e4f87f5152a"
+    },
+    "export-control": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/export-control/SKILL.md",
+      "computedHash": "dabf85d6960cb7b66c1ec573250066d1c992136e83229ad44e9ac3e1fbd80766"
+    },
+    "feature-prioritization": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/feature-prioritization/SKILL.md",
+      "computedHash": "7d376cbc589839ee4de1cb20996c34653dfdfa19bb129158ecffd5c53761dff8"
     },
     "feedback-mastery": {
       "source": "softaworks/agent-toolkit",
@@ -120,12 +1191,96 @@
       "skillPath": "skills/feedback-mastery/SKILL.md",
       "computedHash": "d6006681ed637ecbcb0a839e59e33b28f29727eeed8035e44b1efe4d6a689f9c"
     },
+    "file-uploads": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/file-uploads/SKILL.md",
+      "computedHash": "6aab59d139b73d405bdf9711c8b6b07744b71863d2b7bf3a02ba2cf4039da23f"
+    },
+    "finance-ai-tools": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/finance/SKILL.md",
+      "computedHash": "c0de10d260ab8b1a68ddd6ceb92ba646eb66b203db77ec678e6b378567043241"
+    },
+    "fintech-integration": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/fintech-integration/SKILL.md",
+      "computedHash": "934ca3f80dd8fdb207a6267253d472013681bcb9f26f491e72870da613c29751"
+    },
+    "forms-validation": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/forms-validation/SKILL.md",
+      "computedHash": "7ab36f690a476fe2eeab97863e1a1dc33ca31d5381dd522462e8b31d8f087235"
+    },
+    "founder-character": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/founder-character/SKILL.md",
+      "computedHash": "20505d0e6061e611b5c7bf2703a55247600594403896db0782a2ce9804a8f9d5"
+    },
+    "founder-mode": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/founder-mode/SKILL.md",
+      "computedHash": "0f7bd52556646dc163969a5f83aa340945908450e4bfb1209c13ee87bd18e34b"
+    },
+    "founder-operating-system": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/founder-operating-system/SKILL.md",
+      "computedHash": "df253ecf5f8759a6933e9ddc6321e2a06d441bca98a66b164d7348da657604e5"
+    },
+    "fpga-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/fpga-design/SKILL.md",
+      "computedHash": "9d5d537229aff56c7e9589425c4bfd6f8d24091669c8c125449dd683a699831e"
+    },
+    "frontend": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/frontend/SKILL.md",
+      "computedHash": "329214acf55164d557bb7f93044d5b6ecdc5029d56fb8869e16d1e6eaa429901"
+    },
     "frontend-to-backend-requirements": {
       "source": "softaworks/agent-toolkit",
       "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
       "sourceType": "github",
       "skillPath": "skills/frontend-to-backend-requirements/SKILL.md",
       "computedHash": "00189ddb2d70ad68145a048de946b49562cbcd67942ced1c53d2db8d69564c23"
+    },
+    "game-ai-behavior": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/game-ai-behavior/SKILL.md",
+      "computedHash": "ce1e9353d0620598b61de228db7d5d0990405e065ab5f98a89004d9511b95d98"
+    },
+    "game-ai-behavior-trees": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/game-ai-behavior-trees/SKILL.md",
+      "computedHash": "80be88a58ec9bf5485421f20e672950d88c543dbe477be142676a99166b4147e"
+    },
+    "game-audio": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/game-audio/SKILL.md",
+      "computedHash": "e8bd3a5639272b7eab18158911e8c627adcedea33c1abb0989d63067074b5b87"
     },
     "game-changing-features": {
       "source": "softaworks/agent-toolkit",
@@ -134,12 +1289,89 @@
       "skillPath": "skills/game-changing-features/SKILL.md",
       "computedHash": "2eb3343c1631be8f93c1d9808d25740a66ef998445bf554ba0d13b04e148690c"
     },
+    "game-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/game-design/SKILL.md",
+      "computedHash": "f7351e242d8111e9a62916cfbadb2885c4de3f0961db37e9d0b8788a8a766077"
+    },
+    "game-design-core": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/game-design-core/SKILL.md",
+      "computedHash": "96ed879c24e173f4a888815c96465ddfb9c9b57b1e8b90d17e94c2350b73a00d"
+    },
+    "game-development": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/game-development/SKILL.md",
+      "computedHash": "3540eb741a842c5fd93f18a5531caa598bb9ce8053bb8a75f7adf26174520a2f"
+    },
+    "game-monetization": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/game-monetization/SKILL.md",
+      "computedHash": "d00519fbb15a6a33c9b4d261177e255e93f7ad41a6b20a28dece9f05a22d9d3d"
+    },
+    "game-networking": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/game-networking/SKILL.md",
+      "computedHash": "c562c4ba7df070c3afa790fc056d604c48e4a98d89b75563db9bb814af546d4f"
+    },
+    "game-ui-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/game-ui-design/SKILL.md",
+      "computedHash": "6c2293a16bd99d821145d438665215970fa6c6fd75f578b4990f8237e0f497bb"
+    },
+    "gamification-loops": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/gamification-loops/SKILL.md",
+      "computedHash": "e25f3c8b18fe8a0fc65044dad1f10dda09d1cce65790e6952421101f97f15bdc"
+    },
+    "gcp-cloud-run": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/gcp-cloud-run/SKILL.md",
+      "computedHash": "14f95cd7679ca37567696f4eab09a93eca211504e90589e51094e0008e35a137"
+    },
+    "gdpr-privacy": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/gdpr-privacy/SKILL.md",
+      "computedHash": "cc95c6dfbc9ef42ec1ede374b45f17fb4571ae6779e40d7379a1d6df68c83705"
+    },
     "gemini": {
       "source": "softaworks/agent-toolkit",
       "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
       "sourceType": "github",
       "skillPath": "skills/gemini/SKILL.md",
       "computedHash": "7bee2cc6e2e7ad8d86e0f31aae84a640eaa6577db249ce4320735bddc5c670ce"
+    },
+    "generative-art": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/generative-art/SKILL.md",
+      "computedHash": "5683ecba74bc65b79e6d6e56bb845b1898086d5c49db2c1138554a458610367b"
+    },
+    "genomics-pipelines": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/genomics-pipelines/SKILL.md",
+      "computedHash": "58fa84d1e3580432877a97da7e42f4e65de5e81756d06d596daab0aaa41697c9"
     },
     "gepetto": {
       "source": "softaworks/agent-toolkit",
@@ -148,12 +1380,180 @@
       "skillPath": "skills/gepetto/SKILL.md",
       "computedHash": "80de6f6e132b336358dba07bcace9faf42d1d0f5de7992519456cee765af282d"
     },
+    "git-time-travel": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/git-time-travel/SKILL.md",
+      "computedHash": "eb3f10a92ae7201e2a24bad774355168eb9547027285d8b0f4e4095b0cd410f9"
+    },
+    "go-to-market": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/go-to-market/SKILL.md",
+      "computedHash": "516d589cf3bb22106f38430193d2ebc2d45b90ad594a0375e4a8d176dcc31fae"
+    },
+    "godot-development": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/godot-development/SKILL.md",
+      "computedHash": "1f1ed4d690b4e131e0dfc894582564864c64478b3b651e5cc44ccb910fdc2f84"
+    },
+    "godot-llm-integration": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/godot-llm-integration/SKILL.md",
+      "computedHash": "36cc2c523ea3afaafd59fef5a6396c809f66be5452ef8074c743c8a40fb6170c"
+    },
+    "graph-engineer": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/graph-engineer/SKILL.md",
+      "computedHash": "174f303af17b9cf0fbfd117d5fe154b10527b7cee3cad08444cd60cb67fb420f"
+    },
+    "graphile-worker": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/graphile-worker/SKILL.md",
+      "computedHash": "57f3e981a9f519a11f5028422f2ed9b75f58e420493baee163b0301dc5eb76b4"
+    },
+    "graphql-architect": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/graphql-architect/SKILL.md",
+      "computedHash": "87395d33b4ad5b2a13ff0df5266fc2c83b90e85522e1a1a2fcd9b753fb224b3c"
+    },
+    "ground-station-ops": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/ground-station-ops/SKILL.md",
+      "computedHash": "a7b85853197cf3281670b270aad4a187bc98c915b064a05171a6ab2a1b033b6d"
+    },
+    "growth-loops": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/growth-loops/SKILL.md",
+      "computedHash": "5b86c96b1fa16786c97e258b57e4035b3cc0283066286f4f70affb8c7e5d2140"
+    },
+    "growth-strategy": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/growth-strategy/SKILL.md",
+      "computedHash": "3c2e2a1293a0aba26e2a613ed0dc7e402459034ab39a150a9e19f59eb3b2fb4f"
+    },
+    "hand-gesture-recognition": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/hand-gesture-recognition/SKILL.md",
+      "computedHash": "f55da3694aa57767fb971735166c33e79228dc645d0bbdd1dfa7aaed5692a9c0"
+    },
+    "hiring-strategy": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/hiring-strategy/SKILL.md",
+      "computedHash": "5b9b6aa596c050874a43b4cb7888d430a73655ba9c39d23576a2e2d6079e7201"
+    },
+    "hr-recruiting-ai-tools": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/hr-recruiting/SKILL.md",
+      "computedHash": "b6c9bd31aad3fb8144f35c4436547725415d9b253153f11d9759c8da951fea31"
+    },
+    "hubspot-integration": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/hubspot-integration/SKILL.md",
+      "computedHash": "0f01a1f7b84abd470b734c29f6f9ca3281e9cc3d2141e60acf2172d3013819a4"
+    },
     "humanizer": {
       "source": "softaworks/agent-toolkit",
       "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
       "sourceType": "github",
       "skillPath": "skills/humanizer/SKILL.md",
       "computedHash": "9f0b3facf471c3f5ac21e11ef4cd258abe12f484d971e17b5ed922fc18f1a553"
+    },
+    "i18n": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/i18n/SKILL.md",
+      "computedHash": "136842c3283a99be1e91b397f2eff322966adfad2e64510b5072049d0629ebf5"
+    },
+    "icon-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/icon-design/SKILL.md",
+      "computedHash": "84517b103039a1605bb700e05faa980b65ba046eb7655149fbd2b007ef74794a"
+    },
+    "incident-postmortem": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/incident-postmortem/SKILL.md",
+      "computedHash": "29da8085d98b4f94b8e7dcdf432e88523c73e74755cf742680f3a122ed60622e"
+    },
+    "incident-responder": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/incident-responder/SKILL.md",
+      "computedHash": "3475b691603a284e71ee9396e221a4ae4e397aa046ef91c622ae0b058fbf6a34"
+    },
+    "infra-architect": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/infra-architect/SKILL.md",
+      "computedHash": "f3ef4b60ce0d320ca7b6fd72de4d58809302c47d4abc448d9a8d48667e2e771a"
+    },
+    "infrastructure-as-code": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/infrastructure-as-code/SKILL.md",
+      "computedHash": "cb0ae9313f6856f03c61f92877e84efb2535c4eaa963c9bf990f9bb667b386fd"
+    },
+    "inngest": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/inngest/SKILL.md",
+      "computedHash": "726422dd14fd4cd594ff8fa2022670e6286d01509aac553d2d7f4cb0900abecd"
+    },
+    "integration-patterns": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/integration-patterns/SKILL.md",
+      "computedHash": "3610734c5356bde1ef1eacbcaaf2ef542d51197d2e6123e0df49c998104ee5fc"
+    },
+    "interactive-portfolio": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/interactive-portfolio/SKILL.md",
+      "computedHash": "ae9b06d35819376e275d87997c01c9361107f77bf9ae3821c93ea9cab2bb448e"
+    },
+    "ios-swift-specialist": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/ios-swift-specialist/SKILL.md",
+      "computedHash": "90e3ebd18efb9d1af7558d68998ec86c3332a28d08ea5662b354c32ba65ad226"
     },
     "jira": {
       "source": "softaworks/agent-toolkit",
@@ -162,6 +1562,69 @@
       "skillPath": "skills/jira/SKILL.md",
       "computedHash": "3f0504ce6f74a72f322e372640f80ad1240448347ddd23cd4169b3ae9facd2bd"
     },
+    "kubernetes-deployment": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/kubernetes-deployment/SKILL.md",
+      "computedHash": "5b92f19d49d21ccb6e4293c68ab0242ff224d6b3d3bcdd926471d963932d6bd3"
+    },
+    "lab-automation": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/lab-automation/SKILL.md",
+      "computedHash": "aeadd19e9264ea42e4098e6f8a9fde619c7686a170e47e3999e98785174f2720"
+    },
+    "landing-page-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/landing-page-design/SKILL.md",
+      "computedHash": "88e4c63b0543f44898c9a71a8a161181ab47d46a0deaacc111458bc03f6daa29"
+    },
+    "langfuse": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/langfuse/SKILL.md",
+      "computedHash": "1f463c1f9c9e91d2d2c012a2c29506dbbaf63bec856a9b094260bf7a61690225"
+    },
+    "langgraph": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/langgraph/SKILL.md",
+      "computedHash": "c9baa93035ab23fb60d0c3fa95edd045fd1557165cd6b947fdb14132cc6824e4"
+    },
+    "launch-storytelling": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/launch-storytelling/SKILL.md",
+      "computedHash": "1fbbe278151094a67a4f90d7f351b1f57beb16e2db1e4d739c902bd68b796807"
+    },
+    "layer2-scaling": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/layer2-scaling/SKILL.md",
+      "computedHash": "d6f99b8f3508f223a009fc80d68cd65b644e8fea73851fc9da3f9f48744a6534"
+    },
+    "learning-experience": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/learning-experience/SKILL.md",
+      "computedHash": "343bb27ebe3eb3a1e729c6c644ce00a81defa12b674014662c49ffdf28c8122c"
+    },
+    "legacy-archaeology": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/legacy-archaeology/SKILL.md",
+      "computedHash": "24719fe5ecc772608cbf13f44571ef8eb89a819ddff4034d5b3689b5a6aef5ec"
+    },
     "lesson-learned": {
       "source": "softaworks/agent-toolkit",
       "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
@@ -169,12 +1632,138 @@
       "skillPath": "skills/lesson-learned/SKILL.md",
       "computedHash": "58a63ecda867f44cfe27f5af7390caf127d54b676d7924692fb18c0312e133fa"
     },
+    "level-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/level-design/SKILL.md",
+      "computedHash": "65412651ec48f631ba7e8fc1a9ec8593fdbbeceb96bf3f5d672691a26dbb2f19"
+    },
+    "lighting-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/lighting-design/SKILL.md",
+      "computedHash": "db387841904257f5e07c5dccb1736d828d6b870a2a07e6b6c80bb50d05a573a8"
+    },
+    "live-education": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/live-education/SKILL.md",
+      "computedHash": "e127bb7b2869e7392abe23c5918df2b319a690938c4ff59c06dfa51f945e1c59"
+    },
+    "llm-architect": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/llm-architect/SKILL.md",
+      "computedHash": "2603ee743d8063e8ed7e7867406be4032771caea4356abbfb269919b5d85ba14"
+    },
+    "llm-fine-tuning": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/llm-fine-tuning/SKILL.md",
+      "computedHash": "ea6bdd11f6536747af4be89e4857e9a16b0da34f6c27fbd2fa0ab825c39e7749"
+    },
+    "llm-game-development": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/llm-game-development/SKILL.md",
+      "computedHash": "1276b333d6732be60d9a33fa0f9853ff40d7c07a9f3087a6adc50ea01d62d600"
+    },
+    "llm-npc-dialogue": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/llm-npc-dialogue/SKILL.md",
+      "computedHash": "c48bad3ad6b1b0b6a2a1255e57a9894e12f1d07d2ce569daa87526b76cc3a025"
+    },
+    "llm-security-audit": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/llm-security-audit/SKILL.md",
+      "computedHash": "111fa9b8211c336c2b2bfec525392ea84919d14dc80b4e6f8fdcce8726f7c3c7"
+    },
+    "logging-strategies": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/logging-strategies/SKILL.md",
+      "computedHash": "32ce1b3ef55f4e7b12eecef0b38f4acb6570cc5a640f6c31e91fe29cadea0b7f"
+    },
+    "lore-building": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/lore-building/SKILL.md",
+      "computedHash": "0cc94e6acdb593f97afc1869827189310838b098564ff0eba0ac7789e189abeb"
+    },
+    "marketing": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/SKILL.md",
+      "computedHash": "b9f80045d691e17afe5ce5b17ba199f0026eee845e4d32e3ef87cc4fffba1f56"
+    },
     "marp-slide": {
       "source": "softaworks/agent-toolkit",
       "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
       "sourceType": "github",
       "skillPath": "skills/marp-slide/SKILL.md",
       "computedHash": "46f96b839987e9e33d8fb1f15d1227bcc21cbd21d4e803a51d28b0952c29ac6d"
+    },
+    "mcp-deployment": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/mcp-deployment/SKILL.md",
+      "computedHash": "5f9143d9550d905c3d18a2030f8efbf484110bbe8dbbd49fa63540d1d30accdf"
+    },
+    "mcp-developer": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/mcp-developer/SKILL.md",
+      "computedHash": "bd72a9f3bc8f34c8658a6f18a73e5fb1941f9db82d52598d7c9d54824e84e7fa"
+    },
+    "mcp-product": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/mcp-product/SKILL.md",
+      "computedHash": "15432b1bfa1d717463b7714ef073393849b80bb56ae49f0dffdd77dca5b47a12"
+    },
+    "mcp-security": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/mcp-security/SKILL.md",
+      "computedHash": "01433d81b8113c55711010b96581fa5646e8779189adb886fdce736888b87078"
+    },
+    "mcp-server-development": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/mcp-server-development/SKILL.md",
+      "computedHash": "206f9b5ffeda1ac05f9536f4cc569a69130f04be1abdf85f310be247f0f59d2a"
+    },
+    "mcp-testing": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/mcp-testing/SKILL.md",
+      "computedHash": "9fde969209a3ad3581d8dec5260920614f8c9b212d7453f2bda729f7a3437a71"
+    },
+    "meme-engineering": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/meme-engineering/SKILL.md",
+      "computedHash": "8d3fa1f43104133d144426fec451a841e9683fe5173954d97de867efe2d8bf6a"
     },
     "meme-factory": {
       "source": "softaworks/agent-toolkit",
@@ -190,12 +1779,110 @@
       "skillPath": "skills/mermaid-diagrams/SKILL.md",
       "computedHash": "c425d7bc17756e5c0538e57286a008b18a45d0967401695c003692badf0cb37a"
     },
+    "micro-saas-launcher": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/micro-saas-launcher/SKILL.md",
+      "computedHash": "e1cdc518a2fc9d897d22cd2d7a6dfaa84fbb222ad9c94799be3cc04e79f1fb32"
+    },
+    "microservices-patterns": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/microservices-patterns/SKILL.md",
+      "computedHash": "5175fc0e7689ead639187039f0b82e7609aa1f45a6bae42ebdb767561138eb07"
+    },
+    "migration-specialist": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/migration-specialist/SKILL.md",
+      "computedHash": "83325504bfa5334d0f30eb34fadf18f2a0dbbd5c994c9c902dd60c672ea907f3"
+    },
+    "mission-planning": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/mission-planning/SKILL.md",
+      "computedHash": "182a17488985754b9d08dc2f82aa9195aa96ed0fb83431b7511a95ca4d0a4a99"
+    },
+    "ml-memory": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/ml-memory/SKILL.md",
+      "computedHash": "21720cf1d6db82c6860793aa1e6f4048462172e9d4f83aa585eb773082217b3e"
+    },
+    "moat-building": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/moat-building/SKILL.md",
+      "computedHash": "7067c0815a536f6cb64d0c0c861c1ded753375e3b123432f663adcea333f0e45"
+    },
+    "mobile-game-dev": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/mobile-game-dev/SKILL.md",
+      "computedHash": "7351d5be70f07156e704d55d80cd171c0433d868d6e0abb5278a2f47d2316a48"
+    },
+    "model-optimization": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/model-optimization/SKILL.md",
+      "computedHash": "f86fc667aa9fce812e6a5a9bcbc945884f505e71a96e2b26053ec72de946fa27"
+    },
+    "monorepo-management": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/monorepo-management/SKILL.md",
+      "computedHash": "2338ae208cacd5351e1e4d646dcc745c24178c0620fd3a4be490823a19880f1b"
+    },
+    "monte-carlo": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/monte-carlo/SKILL.md",
+      "computedHash": "8f32b473855de2c0cd70ea7289f5711963101af02796fe1d49f1c907db0ce2a9"
+    },
+    "motor-control": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/motor-control/SKILL.md",
+      "computedHash": "049808c4fbcaf850f67ca6356ab152e1c7a5faa0419e0f7ad6fb1415e7ef4f08"
+    },
     "mui": {
       "source": "softaworks/agent-toolkit",
       "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
       "sourceType": "github",
       "skillPath": "skills/mui/SKILL.md",
       "computedHash": "a9632281547ca520c3e633145bdaf6ac40e4717d7fe7bf2e29b788c4d7767465"
+    },
+    "multi-agent-orchestration": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/multi-agent-orchestration/SKILL.md",
+      "computedHash": "2fef597d9cbe1d2d0b480b6133afd00590b53a37e7989bb16d63974931f4b704"
+    },
+    "multi-tenancy": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/multi-tenancy/SKILL.md",
+      "computedHash": "094640b047d28f9f1681638f2c1c75a14d4e32341dff9c73ce04d47fa92bc839"
+    },
+    "multimodal-ai": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/multimodal-ai/SKILL.md",
+      "computedHash": "7f87e8f80aef4184bfce9fd8c970521fd64ecf4711e81d26c2028e4f43e5e6c2"
     },
     "naming-analyzer": {
       "source": "softaworks/agent-toolkit",
@@ -204,12 +1891,145 @@
       "skillPath": "skills/naming-analyzer/SKILL.md",
       "computedHash": "7e502fa2f5846207f1335b8e6a373f03e9b77c9377d1d81d00efc83305225991"
     },
+    "negotiation-playbook": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/negotiation-playbook/SKILL.md",
+      "computedHash": "1c690de6ccee585520b2ab3279254f215ff98bb26942e1d7840b432e29b43fdb"
+    },
+    "neon-postgres": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/neon-postgres/SKILL.md",
+      "computedHash": "ce70ba5721dbf191a1fee1ee738a158e12e59c23b4d86bbf11ee7a2373fd8863"
+    },
+    "neural-architecture-search": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/neural-architecture-search/SKILL.md",
+      "computedHash": "d049193d6ac9f7fc8af80deb71f6d99911b5494825b6ff30c8bfb2c8e545594d"
+    },
+    "nextjs-app-router": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/nextjs-app-router/SKILL.md",
+      "computedHash": "3affedc4c6bc85c17625ad2e444a5abce185181a003201773594ffefb568c2b5"
+    },
+    "nextjs-supabase-auth": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/nextjs-supabase-auth/SKILL.md",
+      "computedHash": "1e47daf09c3e8bea3c65f8c08271e6848cd9270d4a15a90f97b3eb278e6df1b3"
+    },
+    "nft-engineer": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/nft-engineer/SKILL.md",
+      "computedHash": "008fae815aeb8ee3ef7be5565164b541844347868356e2267f3030864c2aeb47"
+    },
+    "nft-systems": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/nft-systems/SKILL.md",
+      "computedHash": "31ed92228be107386b042f626b4fab9ba3c0d739924123496a68ca936336243e"
+    },
+    "nlp-advanced": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/nlp-advanced/SKILL.md",
+      "computedHash": "ab1aed799f4253758dadab741e93d85b8388fb80cab462c69a1daf6b77a66e43"
+    },
+    "notion-template-business": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/notion-template-business/SKILL.md",
+      "computedHash": "a8be478e4a4bb1ddecc33e2d97aa19854e1261d5858ab6fd6101ec7a633f8d50"
+    },
+    "observability": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/observability/SKILL.md",
+      "computedHash": "210ddd4b69cd23fa80706f085173526e45c8a37eece707322030c19b62e573e7"
+    },
+    "observability-sre": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/observability-sre/SKILL.md",
+      "computedHash": "54f83140b17cba331e4f3bc469779d6e2f771ad7ca85a0939e0c259f18abdc16"
+    },
+    "on-device-ai": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/on-device-ai/SKILL.md",
+      "computedHash": "929f2bb03efc152020bce83776020500b2a8431f2288e459c967bdacc732e0c9"
+    },
+    "onchain-analytics": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/onchain-analytics/SKILL.md",
+      "computedHash": "14c9818e8fe2e2697983855e452ad3031489f999e25472c9e693be819dd83798"
+    },
     "openapi-to-typescript": {
       "source": "softaworks/agent-toolkit",
       "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
       "sourceType": "github",
       "skillPath": "skills/openapi-to-typescript/SKILL.md",
       "computedHash": "25ce746e02c8c3bc81eeb594dcf2cd1dd5c9bada1cebe08d5d2f9295d659416c"
+    },
+    "orbital-mechanics": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/orbital-mechanics/SKILL.md",
+      "computedHash": "18f1398c2f0a55f78a11adba1df8ce2216c604efb6d182ad6c06ed455856cc89"
+    },
+    "patent-drafting": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/patent-drafting/SKILL.md",
+      "computedHash": "ac5e81e214d1a6531dafba20b7582a235150bc4b1029da35059df485870ac61e"
+    },
+    "performance-hunter": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/performance-hunter/SKILL.md",
+      "computedHash": "066a774f99ea7e73108ddb74e8fb524900a7f420aedd72f476d041506d61df36"
+    },
+    "performance-optimization": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/performance-optimization/SKILL.md",
+      "computedHash": "3bd5c92fca14a3c1406ff63c09e3522b1ff51aec6bbf3824f874a759b1a7777c"
+    },
+    "performance-thinker": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/performance-thinker/SKILL.md",
+      "computedHash": "c76fc5d46dea894db06ba0cccc194fb5d6fb16edc55204bbfe02e2e8fd404a89"
+    },
+    "perpetuals-trading": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/perpetuals-trading/SKILL.md",
+      "computedHash": "31af12a1c4e81aab48ed728017a97bce548d72b61090045f5663b557c60e1459"
     },
     "perplexity": {
       "source": "softaworks/agent-toolkit",
@@ -218,12 +2038,152 @@
       "skillPath": "skills/perplexity/SKILL.md",
       "computedHash": "ae95740f10210e99a303b329a864e24bba5699bd424acf90d6c2700eb07fc775"
     },
+    "personal-tool-builder": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/personal-tool-builder/SKILL.md",
+      "computedHash": "b7a5aa12589e0e319ab1e48a05a19cc600ac28039d1cf9cb2ac5e511434cce9c"
+    },
+    "pg-boss": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/pg-boss/SKILL.md",
+      "computedHash": "c9fc17551160217a2576990c6bd7ffd312691da44cfe9ef665195384f19b1d4a"
+    },
+    "physics-simulation": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/physics-simulation/SKILL.md",
+      "computedHash": "237bb78a48610a0c1d353cfaf657dd86bee0b705088a130849ab245954eda978"
+    },
+    "pitch-narrative": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/pitch-narrative/SKILL.md",
+      "computedHash": "304a7c2f0efe91b0a48c706795f91a97f7dd178f950914b2aed1157c5cfd385f"
+    },
+    "pivot-patterns": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/pivot-patterns/SKILL.md",
+      "computedHash": "3bff27b5e6f795ba3fa542c0bb874151f192f424fd2a66d7918a8867f017401a"
+    },
+    "pixel-art": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/pixel-art/SKILL.md",
+      "computedHash": "6d18ef7532d02ec7da5060245ac0cf66d0ae718888fa4c1bbe6c4ce5c475c9fe"
+    },
+    "pixel-art-sprites": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/pixel-art-sprites/SKILL.md",
+      "computedHash": "cabda30ca48ffd72abd378d93474b767476f10b7b479dac0b0603754dbe39ba5"
+    },
+    "plaid-fintech": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/plaid-fintech/SKILL.md",
+      "computedHash": "4ba5c6c3f84044b6db7b92f8ee58d747ac3ac57ae41329f28cc983a0269b7f42"
+    },
+    "player-onboarding": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/player-onboarding/SKILL.md",
+      "computedHash": "d911cbae0f43159e08e4286b982f4d260e31025348c4aea3b820c091822513da"
+    },
     "plugin-forge": {
       "source": "softaworks/agent-toolkit",
       "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
       "sourceType": "github",
       "skillPath": "skills/plugin-forge/SKILL.md",
       "computedHash": "8758c0673d948449fb941cc19a3683546047903a0ba33a5b1847459eb1fa8998"
+    },
+    "portfolio-optimization": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/portfolio-optimization/SKILL.md",
+      "computedHash": "c5687e04c501b2700fb8bc923b2592a4bbc8f6af958275cfaac0dcc8e42f175e"
+    },
+    "postgres-wizard": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/postgres-wizard/SKILL.md",
+      "computedHash": "cd24687784794f241d4cf21ca2dc4868b20a2bb5390ec7062368e2d2f838cf79"
+    },
+    "prediction-markets": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/prediction-markets/SKILL.md",
+      "computedHash": "b5051710e8ddc51fee183b1635e04d3c4f410531517e9819b3bf5ae4ff1ee34a"
+    },
+    "pricing-strategy": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/pricing-strategy/SKILL.md",
+      "computedHash": "44572b9a8218199bb8025634150c81672815724aeb13e751eb979521115d123b"
+    },
+    "prisma": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/prisma/SKILL.md",
+      "computedHash": "e651cdf00a29378f1332c0e5e921ede9fcd2c353a1d4a874937c00200703e234"
+    },
+    "privacy-guardian": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/privacy-guardian/SKILL.md",
+      "computedHash": "b7f01d52f8260952917c2975ab1467030ff3f161d61286be6a94519e56638bee"
+    },
+    "product-discovery": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/product-discovery/SKILL.md",
+      "computedHash": "136f9923c9ee1a4cb4b39e5ab5ad92f6394f4951abf16c5e019eb98ad19a7710"
+    },
+    "product-led-growth": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/product-led-growth/SKILL.md",
+      "computedHash": "fded6dba5f36e6ad969c3384fad86f2f5dbd844c09582ae817bc31bdee783947"
+    },
+    "product-management": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/product-management/SKILL.md",
+      "computedHash": "4cc0e239523b7ae177e61a65bb0af96ec549e549b4b062558b3bbdb03285a4fe"
+    },
+    "product-market-fit": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/product-market-fit/SKILL.md",
+      "computedHash": "fb83527ba2916f644c15740bd1ff5321f99bf8915a976ff6cd246d83ffbba188"
+    },
+    "productivity-ai-tools": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/SKILL.md",
+      "computedHash": "11bebc007064554208d2b84e40bcdde001eaa7cae789bd0701618ea910d9d6f6"
     },
     "professional-communication": {
       "source": "softaworks/agent-toolkit",
@@ -232,12 +2192,117 @@
       "skillPath": "skills/professional-communication/SKILL.md",
       "computedHash": "79ff4ec0a0e1211d73e92082b0d3a29f750560ab423df3c201395630f8b2e592"
     },
+    "progression-systems": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/progression-systems/SKILL.md",
+      "computedHash": "7a45d1f10b960656f7e5fe2c450ebc1d13f6b285dbe052ff0988e5f46d17c3f8"
+    },
+    "prompt-caching": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/prompt-caching/SKILL.md",
+      "computedHash": "3aece0f2f16ca4f185b46f428feb87effc43cf86a84c002b703be353323c294b"
+    },
+    "prompt-engineer": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/prompt-engineer/SKILL.md",
+      "computedHash": "bc08eafbfaa7cb067381b33169883a6582cfc3c62b6ba87b4f0e023f4f46b54a"
+    },
+    "prompt-engineering-creative": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/prompt-engineering-creative/SKILL.md",
+      "computedHash": "46bbb15882e20e5910cc6e0dac267aed467628b23dbf5bfdcf4a650db3cdbc47"
+    },
+    "prompt-injection-defense": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/prompt-injection-defense/SKILL.md",
+      "computedHash": "87579b284d4e308447ef73d4f42ae5d3909a26b22229da675790a0f05ef4fa8b"
+    },
+    "prompt-to-game": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/prompt-to-game/SKILL.md",
+      "computedHash": "ebdeb56cc6d26aa3c1528bafa662bdfc96cc2f45fb3d409ede8d81cc139a920d"
+    },
+    "protein-structure": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/protein-structure/SKILL.md",
+      "computedHash": "14675092534209551e3a8e8f0c350d29ec6fbebeaf1e095d6dabbd05a00760b6"
+    },
+    "puzzle-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/puzzle-design/SKILL.md",
+      "computedHash": "361eba600ebf9e82cef142913477ecc5f45e450e2f7aaaadfbbbb948da3cbc22"
+    },
+    "python-craftsman": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/python-craftsman/SKILL.md",
+      "computedHash": "39bf91fabb3130676674c908a08bcba985d7cef88d3c55727fca3b6932bc3ca8"
+    },
+    "qa-engineering": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/qa-engineering/SKILL.md",
+      "computedHash": "eb0adf7168f93595a4ac15a6e687241eabd9aa74d5d999526970b4416e043547"
+    },
     "qa-test-planner": {
       "source": "softaworks/agent-toolkit",
       "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
       "sourceType": "github",
       "skillPath": "skills/qa-test-planner/SKILL.md",
       "computedHash": "6bd81c44579a303c493f7f3024e820d944663bb23b8b7bb3263faadd8fc3b889"
+    },
+    "quantitative-research": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/quantitative-research/SKILL.md",
+      "computedHash": "c09a0ce1e1d07104141e20a23584a6c5f5c485c749d21df4fd8b64ee31e8ac9a"
+    },
+    "queue-workers": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/queue-workers/SKILL.md",
+      "computedHash": "6bb76b5d85cfec89ddb31e585831e1b7c73b530f90e4f6ef3a07040a3d6c92bd"
+    },
+    "rag-engineer": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/rag-engineer/SKILL.md",
+      "computedHash": "244ac3c47aa13b05832746772a84577c25f23097042c941bd0dd467bfff7b709"
+    },
+    "rag-implementation": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/rag-implementation/SKILL.md",
+      "computedHash": "b4894e03abb783a5e92ed2c7dd108c591565eab1ac3bd313cc339266639fc6c9"
+    },
+    "rate-limiting": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/rate-limiting/SKILL.md",
+      "computedHash": "97e71430eefc5c0b6805723185f8fd029e5f6b1bdee1f870e885dfd3329141ba"
     },
     "react-dev": {
       "source": "softaworks/agent-toolkit",
@@ -246,12 +2311,47 @@
       "skillPath": "skills/react-dev/SKILL.md",
       "computedHash": "a2cb4f9d511edecc89b1e83277ec6721be72c764221775e141baa21e1f775e68"
     },
+    "react-native-specialist": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/react-native-specialist/SKILL.md",
+      "computedHash": "3638fa974eb1687ca47931bc151b317e57c5d38ad984d34e7c7e48888ee5ed98"
+    },
+    "react-patterns": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/react-patterns/SKILL.md",
+      "computedHash": "64c2a2ef4af4bb66d0ddeeb709ac9a35d76b52b5aff4ada65c4f08d984727a0e"
+    },
     "react-useeffect": {
       "source": "softaworks/agent-toolkit",
       "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
       "sourceType": "github",
       "skillPath": "skills/react-useeffect/SKILL.md",
       "computedHash": "e450f31d028a1a2670dae02473b1ce8f7c8c2bfa212e7e656c58b444d272bd45"
+    },
+    "real-time-content": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/real-time-content/SKILL.md",
+      "computedHash": "30f5889617f9427dbb3540c685d8a3b47896252d36799a8341a5316ace108938"
+    },
+    "realtime-engineer": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/realtime-engineer/SKILL.md",
+      "computedHash": "75cb7ed1aa2c7df842b9a1d8d4979c172a26d064fae566f286ff6f6c78e3a966"
+    },
+    "redis-specialist": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/redis-specialist/SKILL.md",
+      "computedHash": "37967e8a5cd10ab5cf153ac28f6a2777534be233d4736e8e007b1e72ebdc7c75"
     },
     "reducing-entropy": {
       "source": "softaworks/agent-toolkit",
@@ -260,12 +2360,201 @@
       "skillPath": "skills/reducing-entropy/SKILL.md",
       "computedHash": "a6f8030665c23b307630640ebec4824064f92110c2e6450c3946cad7765ac79a"
     },
+    "refactoring-guide": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/refactoring-guide/SKILL.md",
+      "computedHash": "e6b7b34f068d75a93e4e0df8c9389c6d4bdbee71832cbc6015347ca5e438aa26"
+    },
+    "regex-whisperer": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/regex-whisperer/SKILL.md",
+      "computedHash": "5ea1cac1f7757112fa4de65ed09e757cb7d8754ab877e9f0618cb2558b4867ce"
+    },
+    "reinforcement-learning": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/reinforcement-learning/SKILL.md",
+      "computedHash": "21b4c2a838de5b78456f9f82451913080a29e6f384d1e58e90adbfe45237b1e5"
+    },
+    "renewable-energy": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/renewable-energy/SKILL.md",
+      "computedHash": "0e55ba9efa0388c6571f5b4cc4db7e7117d2fafdfb5a36b312586738745e120b"
+    },
     "requirements-clarity": {
       "source": "softaworks/agent-toolkit",
       "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
       "sourceType": "github",
       "skillPath": "skills/requirements-clarity/SKILL.md",
       "computedHash": "7061c61cc747a3ac257d808c6e82f37e92caa1ef4b25fde310f286b1c4fc7626"
+    },
+    "research-ai-tools": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/research/SKILL.md",
+      "computedHash": "fb569543a84bf315a73ef09fdb1652a8c74b7ce0f9c23aeb57e36e29dc6209d4"
+    },
+    "rigging-animation": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/rigging-animation/SKILL.md",
+      "computedHash": "145bcffa2d709a3e5f0fac1beeb2856b20e072aca894c16b44ebdc1dfb3b72b1"
+    },
+    "risk-management-trading": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/risk-management-trading/SKILL.md",
+      "computedHash": "6f946dc5a022b2f2900ba28ee05eff79158b0167b6772932638c51c4dd05b518"
+    },
+    "risk-modeling": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/risk-modeling/SKILL.md",
+      "computedHash": "ac75beae23cfb20ad900ff75ce3a3a8977b79f4cb0e2dd11ea0a4fba474d2d23"
+    },
+    "roast-writing": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/roast-writing/SKILL.md",
+      "computedHash": "16155689c27ec949b5b4608d27ea9f562b5815c09d4fa85922631ba16728cd7e"
+    },
+    "roblox-development": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/roblox-development/SKILL.md",
+      "computedHash": "48e090917ee1eaf9b116a742669fc15b4089c22e448d979b92170476c7b4b76b"
+    },
+    "ros2-robotics": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/ros2-robotics/SKILL.md",
+      "computedHash": "f454dc1f59d3c71f371cc0577e1becd7b815a8b5ded6efcd83499c31539231c5"
+    },
+    "rust-craftsman": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/rust-craftsman/SKILL.md",
+      "computedHash": "6924ffeb6f7c1b2fb2271a6382964fc44f6ca6bb8cc7735d303e173284ab43f3"
+    },
+    "rwa-tokenization": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/rwa-tokenization/SKILL.md",
+      "computedHash": "0ea80fc80995eebe78bc7d5ec8a439c2a5f29ed3ad7bd194220031d46869f2cd"
+    },
+    "sales-ai-tools": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/sales/SKILL.md",
+      "computedHash": "0790ab9b7e7dff8588f5d350f6a0c95dfcb0853593ed2c40ae564e780fb9b02f"
+    },
+    "salesforce-development": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/salesforce-development/SKILL.md",
+      "computedHash": "3c8524785f64864adefe12300fadbbc9cf690addf1c1d1a74eda23cbf9079776"
+    },
+    "scientific-method": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/scientific-method/SKILL.md",
+      "computedHash": "33b031c75f6f04cd2a03b76410e8cece0a7a42177ba8b5981a0a3954f47f22e2"
+    },
+    "scope-creep-defense": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/scope-creep-defense/SKILL.md",
+      "computedHash": "6ddcbbe3328401aac7d480266814993bfc66476cf73d15488dc84819424b3179"
+    },
+    "scroll-experience": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/scroll-experience/SKILL.md",
+      "computedHash": "3d56a3ba6fb0866f0e955c3c59b1837521c3eac5de311bad1414e5894dddf5ce"
+    },
+    "sdk-builder": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/sdk-builder/SKILL.md",
+      "computedHash": "72b45268d1cd0750e7ec2531b8aa2ad090a74f651d5aaa3933a4b7f1e6e5f601"
+    },
+    "security": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/security/SKILL.md",
+      "computedHash": "109c2989bb4736839cfe629016aaf16e74b4ebe10513095664039b61e7b0a6af"
+    },
+    "security-hardening": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/security-hardening/SKILL.md",
+      "computedHash": "7052689d4e607300d32c9e1866e44cbfd8feb1ae8c852b050675e9b556c7b68f"
+    },
+    "security-owasp": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/security-owasp/SKILL.md",
+      "computedHash": "40a2063fa14454913e6a9b75d849d895ea51d3edb2b985d7e798c6e20f42cdb5"
+    },
+    "segment-cdp": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/segment-cdp/SKILL.md",
+      "computedHash": "48c091487ea7068aeb468c767b45a17bcdd85e5e064dce8f32105144e38f9ce9"
+    },
+    "semantic-search": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/semantic-search/SKILL.md",
+      "computedHash": "86b94efeafdd6f705bd1c53e1b2593dcd9cf384b17e4e2a2a5a00855dbe3fcb3"
+    },
+    "sensor-fusion": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/sensor-fusion/SKILL.md",
+      "computedHash": "8421f2b0a8c47a84ebe585ac1578d545993fdb0f3ae8c4ac95e3bc43ee13e71e"
+    },
+    "sentiment-analysis-trading": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/sentiment-analysis-trading/SKILL.md",
+      "computedHash": "f597824428e757399f802d1c12485588d13b9b2f806907b2b352203ea71291ed"
+    },
+    "seo": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/seo/SKILL.md",
+      "computedHash": "30e0047aacc59ba9ec64b8d7783de5711c19e521873ce8eb34008dbd48bc5346"
     },
     "session-handoff": {
       "source": "softaworks/agent-toolkit",
@@ -274,12 +2563,33 @@
       "skillPath": "skills/session-handoff/SKILL.md",
       "computedHash": "24d5fb0af311e83368849c65eb75908a32d9b902c12e12f7a91c7387be085f46"
     },
+    "shader-programming": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/shader-programming/SKILL.md",
+      "computedHash": "40b7e87adecbb37df67c87dcfd53b66db9e295ec53444fec2d756d73624d014e"
+    },
     "ship-learn-next": {
       "source": "softaworks/agent-toolkit",
       "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
       "sourceType": "github",
       "skillPath": "skills/ship-learn-next/SKILL.md",
       "computedHash": "51ec5f843ae9b4672220d5e6d0c8ba5d7027212c5f99a7bec7ed033880d1b8cd"
+    },
+    "shopify-apps": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/shopify-apps/SKILL.md",
+      "computedHash": "689e400699ca7affe5e519a7cb7f10980853d9a128161043e49f9db665c3066f"
+    },
+    "side-project-shipping": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/side-project-shipping/SKILL.md",
+      "computedHash": "3d009fa92b398d22b697ce00afb25e61b5a2da585ccdf8e6121d3cd408321739"
     },
     "skill-judge": {
       "source": "softaworks/agent-toolkit",
@@ -288,6 +2598,482 @@
       "skillPath": "skills/skill-judge/SKILL.md",
       "computedHash": "3e651f7a3d8c238bf8ae3d34da22498b1510294a35ec4b14eedfa07937f84ea7"
     },
+    "slack-bot-builder": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/slack-bot-builder/SKILL.md",
+      "computedHash": "717a5daca5a32c8f19860f2e97b9c69bf5e02e49dafbf2f6f2c1078535f2596e"
+    },
+    "smart-contract-auditor": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/smart-contract-auditor/SKILL.md",
+      "computedHash": "0afb6b61318b11391703cc14d7b8e85e8c81f9b1292b7b07a918eeea337c0d7d"
+    },
+    "smart-contract-engineer": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/smart-contract-engineer/SKILL.md",
+      "computedHash": "40da0a2ceb5f03401f5f77d518647535540d8ac6286179c387cdfea63994050f"
+    },
+    "social-community": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/social-community/SKILL.md",
+      "computedHash": "f361b7ee6a5d9d27e7f6cef1db5d3618729924aef53e64e98533d464053cde60"
+    },
+    "solana-development": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/solana-development/SKILL.md",
+      "computedHash": "157bc16645dc1b1a23fd9f5aa753b465d7d00b2eee8d51d17b995397d4bd570b"
+    },
+    "sox-compliance": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/sox-compliance/SKILL.md",
+      "computedHash": "36c2f19bb4f5d92577ee7da1f1a880a7e473c2265acceaea6f801c30e41298bf"
+    },
+    "space-data-processing": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/space-data-processing/SKILL.md",
+      "computedHash": "c8d3349569444e178532b6c58bc0c94498c8314f860f07708269da789e4dd988"
+    },
+    "spacecraft-systems": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/spacecraft-systems/SKILL.md",
+      "computedHash": "75f0dde070bbc154fef1446aade3e096dbe81d1a7eb42cbe1f0dcfaa5a564f34"
+    },
+    "stakeholder-management": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/stakeholder-management/SKILL.md",
+      "computedHash": "529daa7b9d6c484d8255d1b92d9f3a99e6c45c22a73b7361c4f6ddca2988722c"
+    },
+    "state-management": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/state-management/SKILL.md",
+      "computedHash": "846d6006573db87cae66df33b4a6e2c3f355a44c77ab2fad391928e069226c19"
+    },
+    "statistical-analysis": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/statistical-analysis/SKILL.md",
+      "computedHash": "a6a63a2a9482abaf4d6fe49311f92aa99309a94fb04755b7e7e53c8a9bea4d16"
+    },
+    "strategic-partnerships": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/strategic-partnerships/SKILL.md",
+      "computedHash": "f9da280a51c541e38128701dd59ee6dc228dbda3048cac5a2017b8123e0e2369"
+    },
+    "streamer-bait-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/streamer-bait-design/SKILL.md",
+      "computedHash": "730fe22b94e78df2af882fe2a31d3d9f5c1bdfd04c82a3b07a3245d7d4f1fe5d"
+    },
+    "structured-output": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/structured-output/SKILL.md",
+      "computedHash": "9bcf4eb3b546030a256039b9cf890b73565b171623d656febfcc0b8662167a40"
+    },
+    "student-success": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/student-success/SKILL.md",
+      "computedHash": "623d04b8f90fb7e9344ee111fc20fc51d7a6318568ecca8394900c1c97aa4581"
+    },
+    "supabase-backend": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/supabase-backend/SKILL.md",
+      "computedHash": "313acbdce5923d3ab21ec8d269d340ff9e48a8dd2e3a83d51d2a1510d21025d0"
+    },
+    "supabase-security": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/supabase-security/SKILL.md",
+      "computedHash": "3ad0f9ba35a91bb6f3b6ace5e1d3432558173e2bfb4c9c115292efdb6b112f85"
+    },
+    "sustainability-metrics": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/sustainability-metrics/SKILL.md",
+      "computedHash": "461e7d26e56a1a51eb7a9b6925a9e375dab489d51b09f022bf29a5ba6c78fae8"
+    },
+    "sveltekit": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/sveltekit/SKILL.md",
+      "computedHash": "37d128c96f1d27296131bc60c165392963c6553e2479fc0185fbb2de4dbab022"
+    },
+    "synthetic-data": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/synthetic-data/SKILL.md",
+      "computedHash": "24cd5482e00abbb70d2a1efe812fe5be5901cef6493a6abc4c4b657ba0d68fa1"
+    },
+    "system-designer": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/system-designer/SKILL.md",
+      "computedHash": "a6d822533c6d5c8e1805c8e115e23cef103a79f99cd258146339010e5d0d08d8"
+    },
+    "tabletop-rpg-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/tabletop-rpg-design/SKILL.md",
+      "computedHash": "b9bc71c17d0ccc9cc14d42cab78665a228f72c42e9ced9751061aadf4a6899b2"
+    },
+    "tailwind-ui": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/tailwind-ui/SKILL.md",
+      "computedHash": "951cc58c1ef56e0725505b814827db6f478ec15c37fe95c4419d1deb77371784"
+    },
+    "taste-and-craft": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/taste-and-craft/SKILL.md",
+      "computedHash": "cbe0aca4522b650d853701b026d14be4313880ac660dc079118d5aaa3861a873"
+    },
+    "tech-debt-manager": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/tech-debt-manager/SKILL.md",
+      "computedHash": "10c6dfaa9ad7d315fcd97aad30cf801273a526ecfd82de0f5158719055801c22"
+    },
+    "tech-debt-negotiation": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/tech-debt-negotiation/SKILL.md",
+      "computedHash": "b07fe2108c45218d74735decd471fbf9a1c24ef775cb2d7bfa175e145e9ea98b"
+    },
+    "technical-analysis": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/technical-analysis/SKILL.md",
+      "computedHash": "21e1cb6ef996bc09121a975ed6628a579f73bce5b2e593b12467840e7dcae4c6"
+    },
+    "technical-debt-strategy": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/technical-debt-strategy/SKILL.md",
+      "computedHash": "63e63af06a66f384f9f494c727ab4ef89db9660895346f748ec55b22e3942a41"
+    },
+    "technical-writer": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/technical-writer/SKILL.md",
+      "computedHash": "9306c90da5890e95375bc6353b6db3f490da4d91ed61dbaf4d12972404bc6f1b"
+    },
+    "telegram-bot-builder": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/telegram-bot-builder/SKILL.md",
+      "computedHash": "73162f518ab118fe216f74f36b2c7508726c5210b5edc28e2b081fd53c136fdd"
+    },
+    "telegram-mastery": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/telegram-mastery/SKILL.md",
+      "computedHash": "42c01dc9c27e254d5cb166e77c5cb1b9af4ac441b0ac58758ac1dc308fd4f0cc"
+    },
+    "telegram-mini-app": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/telegram-mini-app/SKILL.md",
+      "computedHash": "859bc54957dc3df285f6bdc9a67bb7d8df2fd01391c7b1208d8e868dcc266b0d"
+    },
+    "temporal-craftsman": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/temporal-craftsman/SKILL.md",
+      "computedHash": "cef582ca5de2cbecfceeed91eb184475da6aa46b80bad0a66ba496acd4dbdba6"
+    },
+    "test-architect": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/test-architect/SKILL.md",
+      "computedHash": "ae5ff9434a171afe754a0409ef1f1d262ad1a19ef8fe654dee5a2ec05bcab1c7"
+    },
+    "test-strategist": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/test-strategist/SKILL.md",
+      "computedHash": "51645517947f9ed6cfab41cc1550a18039cb2b9c218b9ea1f7910308ad9ef82b"
+    },
+    "testing-automation": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/testing-automation/SKILL.md",
+      "computedHash": "5b7ac385fbfd79a32bc58d6c062be82f75e488cf9bc6fc6e6b7640b6455dabec"
+    },
+    "text-to-video": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/text-to-video/SKILL.md",
+      "computedHash": "40a1f8c72f1b4de9a171055f8493c3d6dacd4482be54efde0aa1b8b62aa0a088"
+    },
+    "texture-art": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/texture-art/SKILL.md",
+      "computedHash": "30d51064ef8dd1fd30b8a1bbdf8a763436f450e9e0db0059e3623a8e1bcccc89"
+    },
+    "thought-leadership": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/thought-leadership/SKILL.md",
+      "computedHash": "652be097bfba21800377390b2334e81eb53fd38d6ec1bf41f819fac650d506f1"
+    },
+    "threejs-3d-graphics": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-3d-graphics/SKILL.md",
+      "computedHash": "c43086b0ab11867ea14781f415c77cd3c1456002927de748e062929a42f9ac6c"
+    },
+    "token-launch": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/token-launch/SKILL.md",
+      "computedHash": "fdc663541c42a19c8b2feeb462d90de3ea3c6f57334d31ec7992e2587347f8e6"
+    },
+    "tokenomics-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/tokenomics-design/SKILL.md",
+      "computedHash": "fc00a0acf9fa2a175014e10252a8733fc7de400fd815d29f576909931d6bf2ab"
+    },
+    "trading-psychology": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/trading-psychology/SKILL.md",
+      "computedHash": "0f5cef4dd7e429a998a8ba6ba1909aa6d42c17b06d51237516cb50fab1e66eff"
+    },
+    "transformer-architecture": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/transformer-architecture/SKILL.md",
+      "computedHash": "201659920f7fca982896d01955a80ca70a5ce79b7e8f14d55233b4d6fb586872"
+    },
+    "trigger-dev": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/trigger-dev/SKILL.md",
+      "computedHash": "3ebd52d399462428efc30df9fdaaa38b75d0285be2a8f9ec2c1741185b823916"
+    },
+    "typescript-strict": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/typescript-strict/SKILL.md",
+      "computedHash": "268ab4af7c12cbd2ce6fceec6753be9540b6da97a26d1514a10320ed06360c3a"
+    },
+    "typography": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/typography/SKILL.md",
+      "computedHash": "90d2207e1ab4fcb5e122cc61c3b4e5baf07b2855151196cc0e3dfc66dc24fa89"
+    },
+    "ui-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/ui-design/SKILL.md",
+      "computedHash": "6aabfdcc2ac8762af65b98ecc47467d96f9800d5379046414caa2f1e9e56a9b3"
+    },
+    "unity-development": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/unity-development/SKILL.md",
+      "computedHash": "6b48bb2507f6cceb97ba4008619d00e790249971e92f2d0d3b0822ea52b50188"
+    },
+    "unity-llm-integration": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/unity-llm-integration/SKILL.md",
+      "computedHash": "868f98b0eb059d8c4fe477cfe5cf2b8847166ebdec10c74e915ee96c375f0d20"
+    },
+    "unreal-engine": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/unreal-engine/SKILL.md",
+      "computedHash": "d635c460896443dffddd2e164adb715b12e6359c19523c6898400eb2366f39eb"
+    },
+    "unreal-llm-integration": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/unreal-llm-integration/SKILL.md",
+      "computedHash": "f1f1ec7b29ed3fcb3d703191572cbebc912ae72843dccf7f72cae2c16ecfa157"
+    },
+    "upstash-qstash": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/upstash-qstash/SKILL.md",
+      "computedHash": "1646524ecd59f8ac71b5cd1b14ed3797e1bc74d14a99600046e48acceb180624"
+    },
+    "v0-dev": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/v0-dev/SKILL.md",
+      "computedHash": "b66ae280a099d37c8a392aeafa99390b5e259b544ca9b8519840d91a36e9a9f1"
+    },
+    "vector-specialist": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/vector-specialist/SKILL.md",
+      "computedHash": "5fc8ad636fc11b9423574ff39edfcd2279e1182ce917087e248bca8754230de6"
+    },
+    "vehicle-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/vehicle-design/SKILL.md",
+      "computedHash": "1a5b5b4d5e50c139db6044891778eafebaa7cc1805572993d9eb8d8ca0bddac8"
+    },
+    "vercel-deployment": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/vercel-deployment/SKILL.md",
+      "computedHash": "cd4c11bc1bbdc657b190383944864d0920b4d30a9bdcee8a8360d7e1d67842c9"
+    },
+    "vfx-realtime": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/vfx-realtime/SKILL.md",
+      "computedHash": "3943f5c364d8f8c8419f2aa5ae17b3f4865056eb4c4ed54b37540bfbc2329882"
+    },
+    "video-directing": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/video-directing/SKILL.md",
+      "computedHash": "2a89073eff3a47d2937d75f50d622b7adf3a0242e78b26d7f979ba7ffb2de767"
+    },
+    "video-production": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/video-production/SKILL.md",
+      "computedHash": "9f76ff0bb5b52718dd325a97b53f6cbaab894f4287cf56f837f2e02b0d8f64fd"
+    },
+    "viral-generator-builder": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/viral-generator-builder/SKILL.md",
+      "computedHash": "b5d21fd50d8c141f24f0adab7ef914931a497d3dc1b220635c9e7451a293d677"
+    },
+    "viral-hooks": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/viral-hooks/SKILL.md",
+      "computedHash": "ce47fe454c4153b9aebd06d88a627c18982b8791428b4e72c25cb573b7d63902"
+    },
+    "viral-marketing": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/viral-marketing/SKILL.md",
+      "computedHash": "db2d09893d30be1bdc7ece0da290bd5b9866cf6b0ef93d3c0ab894b8a3539e15"
+    },
+    "voice-ai-development": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/voice-ai-development/SKILL.md",
+      "computedHash": "b2e6f0f1bc3935d3aa22734533782c4a56e586fe6eeee1cd70ff8397980c28d6"
+    },
+    "voiceover": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/voiceover/SKILL.md",
+      "computedHash": "78d0a03753207335ac7da499145655fd95227cee38979e280ed47978e30117ad"
+    },
+    "voxel-art": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/voxel-art/SKILL.md",
+      "computedHash": "17c9d9f0313f23474031f709f147398a16871791f6920c70159c22e328bcd851"
+    },
+    "vr-ar-development": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/vr-ar-development/SKILL.md",
+      "computedHash": "ee9488ea5b24369701c395fd153d370edaa8aae76c61c5553fa85778a930f1ad"
+    },
+    "wallet-integration": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/wallet-integration/SKILL.md",
+      "computedHash": "5d452198eca82226e2ef05ea6fb977fa70f8ed73b7352f2131bd1150f56e5020"
+    },
     "web-to-markdown": {
       "source": "softaworks/agent-toolkit",
       "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
@@ -295,12 +3081,61 @@
       "skillPath": "skills/web-to-markdown/SKILL.md",
       "computedHash": "081698f3a2e51a06a7b92c97e526f13d31bed47a21bc4907051169a02073ad73"
     },
+    "web3-community": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/web3-community/SKILL.md",
+      "computedHash": "7fe1344612e6356ae49d9d05d6414e2e2d5d004b7381bd3309e4fd37913749f7"
+    },
+    "web3-gaming": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/web3-gaming/SKILL.md",
+      "computedHash": "057d3ef3a26b49f5027ffd7fec6b0a6e65861ab595a8af3f73869c25c9974d13"
+    },
+    "websocket-realtime": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/websocket-realtime/SKILL.md",
+      "computedHash": "64f7f8677fbd9a5406960b33e588295777e94cfe79b9c3fbe3c18af32c89f7e9"
+    },
+    "websockets-realtime": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/websockets-realtime/SKILL.md",
+      "computedHash": "d0130854e8c96e436cea5de0afab801c5b1432a3160a565554f879854a9c9e48"
+    },
+    "worldbuilding": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/worldbuilding/SKILL.md",
+      "computedHash": "27b5954055e518a8043ecccb1c0ec21b6457d19d641efd3165e515abe1e5b572"
+    },
     "writing-clearly-and-concisely": {
       "source": "softaworks/agent-toolkit",
       "commit": "3027f20f3181758385a1bb8c022d4041dfb4de84",
       "sourceType": "github",
       "skillPath": "skills/writing-clearly-and-concisely/SKILL.md",
       "computedHash": "054d0502e8adb60b0b62c3b144bae30b27e9bcc3d4089b33404f10b5a9a27bb4"
+    },
+    "x402-payments": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/x402-payments/SKILL.md",
+      "computedHash": "c83c75ad131a2bbf06ac9245f49c33e9176b9e4bae75efa69063cdaa7395482c"
+    },
+    "yc-playbook": {
+      "source": "omer-metin/skills-for-antigravity",
+      "commit": "e8dcf4e8737921a10088bd5c9eb65e81f74c051f",
+      "sourceType": "github",
+      "skillPath": "skills/yc-playbook/SKILL.md",
+      "computedHash": "dd0856cc02f8117212bb0d390fd224030007dfcd6dc67b48b4842656cf7fb707"
     }
   }
 }
