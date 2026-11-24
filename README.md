@@ -1,6 +1,32 @@
 # Dual-Interface Examination System
 
-A modern, secure, and responsive web-based examination platform engineered with an Express, TypeScript, and Prisma backend and a React 18, Vite, and Tailwind CSS frontend.
+A modern, secure, and responsive web-based examination platform engineered with an **Apple HIG & iOS Design Language**, **Google Gemini Multimodal AI Question Studio**, an Express, TypeScript, and Prisma backend, and a React 18, Vite, and Tailwind CSS frontend.
+
+---
+
+<p align="center">
+  <img src="docs/ai-showcase/01-ai-isometric-devices-mockup.png" alt="Dual-Interface Examination System - Apple HIG 3D Devices Showcase" width="100%" />
+</p>
+
+<p align="center">
+  <img src="docs/ai-showcase/02-ai-bento-grid-showcase.png" alt="Apple Bento Grid Feature Matrix" width="100%" />
+</p>
+
+---
+
+## ✨ Key Highlights
+
+- **🍎 Apple HIG & iOS Design Language**: Frosted liquid glass (`backdrop-blur-xl`), continuous squircles, tactile iOS list-group cells, and an **OLED Pure Black Dark Mode / Studio Light Mode / Auto System Sync** engine.
+- **✨ Gemini Multimodal AI Question Studio**: Conversational prompt-based question creation with **direct ingestion of raw multi-page syllabus PDFs and diagram images** using Google Gemini's 1M context window. Includes 1-click batch import into active exams.
+- **🛡️ Authentic Focus-Loss Proctoring Sentinel**: Fullscreen locked examination room with Dynamic Island HUD countdown timer, persistent keystroke autosave, and non-destructive incident audit logging (tab switches, window blurs).
+- **📝 7 Versatile Question Types**: Single-choice MCQ, Multi-select checkboxes, True/False, Fill in the blanks, Numerical with tolerance ranges, and Short/Long descriptive essays with instant objective auto-grading.
+- **📊 Apple Health-Style Activity Rings**: Immediate candidate score breakdown, circular completion rings, pass/fail evaluation, and full itemized academic review.
+
+---
+
+<p align="center">
+  <img src="docs/ai-showcase/03-ai-architecture-blueprint.png" alt="Full-Stack System Architecture Blueprint" width="100%" />
+</p>
 
 ---
 
