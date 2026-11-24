@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
-import { ShieldCheck, Lock, Mail, ArrowRight, Loader2, KeyRound, Sparkles } from 'lucide-react';
+import { ShieldCheck, Lock, Mail, ArrowRight, Loader2, Sparkles, KeyRound } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
   const { login } = useAuth();
@@ -54,70 +54,68 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-slate-50 dark:bg-slate-950">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="flex justify-center">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-xl shadow-blue-500/25">
-            <ShieldCheck className="w-8 h-8" />
-          </div>
+    <div className="min-h-[calc(100vh-4rem)] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 bg-[#f5f5f7] dark:bg-black transition-colors duration-200">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
+        <div className="inline-flex w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#0071e3] to-[#409cff] items-center justify-center text-white shadow-lg shadow-blue-500/25 mb-4">
+          <ShieldCheck className="w-8 h-8" />
         </div>
-        <h2 className="mt-5 text-center text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-          Sign In to ExamSecure
-        </h2>
-        <p className="mt-2 text-center text-sm text-slate-600 dark:text-slate-400">
-          Secure, Proctor-Enabled Examination Platform
+        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7]">
+          Sign in to ExamSecure
+        </h1>
+        <p className="mt-1.5 text-sm text-[#86868b] dark:text-[#98989d]">
+          Use your institutional account to continue
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white dark:bg-slate-900 py-8 px-6 shadow-xl shadow-slate-200/50 dark:shadow-none sm:rounded-2xl border border-slate-200/80 dark:border-slate-800">
-          {/* Quick Fill Demo Banner */}
-          <div className="mb-6 p-3.5 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-800/60 dark:to-indigo-950/40 rounded-xl border border-blue-100 dark:border-blue-900/50">
-            <div className="flex items-center gap-2 mb-2 text-xs font-semibold text-blue-900 dark:text-blue-300">
-              <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              <span>Demo Quick Fill:</span>
+      <div className="mt-7 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="apple-card p-6 sm:p-8">
+          {/* iOS Quick Fill Segment Card */}
+          <div className="mb-6 p-3.5 bg-[#f5f5f7] dark:bg-[#2c2c2e] rounded-2xl border border-black/5 dark:border-white/10">
+            <div className="flex items-center gap-1.5 mb-2.5 text-xs font-medium text-[#1d1d1f] dark:text-[#f5f5f7]">
+              <Sparkles className="w-3.5 h-3.5 text-[#0071e3] dark:text-[#0a84ff]" />
+              <span>Demo Quick-Fill:</span>
             </div>
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => handleQuickFill('student@exam.com', 'student123')}
-                className="text-left px-3 py-2 bg-white dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-slate-700/80 border border-slate-200 dark:border-slate-700 rounded-lg transition-all group"
+                className="text-left p-2.5 bg-white dark:bg-[#1c1c1e] hover:bg-black/[0.02] dark:hover:bg-white/[0.04] border border-black/5 dark:border-white/10 rounded-xl transition-all active:scale-98 group"
               >
-                <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-blue-600 flex items-center justify-between">
+                <div className="text-xs font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] group-hover:text-[#0071e3] dark:group-hover:text-[#0a84ff] flex items-center justify-between">
                   <span>Student</span>
-                  <KeyRound className="w-3 h-3 text-slate-400 group-hover:text-blue-500" />
+                  <KeyRound className="w-3 h-3 text-[#86868b]" />
                 </div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">student@exam.com</div>
+                <div className="text-[11px] text-[#86868b] dark:text-[#98989d] truncate">student@exam.com</div>
               </button>
 
               <button
                 type="button"
                 onClick={() => handleQuickFill('admin@exam.com', 'admin123')}
-                className="text-left px-3 py-2 bg-white dark:bg-slate-800 hover:bg-purple-50 dark:hover:bg-slate-700/80 border border-slate-200 dark:border-slate-700 rounded-lg transition-all group"
+                className="text-left p-2.5 bg-white dark:bg-[#1c1c1e] hover:bg-black/[0.02] dark:hover:bg-white/[0.04] border border-black/5 dark:border-white/10 rounded-xl transition-all active:scale-98 group"
               >
-                <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-purple-600 flex items-center justify-between">
+                <div className="text-xs font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] group-hover:text-purple-600 dark:group-hover:text-purple-400 flex items-center justify-between">
                   <span>Admin</span>
-                  <KeyRound className="w-3 h-3 text-slate-400 group-hover:text-purple-500" />
+                  <KeyRound className="w-3 h-3 text-[#86868b]" />
                 </div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">admin@exam.com</div>
+                <div className="text-[11px] text-[#86868b] dark:text-[#98989d] truncate">admin@exam.com</div>
               </button>
             </div>
           </div>
 
           {errorMsg && (
-            <div className="mb-4 p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 rounded-xl text-sm text-rose-700 dark:text-rose-300">
-              {errorMsg}
+            <div className="mb-5 p-3.5 bg-rose-500/10 border border-rose-500/20 rounded-2xl text-xs sm:text-sm text-[#ff3b30] dark:text-[#ff453a] flex items-center gap-2">
+              <span>{errorMsg}</span>
             </div>
           )}
 
-          <form className="space-y-5" onSubmit={handleSubmit}>
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+              <label className="block text-xs font-medium text-[#1d1d1f] dark:text-[#f5f5f7] mb-1.5 ml-1">
                 Email Address
               </label>
-              <div className="relative rounded-xl shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                  <Mail className="h-5 h-5" />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#86868b]">
+                  <Mail className="h-4 w-4" />
                 </div>
                 <input
                   type="email"
@@ -125,18 +123,18 @@ export const LoginPage: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@university.edu"
-                  className="block w-full pl-10 pr-3 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all"
+                  className="block w-full pl-10 pr-3.5 py-2.5 bg-[#f5f5f7] dark:bg-[#2c2c2e] focus:bg-white dark:focus:bg-[#1c1c1e] border border-black/5 dark:border-white/10 rounded-xl text-sm text-[#1d1d1f] dark:text-[#f5f5f7] placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#0071e3] dark:focus:ring-[#0a84ff] transition-all"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+              <label className="block text-xs font-medium text-[#1d1d1f] dark:text-[#f5f5f7] mb-1.5 ml-1">
                 Password
               </label>
-              <div className="relative rounded-xl shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                  <Lock className="h-5 h-5" />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#86868b]">
+                  <Lock className="h-4 w-4" />
                 </div>
                 <input
                   type="password"
@@ -144,33 +142,35 @@ export const LoginPage: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="block w-full pl-10 pr-3 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all"
+                  className="block w-full pl-10 pr-3.5 py-2.5 bg-[#f5f5f7] dark:bg-[#2c2c2e] focus:bg-white dark:focus:bg-[#1c1c1e] border border-black/5 dark:border-white/10 rounded-xl text-sm text-[#1d1d1f] dark:text-[#f5f5f7] placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#0071e3] dark:focus:ring-[#0a84ff] transition-all"
                 />
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-transparent rounded-xl shadow-md text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Signing in...</span>
-                </>
-              ) : (
-                <>
-                  <span>Sign In</span>
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
-            </button>
+            <div className="pt-2">
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full apple-btn-primary py-3 flex items-center justify-center gap-2 text-sm disabled:opacity-50"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Signing in...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Sign In</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+            </div>
           </form>
 
-          <div className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
+          <div className="mt-6 text-center text-xs text-[#86868b] dark:text-[#98989d]">
             Don't have an account?{' '}
-            <Link to="/register" className="font-semibold text-blue-600 dark:text-blue-400 hover:underline">
+            <Link to="/register" className="font-semibold text-[#0071e3] dark:text-[#0a84ff] hover:underline">
               Create an account
             </Link>
           </div>

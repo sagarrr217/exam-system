@@ -14,7 +14,8 @@ import {
   ArrowRight, 
   RefreshCw,
   ExternalLink,
-  ShieldAlert
+  ShieldAlert,
+  Sparkles
 } from 'lucide-react';
 import { api } from '../../api/client';
 import { useToast } from '../../context/ToastContext';
@@ -54,29 +55,29 @@ export const AdminDashboardPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fade-in">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-7 animate-fade-in">
       {/* Top Banner / Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div className="flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-700 to-indigo-600 text-white flex items-center justify-center shadow-lg shadow-purple-600/20">
-            <LayoutDashboard className="w-6 h-6" />
+        <div className="flex items-center gap-3">
+          <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-500 text-white flex items-center justify-center shadow-sm">
+            <LayoutDashboard className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-              Administrator Dashboard
+            <h1 className="text-xl sm:text-2xl font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] tracking-tight">
+              Administration Center
             </h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              Examination metrics, candidate oversight, and integrity audit console
+            <p className="text-xs text-[#86868b]">
+              Examination lifecycle, candidate oversight, and integrity audit console
             </p>
           </div>
         </div>
 
         {/* Quick Action Buttons */}
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => fetchDashboardData(true)}
             disabled={loading || refreshing}
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm disabled:opacity-50"
+            className="apple-btn-secondary px-3.5 py-1.5 text-xs flex items-center gap-1.5 disabled:opacity-50"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
             <span>Refresh</span>
@@ -84,71 +85,71 @@ export const AdminDashboardPage: React.FC = () => {
 
           <Link
             to="/admin/builder"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-600/20 transition-all hover:shadow"
+            className="apple-btn-primary px-4 py-1.5 text-xs flex items-center gap-1.5"
           >
-            <PlusCircle className="w-4 h-4" />
+            <PlusCircle className="w-3.5 h-3.5" />
             <span>Create Exam</span>
           </Link>
 
           <Link
             to="/admin/submissions"
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 hover:bg-purple-100 transition-colors"
+            className="apple-btn-secondary px-3.5 py-1.5 text-xs flex items-center gap-1.5"
           >
-            <FileCheck className="w-3.5 h-3.5" />
-            <span>View Submissions</span>
+            <FileCheck className="w-3.5 h-3.5 text-purple-500" />
+            <span>Submissions</span>
           </Link>
 
           <Link
             to="/admin/logs"
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 hover:bg-amber-100 transition-colors"
+            className="apple-btn-secondary px-3.5 py-1.5 text-xs flex items-center gap-1.5"
           >
-            <Eye className="w-3.5 h-3.5" />
-            <span>Proctoring Logs</span>
+            <Eye className="w-3.5 h-3.5 text-amber-500" />
+            <span>Proctoring</span>
           </Link>
         </div>
       </div>
 
-      {/* High-Risk Incident Alert Banner (if any detected) */}
+      {/* High-Risk Incident Alert Banner */}
       {stats && stats.highRiskAttemptsCount > 0 && (
-        <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/80 flex items-center justify-between gap-4 animate-fade-in">
+        <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-between gap-4 animate-fade-in">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-rose-600 text-white flex items-center justify-center flex-shrink-0 shadow-md shadow-rose-600/30">
+            <div className="w-9 h-9 rounded-xl bg-[#ff3b30] text-white flex items-center justify-center flex-shrink-0 shadow-sm">
               <ShieldAlert className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-rose-900 dark:text-rose-200">
+              <h3 className="text-xs font-semibold text-[#ff3b30] dark:text-[#ff453a]">
                 Proctoring Alert: {stats.highRiskAttemptsCount} High-Risk Attempt{stats.highRiskAttemptsCount > 1 ? 's' : ''} Flagged
               </h3>
-              <p className="text-xs text-rose-700 dark:text-rose-300">
-                Candidates have repeatedly switched tabs or lost window focus during examinations exceeding security thresholds.
+              <p className="text-[11px] text-[#86868b] leading-tight">
+                Candidates have repeatedly switched tabs or lost window focus exceeding security thresholds.
               </p>
             </div>
           </div>
           <Link
             to="/admin/logs"
-            className="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-sm transition-colors"
+            className="flex-shrink-0 apple-btn-primary bg-[#ff3b30] hover:bg-[#ff453a] px-3 py-1.5 text-xs flex items-center gap-1"
           >
-            <span>Review Logs</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            <span>Review</span>
+            <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
       )}
 
-      {/* Metric Cards Grid */}
+      {/* Apple Bento Metric Cards Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Total Exams */}
-        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Exams</span>
-            <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+        <div className="apple-card p-5">
+          <div className="flex items-center justify-between mb-2.5">
+            <span className="text-[10px] font-semibold text-[#86868b] uppercase tracking-wider">Total Exams</span>
+            <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-[#0071e3] dark:text-[#0a84ff] flex items-center justify-center">
               <BookOpen className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+          <div className="text-2xl sm:text-3xl font-bold text-[#1d1d1f] dark:text-[#f5f5f7]">
             {loading ? '—' : stats?.totalExams ?? 0}
           </div>
-          <div className="text-xs text-slate-500 mt-1 flex items-center gap-1">
-            <Link to="/admin/exams" className="text-blue-600 hover:underline flex items-center gap-0.5 font-medium">
+          <div className="text-[11px] text-[#86868b] mt-1">
+            <Link to="/admin/exams" className="text-[#0071e3] dark:text-[#0a84ff] hover:underline flex items-center gap-0.5 font-medium">
               <span>View catalog</span>
               <ArrowRight className="w-3 h-3" />
             </Link>
@@ -156,116 +157,114 @@ export const AdminDashboardPage: React.FC = () => {
         </div>
 
         {/* Card 2: Published Exams */}
-        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Published Exams</span>
-            <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+        <div className="apple-card p-5">
+          <div className="flex items-center justify-between mb-2.5">
+            <span className="text-[10px] font-semibold text-[#86868b] uppercase tracking-wider">Published</span>
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
               <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400">
+          <div className="text-2xl sm:text-3xl font-bold text-[#34c759] dark:text-[#30d158]">
             {loading ? '—' : stats?.publishedExams ?? 0}
           </div>
-          <div className="text-xs text-slate-500 mt-1">
-            Active for candidate access
+          <div className="text-[11px] text-[#86868b] mt-1">
+            Live for student candidates
           </div>
         </div>
 
         {/* Card 3: Total Students */}
-        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Students</span>
-            <div className="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+        <div className="apple-card p-5">
+          <div className="flex items-center justify-between mb-2.5">
+            <span className="text-[10px] font-semibold text-[#86868b] uppercase tracking-wider">Candidates</span>
+            <div className="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center">
               <Users className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+          <div className="text-2xl sm:text-3xl font-bold text-[#1d1d1f] dark:text-[#f5f5f7]">
             {loading ? '—' : stats?.totalStudents ?? 0}
           </div>
-          <div className="text-xs text-slate-500 mt-1">
-            Registered student accounts
+          <div className="text-[11px] text-[#86868b] mt-1">
+            Active student rosters
           </div>
         </div>
 
         {/* Card 4: Total Submissions */}
-        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Submissions</span>
-            <div className="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+        <div className="apple-card p-5">
+          <div className="flex items-center justify-between mb-2.5">
+            <span className="text-[10px] font-semibold text-[#86868b] uppercase tracking-wider">Submissions</span>
+            <div className="w-8 h-8 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
               <FileCheck className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+          <div className="text-2xl sm:text-3xl font-bold text-[#1d1d1f] dark:text-[#f5f5f7]">
             {loading ? '—' : stats?.totalSubmissions ?? 0}
           </div>
-          <div className="text-xs text-slate-500 mt-1">
-            Completed examinations
+          <div className="text-[11px] text-[#86868b] mt-1">
+            Graded assessments
           </div>
         </div>
 
         {/* Card 5: Pass Rate (%) */}
-        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Pass Rate</span>
-            <div className="w-9 h-9 rounded-xl bg-teal-50 dark:bg-teal-950/60 text-teal-600 dark:text-teal-400 flex items-center justify-center">
+        <div className="apple-card p-5">
+          <div className="flex items-center justify-between mb-2.5">
+            <span className="text-[10px] font-semibold text-[#86868b] uppercase tracking-wider">Pass Rate</span>
+            <div className="w-8 h-8 rounded-xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center">
               <Award className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+          <div className="text-2xl sm:text-3xl font-bold text-[#1d1d1f] dark:text-[#f5f5f7]">
             {loading ? '—' : `${stats?.passRate ?? '0.0'}%`}
           </div>
-          <div className="text-xs text-slate-500 mt-1">
-            Candidates meeting passing marks
+          <div className="text-[11px] text-[#86868b] mt-1">
+            Meeting passing criteria
           </div>
         </div>
 
         {/* Card 6: Average Score */}
-        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Average Score</span>
-            <div className="w-9 h-9 rounded-xl bg-cyan-50 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400 flex items-center justify-center">
+        <div className="apple-card p-5">
+          <div className="flex items-center justify-between mb-2.5">
+            <span className="text-[10px] font-semibold text-[#86868b] uppercase tracking-wider">Average Score</span>
+            <div className="w-8 h-8 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center">
               <TrendingUp className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+          <div className="text-2xl sm:text-3xl font-bold text-[#1d1d1f] dark:text-[#f5f5f7]">
             {loading ? '—' : `${stats?.averageScore ?? '0.0'}%`}
           </div>
-          <div className="text-xs text-slate-500 mt-1">
-            Overall cohort performance
+          <div className="text-[11px] text-[#86868b] mt-1">
+            Cohort aggregate average
           </div>
         </div>
 
         {/* Card 7: High Risk Attempts Count */}
-        <div className={`p-5 rounded-2xl border shadow-sm col-span-2 sm:col-span-2 lg:col-span-2 ${
-          (stats?.highRiskAttemptsCount ?? 0) > 0
-            ? 'bg-rose-50/70 dark:bg-rose-950/30 border-rose-200 dark:border-rose-900/60'
-            : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800'
+        <div className={`apple-card p-5 col-span-2 sm:col-span-2 lg:col-span-2 ${
+          (stats?.highRiskAttemptsCount ?? 0) > 0 ? 'border-rose-500/30' : ''
         }`}>
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <div className="flex items-center justify-between mb-2.5">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-[#86868b]">
               Integrity & Proctoring Alerts
             </span>
-            <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
+            <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
               (stats?.highRiskAttemptsCount ?? 0) > 0
-                ? 'bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-400'
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+                ? 'bg-rose-500/10 text-[#ff3b30]'
+                : 'bg-black/5 dark:bg-white/10 text-[#86868b]'
             }`}>
               <AlertTriangle className="w-4 h-4" />
             </div>
           </div>
-          <div className="flex items-baseline gap-3">
-            <div className={`text-2xl sm:text-3xl font-black ${
-              (stats?.highRiskAttemptsCount ?? 0) > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-900 dark:text-white'
+          <div className="flex items-baseline gap-2.5">
+            <div className={`text-2xl sm:text-3xl font-bold ${
+              (stats?.highRiskAttemptsCount ?? 0) > 0 ? 'text-[#ff3b30] dark:text-[#ff453a]' : 'text-[#1d1d1f] dark:text-[#f5f5f7]'
             }`}>
               {loading ? '—' : stats?.highRiskAttemptsCount ?? 0}
             </div>
-            <span className="text-xs text-slate-500">
-              attempt{(stats?.highRiskAttemptsCount ?? 0) === 1 ? '' : 's'} with {'>='} 3 focus loss violations
+            <span className="text-xs text-[#86868b]">
+              attempts with {'>='} 3 recorded focus violations
             </span>
           </div>
-          <div className="text-xs mt-2">
-            <Link to="/admin/logs" className="text-rose-600 dark:text-rose-400 font-semibold hover:underline flex items-center gap-1">
-              <span>Inspect focus loss logs</span>
+          <div className="text-xs mt-1.5">
+            <Link to="/admin/logs" className="text-[#ff3b30] dark:text-[#ff453a] font-medium hover:underline flex items-center gap-1">
+              <span>Inspect audit trail</span>
               <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
@@ -273,98 +272,98 @@ export const AdminDashboardPage: React.FC = () => {
       </div>
 
       {/* Recent Submissions Section */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+      <div className="apple-card overflow-hidden">
+        <div className="p-5 sm:p-6 border-b border-black/5 dark:border-white/10 flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Recent Submissions</h2>
-            <p className="text-xs text-slate-500">Latest completed student evaluations</p>
+            <h2 className="text-base font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">Recent Submissions</h2>
+            <p className="text-xs text-[#86868b]">Latest candidate assessments</p>
           </div>
           <Link
             to="/admin/submissions"
-            className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline"
+            className="text-xs font-semibold text-[#0071e3] dark:text-[#0a84ff] hover:underline flex items-center gap-1"
           >
             <span>View All</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
 
         {loading ? (
-          <div className="p-12 text-center text-slate-400">
-            <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-            <p className="text-xs">Loading recent submissions...</p>
+          <div className="p-12 text-center text-[#86868b]">
+            <div className="w-6 h-6 border-2 border-[#0071e3] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+            <p className="text-xs">Loading submissions...</p>
           </div>
         ) : recentSubmissions.length === 0 ? (
-          <div className="p-12 text-center text-slate-500">
-            <FileCheck className="w-8 h-8 mx-auto mb-2 opacity-50" />
-            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">No submissions recorded yet</p>
-            <p className="text-xs text-slate-500 mt-1">Student submissions will appear here once examinations are completed.</p>
+          <div className="p-12 text-center text-[#86868b]">
+            <FileCheck className="w-8 h-8 mx-auto mb-2 opacity-40" />
+            <p className="text-xs font-medium text-[#1d1d1f] dark:text-[#f5f5f7]">No submissions recorded yet</p>
+            <p className="text-[11px] text-[#86868b] mt-0.5">Completed assessments will stream here automatically.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50/70 dark:bg-slate-800/50 text-xs font-semibold text-slate-500 uppercase tracking-wider border-b border-slate-200 dark:border-slate-800">
+            <table className="w-full text-left text-xs sm:text-sm">
+              <thead className="bg-black/[0.02] dark:bg-white/[0.02] text-[10px] font-semibold text-[#86868b] uppercase tracking-wider border-b border-black/5 dark:border-white/10">
                 <tr>
-                  <th className="px-6 py-3.5">Candidate</th>
-                  <th className="px-6 py-3.5">Exam</th>
-                  <th className="px-6 py-3.5">Score</th>
-                  <th className="px-6 py-3.5">Status</th>
-                  <th className="px-6 py-3.5">Submitted</th>
-                  <th className="px-6 py-3.5 text-right">Actions</th>
+                  <th className="px-6 py-3">Candidate</th>
+                  <th className="px-6 py-3">Exam</th>
+                  <th className="px-6 py-3">Score</th>
+                  <th className="px-6 py-3">Status</th>
+                  <th className="px-6 py-3">Submitted</th>
+                  <th className="px-6 py-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-black/5 dark:divide-white/5">
                 {recentSubmissions.map((sub) => (
-                  <tr key={sub.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="font-semibold text-slate-900 dark:text-white">
-                        {sub.student?.name || 'Unknown Student'}
+                  <tr key={sub.id} className="hover:bg-black/[0.015] dark:hover:bg-white/[0.02] transition-colors">
+                    <td className="px-6 py-3.5">
+                      <div className="font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">
+                        {sub.student?.name || 'Unknown Candidate'}
                       </div>
-                      <div className="text-xs text-slate-500 flex items-center gap-2">
+                      <div className="text-[11px] text-[#86868b] flex items-center gap-2">
                         {sub.student?.studentId && <span className="font-mono">{sub.student.studentId}</span>}
                         <span>{sub.student?.email}</span>
                       </div>
                     </td>
 
-                    <td className="px-6 py-4">
-                      <div className="font-medium text-slate-800 dark:text-slate-200">
+                    <td className="px-6 py-3.5">
+                      <div className="font-medium text-[#1d1d1f] dark:text-[#f5f5f7]">
                         {sub.exam?.title || 'Examination'}
                       </div>
-                      <div className="text-xs text-slate-500">
+                      <div className="text-[11px] text-[#86868b]">
                         {sub.exam?.subject}
                       </div>
                     </td>
 
-                    <td className="px-6 py-4">
-                      <div className="font-bold text-slate-900 dark:text-white">
-                        {sub.score} <span className="text-xs text-slate-500 font-normal">/ {sub.exam?.totalMarks || 100}</span>
+                    <td className="px-6 py-3.5">
+                      <div className="font-bold text-[#1d1d1f] dark:text-[#f5f5f7]">
+                        {sub.score} <span className="text-xs text-[#86868b] font-normal">/ {sub.exam?.totalMarks || 100}</span>
                       </div>
-                      <div className="text-xs font-semibold text-blue-600 dark:text-blue-400">
+                      <div className="text-[11px] font-semibold text-[#0071e3] dark:text-[#0a84ff]">
                         {sub.percentage?.toFixed(1)}%
                       </div>
                     </td>
 
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-3.5">
                       {sub.passed ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
                           <CheckCircle2 className="w-3 h-3" />
                           Passed
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-800 dark:bg-rose-900/50 dark:text-rose-300">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20">
                           <AlertTriangle className="w-3 h-3" />
                           Failed
                         </span>
                       )}
                     </td>
 
-                    <td className="px-6 py-4 text-xs font-mono text-slate-500">
+                    <td className="px-6 py-3.5 text-xs text-[#86868b]">
                       {formatDateTime(sub.submittedAt)}
                     </td>
 
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-6 py-3.5 text-right">
                       <button
                         onClick={() => setSelectedAttemptId(sub.id)}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors"
+                        className="apple-btn-secondary px-3 py-1 text-xs inline-flex items-center gap-1"
                       >
                         <span>Audit</span>
                         <ExternalLink className="w-3 h-3" />

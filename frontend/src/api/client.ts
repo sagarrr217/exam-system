@@ -1,4 +1,4 @@
-const BASE_URL = '/api';
+const BASE_URL = (import.meta as any).env?.VITE_API_URL || '/api';
 
 export class ApiError extends Error {
   status: number;
@@ -20,10 +20,20 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
     ...options.headers
   };
 
-  const response = await fetch(`${BASE_URL}${endpoint}`, {
-    ...options,
-    headers
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${BASE_URL}${endpoint}`, {
+      ...options,
+      headers
+    });
+  } catch (err: any) {
+    console.error(`Network error calling ${endpoint}:`, err);
+    throw new ApiError(
+      `Unable to reach API server at ${BASE_URL}${endpoint}. Please verify the backend is running on http://localhost:5000.`,
+      0,
+      { originalError: err?.message }
+    );
+  }
 
   const contentType = response.headers.get('content-type');
   let data: any = null;
@@ -32,6 +42,11 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
   } else if (contentType && (contentType.includes('text/csv') || contentType.includes('text/plain'))) {
     data = await response.text();
     return data as T;
+  }
+
+  if (response.status === 401 && !endpoint.startsWith('/auth/login') && !endpoint.startsWith('/auth/register')) {
+    // If token is invalid or expired, clear it so user can cleanly re-authenticate
+    localStorage.removeItem('token');
   }
 
   if (!response.ok) {

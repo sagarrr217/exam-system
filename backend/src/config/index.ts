@@ -1,5 +1,10 @@
 import dotenv from 'dotenv';
+import path from 'path';
+
+// Load environment variables from cwd, or explicitly from backend/.env if executed from root
 dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+dotenv.config({ path: path.resolve(__dirname, '../../../backend/.env') });
 
 export const config = {
   port: parseInt(process.env.PORT || '5000', 10),

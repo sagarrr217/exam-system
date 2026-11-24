@@ -60,155 +60,152 @@ export const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-slate-50 dark:bg-slate-950">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="flex justify-center">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-xl shadow-blue-500/25">
-            <ShieldCheck className="w-8 h-8" />
-          </div>
+    <div className="min-h-[calc(100vh-4rem)] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 bg-[#f5f5f7] dark:bg-black transition-colors duration-200">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
+        <div className="inline-flex w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#0071e3] to-[#409cff] items-center justify-center text-white shadow-lg shadow-blue-500/25 mb-4">
+          <ShieldCheck className="w-8 h-8" />
         </div>
-        <h2 className="mt-5 text-center text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7]">
           Create Your Account
-        </h2>
-        <p className="mt-2 text-center text-sm text-slate-600 dark:text-slate-400">
-          Join ExamSecure to participate or administer exams
+        </h1>
+        <p className="mt-1.5 text-sm text-[#86868b] dark:text-[#98989d]">
+          Set up an institutional exam profile
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-lg">
-        <div className="bg-white dark:bg-slate-900 py-8 px-6 shadow-xl shadow-slate-200/50 dark:shadow-none sm:rounded-2xl border border-slate-200/80 dark:border-slate-800">
+      <div className="mt-7 sm:mx-auto sm:w-full sm:max-w-lg">
+        <div className="apple-card p-6 sm:p-8">
+          {/* iOS Segmented Role Switcher */}
+          <div className="mb-6">
+            <label className="block text-xs font-medium text-[#1d1d1f] dark:text-[#f5f5f7] mb-2 text-center">
+              Account Role
+            </label>
+            <div className="grid grid-cols-2 p-1 rounded-2xl bg-[#f5f5f7] dark:bg-[#2c2c2e] border border-black/5 dark:border-white/10">
+              <button
+                type="button"
+                onClick={() => setRole('STUDENT')}
+                className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-semibold transition-all ${
+                  role === 'STUDENT'
+                    ? 'bg-white dark:bg-[#1c1c1e] text-[#0071e3] dark:text-[#0a84ff] shadow-sm'
+                    : 'text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white'
+                }`}
+              >
+                <GraduationCap className="w-4 h-4" />
+                <span>Student</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setRole('ADMIN')}
+                className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-semibold transition-all ${
+                  role === 'ADMIN'
+                    ? 'bg-white dark:bg-[#1c1c1e] text-purple-600 dark:text-purple-400 shadow-sm'
+                    : 'text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white'
+                }`}
+              >
+                <ShieldAlert className="w-4 h-4" />
+                <span>Administrator</span>
+              </button>
+            </div>
+          </div>
+
           {errorMsg && (
-            <div className="mb-6 p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 rounded-xl text-sm text-rose-700 dark:text-rose-300">
+            <div className="mb-5 p-3.5 bg-rose-500/10 border border-rose-500/20 rounded-2xl text-xs sm:text-sm text-[#ff3b30] dark:text-[#ff453a]">
               {errorMsg}
             </div>
           )}
 
           <form className="space-y-4" onSubmit={handleSubmit}>
-            {/* Role Selection Tabs */}
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
-                Select Your Role
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setRole('STUDENT')}
-                  className={`flex items-center justify-center gap-2.5 p-3 rounded-xl border text-sm font-semibold transition-all ${
-                    role === 'STUDENT'
-                      ? 'border-blue-600 bg-blue-50/70 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 shadow-sm ring-1 ring-blue-600'
-                      : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300'
-                  }`}
-                >
-                  <GraduationCap className="w-4 h-4" />
-                  <span>Student</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setRole('ADMIN')}
-                  className={`flex items-center justify-center gap-2.5 p-3 rounded-xl border text-sm font-semibold transition-all ${
-                    role === 'ADMIN'
-                      ? 'border-purple-600 bg-purple-50/70 dark:bg-purple-950/50 text-purple-700 dark:text-purple-300 shadow-sm ring-1 ring-purple-600'
-                      : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300'
-                  }`}
-                >
-                  <ShieldAlert className="w-4 h-4" />
-                  <span>Administrator</span>
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+              <label className="block text-xs font-medium text-[#1d1d1f] dark:text-[#f5f5f7] mb-1.5 ml-1">
                 Full Name *
               </label>
-              <div className="relative rounded-xl shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                  <User className="h-5 h-5" />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#86868b]">
+                  <User className="h-4 w-4" />
                 </div>
                 <input
                   type="text"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Jane Doe"
-                  className="block w-full pl-10 pr-3 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all"
+                  placeholder="e.g. Alex Johnson"
+                  className="block w-full pl-10 pr-3.5 py-2.5 bg-[#f5f5f7] dark:bg-[#2c2c2e] focus:bg-white dark:focus:bg-[#1c1c1e] border border-black/5 dark:border-white/10 rounded-xl text-sm text-[#1d1d1f] dark:text-[#f5f5f7] placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#0071e3] dark:focus:ring-[#0a84ff] transition-all"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+              <label className="block text-xs font-medium text-[#1d1d1f] dark:text-[#f5f5f7] mb-1.5 ml-1">
                 Email Address *
               </label>
-              <div className="relative rounded-xl shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                  <Mail className="h-5 h-5" />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#86868b]">
+                  <Mail className="h-4 w-4" />
                 </div>
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="jane.doe@university.edu"
-                  className="block w-full pl-10 pr-3 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all"
+                  placeholder="name@university.edu"
+                  className="block w-full pl-10 pr-3.5 py-2.5 bg-[#f5f5f7] dark:bg-[#2c2c2e] focus:bg-white dark:focus:bg-[#1c1c1e] border border-black/5 dark:border-white/10 rounded-xl text-sm text-[#1d1d1f] dark:text-[#f5f5f7] placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#0071e3] dark:focus:ring-[#0a84ff] transition-all"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
-                Password *
+              <label className="block text-xs font-medium text-[#1d1d1f] dark:text-[#f5f5f7] mb-1.5 ml-1">
+                Password (min 6 characters) *
               </label>
-              <div className="relative rounded-xl shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                  <Lock className="h-5 h-5" />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#86868b]">
+                  <Lock className="h-4 w-4" />
                 </div>
                 <input
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="At least 6 characters"
-                  className="block w-full pl-10 pr-3 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all"
+                  placeholder="••••••••"
+                  className="block w-full pl-10 pr-3.5 py-2.5 bg-[#f5f5f7] dark:bg-[#2c2c2e] focus:bg-white dark:focus:bg-[#1c1c1e] border border-black/5 dark:border-white/10 rounded-xl text-sm text-[#1d1d1f] dark:text-[#f5f5f7] placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#0071e3] dark:focus:ring-[#0a84ff] transition-all"
                 />
               </div>
             </div>
 
             {role === 'STUDENT' && (
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block text-xs font-medium text-[#1d1d1f] dark:text-[#f5f5f7] mb-1.5 ml-1">
                   Student ID Number
                 </label>
-                <div className="relative rounded-xl shadow-sm">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    <IdCard className="h-5 h-5" />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#86868b]">
+                    <IdCard className="h-4 w-4" />
                   </div>
                   <input
                     type="text"
                     value={studentId}
                     onChange={(e) => setStudentId(e.target.value)}
-                    placeholder="e.g. STU-2024-001"
-                    className="block w-full pl-10 pr-3 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all"
+                    placeholder="e.g. STU-2026-003"
+                    className="block w-full pl-10 pr-3.5 py-2.5 bg-[#f5f5f7] dark:bg-[#2c2c2e] focus:bg-white dark:focus:bg-[#1c1c1e] border border-black/5 dark:border-white/10 rounded-xl text-sm text-[#1d1d1f] dark:text-[#f5f5f7] placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#0071e3] dark:focus:ring-[#0a84ff] transition-all"
                   />
                 </div>
               </div>
             )}
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
-                Department / Program
+              <label className="block text-xs font-medium text-[#1d1d1f] dark:text-[#f5f5f7] mb-1.5 ml-1">
+                Department / Faculty
               </label>
-              <div className="relative rounded-xl shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                  <Building className="h-5 h-5" />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#86868b]">
+                  <Building className="h-4 w-4" />
                 </div>
                 <input
                   type="text"
                   value={department}
                   onChange={(e) => setDepartment(e.target.value)}
-                  placeholder="e.g. Computer Science & Engineering"
-                  className="block w-full pl-10 pr-3 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all"
+                  placeholder="e.g. Computer Science"
+                  className="block w-full pl-10 pr-3.5 py-2.5 bg-[#f5f5f7] dark:bg-[#2c2c2e] focus:bg-white dark:focus:bg-[#1c1c1e] border border-black/5 dark:border-white/10 rounded-xl text-sm text-[#1d1d1f] dark:text-[#f5f5f7] placeholder-[#86868b] focus:outline-none focus:ring-2 focus:ring-[#0071e3] dark:focus:ring-[#0a84ff] transition-all"
                 />
               </div>
             </div>
@@ -217,16 +214,16 @@ export const RegisterPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-transparent rounded-xl shadow-md text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="w-full apple-btn-primary py-3 flex items-center justify-center gap-2 text-sm disabled:opacity-50"
               >
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Creating Account...</span>
+                    <span>Creating account...</span>
                   </>
                 ) : (
                   <>
-                    <span>Complete Registration</span>
+                    <span>Create Account</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}
@@ -234,10 +231,10 @@ export const RegisterPage: React.FC = () => {
             </div>
           </form>
 
-          <div className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
+          <div className="mt-6 text-center text-xs text-[#86868b] dark:text-[#98989d]">
             Already have an account?{' '}
-            <Link to="/login" className="font-semibold text-blue-600 dark:text-blue-400 hover:underline">
-              Sign in here
+            <Link to="/login" className="font-semibold text-[#0071e3] dark:text-[#0a84ff] hover:underline">
+              Sign In
             </Link>
           </div>
         </div>

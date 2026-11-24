@@ -45,56 +45,56 @@ export const QuestionPalette: React.FC<QuestionPaletteProps> = ({
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
-      <h3 className="font-extrabold text-sm text-slate-900 dark:text-white mb-3">
-        Question Palette
+    <div className="apple-card p-5">
+      <h3 className="font-semibold text-xs sm:text-sm text-[#1d1d1f] dark:text-[#f5f5f7] mb-3">
+        Question Navigation
       </h3>
 
-      {/* Status Summary Counters */}
-      <div className="grid grid-cols-3 gap-2 mb-4 p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl text-center text-xs">
+      {/* iOS Segmented Status Counters */}
+      <div className="grid grid-cols-3 gap-1.5 mb-4 p-2 rounded-2xl bg-black/[0.03] dark:bg-white/[0.04] text-center text-xs">
         <div className="flex flex-col items-center">
-          <div className="flex items-center gap-1 text-emerald-600 font-bold">
-            <CheckCircle2 className="w-3.5 h-3.5" />
+          <div className="flex items-center gap-1 text-[#34c759] dark:text-[#30d158] font-semibold text-xs">
+            <CheckCircle2 className="w-3 h-3" />
             <span>{answeredCount}</span>
           </div>
-          <span className="text-[10px] text-slate-500 mt-0.5">Answered</span>
+          <span className="text-[10px] text-[#86868b] mt-0.5">Answered</span>
         </div>
 
-        <div className="flex flex-col items-center border-x border-slate-200 dark:border-slate-700">
-          <div className="flex items-center gap-1 text-amber-600 font-bold">
-            <Bookmark className="w-3.5 h-3.5" />
+        <div className="flex flex-col items-center border-x border-black/5 dark:border-white/10">
+          <div className="flex items-center gap-1 text-[#ff9500] dark:text-[#ff9f0a] font-semibold text-xs">
+            <Bookmark className="w-3 h-3" />
             <span>{reviewCount}</span>
           </div>
-          <span className="text-[10px] text-slate-500 mt-0.5">Review</span>
+          <span className="text-[10px] text-[#86868b] mt-0.5">Review</span>
         </div>
 
         <div className="flex flex-col items-center">
-          <div className="flex items-center gap-1 text-slate-500 font-bold">
-            <HelpCircle className="w-3.5 h-3.5" />
+          <div className="flex items-center gap-1 text-[#86868b] font-semibold text-xs">
+            <HelpCircle className="w-3 h-3" />
             <span>{unansweredCount}</span>
           </div>
-          <span className="text-[10px] text-slate-500 mt-0.5">Unanswered</span>
+          <span className="text-[10px] text-[#86868b] mt-0.5">Pending</span>
         </div>
       </div>
 
       {/* Number Buttons Grid */}
-      <div className="grid grid-cols-5 sm:grid-cols-5 gap-2 max-h-[380px] overflow-y-auto p-1">
+      <div className="grid grid-cols-5 gap-2 max-h-[380px] overflow-y-auto p-1">
         {questions.map((question, index) => {
           const status = getQuestionStatus(question);
           const isActive = index === currentQuestionIndex;
 
-          let btnClasses = 'border text-xs font-bold rounded-xl h-10 w-full flex items-center justify-center transition-all duration-150 ';
+          let btnClasses = 'border text-xs font-semibold rounded-xl h-9 w-full flex items-center justify-center active:scale-95 transition-all ';
 
           if (isActive) {
-            btnClasses += 'ring-2 ring-blue-600 ring-offset-2 dark:ring-offset-slate-900 ';
+            btnClasses += 'ring-2 ring-[#0071e3] dark:ring-[#0a84ff] ring-offset-2 ring-offset-[#f5f5f7] dark:ring-offset-black ';
           }
 
           if (status === 'answered') {
-            btnClasses += 'bg-emerald-600 border-emerald-600 text-white hover:bg-emerald-700 shadow-sm shadow-emerald-600/20';
+            btnClasses += 'bg-[#34c759] dark:bg-[#30d158] border-transparent text-white shadow-sm shadow-emerald-500/20';
           } else if (status === 'review') {
-            btnClasses += 'bg-amber-500 border-amber-500 text-white hover:bg-amber-600 shadow-sm shadow-amber-500/20';
+            btnClasses += 'bg-[#ff9500] dark:bg-[#ff9f0a] border-transparent text-white shadow-sm shadow-amber-500/20';
           } else {
-            btnClasses += 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700';
+            btnClasses += 'bg-black/5 dark:bg-white/10 border-black/5 dark:border-white/10 text-[#1d1d1f] dark:text-[#f5f5f7] hover:bg-black/10 dark:hover:bg-white/15';
           }
 
           return (
@@ -111,22 +111,22 @@ export const QuestionPalette: React.FC<QuestionPaletteProps> = ({
       </div>
 
       {/* Legend */}
-      <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800 space-y-1.5 text-xs text-slate-500 dark:text-slate-400">
+      <div className="mt-4 pt-3.5 border-t border-black/5 dark:border-white/10 space-y-1.5 text-[11px] text-[#86868b]">
         <div className="flex items-center gap-2">
-          <div className="w-3.5 h-3.5 rounded bg-emerald-600 flex-shrink-0" />
+          <div className="w-2.5 h-2.5 rounded-full bg-[#34c759] flex-shrink-0" />
           <span>Answered</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3.5 h-3.5 rounded bg-amber-500 flex-shrink-0" />
+          <div className="w-2.5 h-2.5 rounded-full bg-[#ff9500] flex-shrink-0" />
           <span>Marked for Review</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3.5 h-3.5 rounded bg-slate-200 dark:bg-slate-700 flex-shrink-0" />
+          <div className="w-2.5 h-2.5 rounded-full bg-black/15 dark:bg-white/20 flex-shrink-0" />
           <span>Unanswered</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3.5 h-3.5 rounded border-2 border-blue-600 flex-shrink-0" />
-          <span>Active Question</span>
+          <div className="w-2.5 h-2.5 rounded-full border-2 border-[#0071e3] dark:border-[#0a84ff] flex-shrink-0" />
+          <span>Active Target</span>
         </div>
       </div>
     </div>

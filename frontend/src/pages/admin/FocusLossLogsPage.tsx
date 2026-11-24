@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { 
   Eye, 
   Search, 
-  Filter, 
   ShieldAlert, 
   AlertTriangle, 
-  Clock, 
-  User, 
-  BookOpen, 
   RefreshCw,
   ExternalLink,
   ChevronDown,
-  Activity,
-  Layers
+  Activity
 } from 'lucide-react';
 import { api } from '../../api/client';
 import { useToast } from '../../context/ToastContext';
@@ -73,49 +67,49 @@ export const FocusLossLogsPage: React.FC = () => {
 
   // Filter logs
   const filteredLogs = logs.filter((log) => {
-    const studentName = log.attempt?.student?.name?.toLowerCase() || '';
-    const studentId = log.attempt?.student?.studentId?.toLowerCase() || '';
-    const studentEmail = log.attempt?.student?.email?.toLowerCase() || '';
-    const examTitle = log.attempt?.exam?.title?.toLowerCase() || '';
-    const details = log.details?.toLowerCase() || '';
-    const q = searchQuery.toLowerCase();
+    const candidateName = log.attempt?.student?.name || '';
+    const candidateEmail = log.attempt?.student?.email || '';
+    const candidateId = log.attempt?.student?.studentId || '';
+    const examTitle = log.attempt?.exam?.title || '';
 
     const matchesSearch =
-      studentName.includes(q) ||
-      studentId.includes(q) ||
-      studentEmail.includes(q) ||
-      examTitle.includes(q) ||
-      details.includes(q);
+      candidateName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      candidateEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      candidateId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      examTitle.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesType = eventTypeFilter === 'ALL' || log.eventType === eventTypeFilter;
+    const matchesType =
+      eventTypeFilter === 'ALL' ||
+      (eventTypeFilter === 'WINDOW_BLUR' && log.eventType === 'WINDOW_BLUR') ||
+      (eventTypeFilter === 'VISIBILITY_HIDDEN' && log.eventType === 'VISIBILITY_HIDDEN') ||
+      (eventTypeFilter === 'WINDOW_RESIZE' && log.eventType === 'WINDOW_RESIZE');
 
     return matchesSearch && matchesType;
   });
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 animate-fade-in">
-      {/* Page Header */}
+      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div className="flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-700 to-indigo-600 text-white flex items-center justify-center shadow-lg shadow-purple-600/20">
-            <Eye className="w-6 h-6" />
+        <div className="flex items-center gap-3">
+          <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-500 text-white flex items-center justify-center shadow-sm">
+            <Eye className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-              Proctoring Audit Logs
+            <h1 className="text-xl sm:text-2xl font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] tracking-tight">
+              Proctoring & Focus-Loss Audit
             </h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              System-wide real-time tracking of candidate browser focus loss and tab switches
+            <p className="text-xs text-[#86868b]">
+              Real-time audit log of window blurs, tab switches, and security incidents
             </p>
           </div>
         </div>
 
-        {/* Refresh Action */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => fetchLogs(true)}
             disabled={loading || refreshing}
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm disabled:opacity-50"
+            className="apple-btn-secondary px-3.5 py-1.5 text-xs flex items-center gap-1.5 disabled:opacity-50"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
             <span>Refresh Logs</span>
@@ -123,39 +117,39 @@ export const FocusLossLogsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Aggregate Stats Mini-Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 flex items-center justify-center">
-            <Activity className="w-5 h-5" />
+      {/* Aggregate Stats Mini Bento Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="apple-card p-4 flex items-center gap-3.5">
+          <div className="w-9 h-9 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+            <Activity className="w-4 h-4" />
           </div>
           <div>
-            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Recorded Incidents</div>
-            <div className="text-2xl font-black text-slate-900 dark:text-white">
+            <div className="text-[10px] font-semibold text-[#86868b] uppercase tracking-wider">Total Recorded Incidents</div>
+            <div className="text-xl sm:text-2xl font-bold text-[#1d1d1f] dark:text-[#f5f5f7]">
               {loading ? '—' : totalIncidents}
             </div>
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950/60 text-blue-600 flex items-center justify-center">
-            <Eye className="w-5 h-5" />
+        <div className="apple-card p-4 flex items-center gap-3.5">
+          <div className="w-9 h-9 rounded-xl bg-blue-500/10 text-[#0071e3] dark:text-[#0a84ff] flex items-center justify-center">
+            <Eye className="w-4 h-4" />
           </div>
           <div>
-            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Window Blur Events</div>
-            <div className="text-2xl font-black text-blue-600 dark:text-blue-400">
+            <div className="text-[10px] font-semibold text-[#86868b] uppercase tracking-wider">Window Blur Events</div>
+            <div className="text-xl sm:text-2xl font-bold text-[#0071e3] dark:text-[#0a84ff]">
               {loading ? '—' : blurEvents}
             </div>
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 flex items-center justify-center">
-            <AlertTriangle className="w-5 h-5" />
+        <div className="apple-card p-4 flex items-center gap-3.5">
+          <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-[#ff9500] dark:text-[#ff9f0a] flex items-center justify-center">
+            <AlertTriangle className="w-4 h-4" />
           </div>
           <div>
-            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Tab Switches / Hidden</div>
-            <div className="text-2xl font-black text-amber-600 dark:text-amber-400">
+            <div className="text-[10px] font-semibold text-[#86868b] uppercase tracking-wider">Tab Switches / Hidden</div>
+            <div className="text-xl sm:text-2xl font-bold text-[#ff9500] dark:text-[#ff9f0a]">
               {loading ? '—' : tabSwitches}
             </div>
           </div>
@@ -163,15 +157,15 @@ export const FocusLossLogsPage: React.FC = () => {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="apple-card p-4 flex flex-col md:flex-row items-center justify-between gap-3">
         {/* Left: Exam Filter & Search */}
-        <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+        <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto">
           {/* Exam Filter */}
-          <div className="relative w-full sm:w-64">
+          <div className="relative w-full sm:w-60">
             <select
               value={selectedExamId}
               onChange={(e) => setSelectedExamId(e.target.value)}
-              className="w-full appearance-none pl-3.5 pr-8 py-2 rounded-xl text-xs font-bold bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-800 dark:text-slate-200"
+              className="w-full appearance-none pl-3.5 pr-8 py-1.5 rounded-full text-xs font-medium bg-black/5 dark:bg-white/10 border border-transparent focus:border-black/10 dark:focus:border-white/20 text-[#1d1d1f] dark:text-[#f5f5f7] focus:outline-none"
             >
               <option value="">All Examinations ({exams.length})</option>
               {exams.map((exam) => (
@@ -180,159 +174,161 @@ export const FocusLossLogsPage: React.FC = () => {
                 </option>
               ))}
             </select>
-            <ChevronDown className="w-3.5 h-3.5 absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+            <ChevronDown className="w-3.5 h-3.5 absolute right-3 top-1/2 -translate-y-1/2 text-[#86868b] pointer-events-none" />
           </div>
 
           {/* Search Query */}
-          <div className="relative w-full sm:w-64">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <div className="relative w-full sm:w-60">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#86868b]" />
             <input
               type="text"
               placeholder="Search candidate or exam..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-800 dark:text-slate-200"
+              className="w-full pl-9 pr-3.5 py-1.5 rounded-full text-xs bg-black/5 dark:bg-white/10 border border-transparent focus:border-black/10 dark:focus:border-white/20 text-[#1d1d1f] dark:text-[#f5f5f7] placeholder-[#86868b] focus:outline-none focus:bg-white dark:focus:bg-[#1c1c1e] transition-all"
             />
           </div>
         </div>
 
-        {/* Right: Event Type Filters */}
-        <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto justify-end">
+        {/* Right: Event Type iOS Segmented Filters */}
+        <div className="inline-flex p-1 rounded-full bg-black/5 dark:bg-white/10 border border-black/5 dark:border-white/5">
           <button
             onClick={() => setEventTypeFilter('ALL')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+            className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
               eventTypeFilter === 'ALL'
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                ? 'bg-white dark:bg-[#2c2c2e] text-[#1d1d1f] dark:text-white shadow-sm'
+                : 'text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white'
             }`}
           >
             All Types
           </button>
           <button
             onClick={() => setEventTypeFilter('WINDOW_BLUR')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+            className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
               eventTypeFilter === 'WINDOW_BLUR'
-                ? 'bg-purple-600 text-white shadow-sm'
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                ? 'bg-white dark:bg-[#2c2c2e] text-purple-600 dark:text-purple-400 shadow-sm'
+                : 'text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white'
             }`}
           >
             Blur ({blurEvents})
           </button>
           <button
             onClick={() => setEventTypeFilter('VISIBILITY_HIDDEN')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+            className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
               eventTypeFilter === 'VISIBILITY_HIDDEN'
-                ? 'bg-amber-600 text-white shadow-sm'
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                ? 'bg-white dark:bg-[#2c2c2e] text-amber-600 dark:text-amber-400 shadow-sm'
+                : 'text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white'
             }`}
           >
-            Tab Hidden ({tabSwitches})
+            Hidden ({tabSwitches})
           </button>
         </div>
       </div>
 
       {/* Incident Audit Table */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+      <div className="apple-card overflow-hidden">
         {loading ? (
-          <div className="p-16 text-center text-slate-400">
-            <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-            <p className="text-sm font-medium">Loading proctoring audit logs...</p>
+          <div className="p-16 text-center text-[#86868b]">
+            <div className="w-6 h-6 border-2 border-[#0071e3] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+            <p className="text-xs">Loading proctoring audit logs...</p>
           </div>
         ) : filteredLogs.length === 0 ? (
-          <div className="p-16 text-center text-slate-500">
-            <Eye className="w-10 h-10 mx-auto mb-3 opacity-40 text-slate-400" />
-            <h3 className="text-base font-bold text-slate-800 dark:text-slate-200">No incident logs found</h3>
-            <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1">
+          <div className="p-16 text-center text-[#86868b]">
+            <Eye className="w-8 h-8 mx-auto mb-2 opacity-40 text-[#86868b]" />
+            <h3 className="text-sm font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">No incident logs found</h3>
+            <p className="text-xs text-[#86868b] max-w-sm mx-auto mt-1">
               {searchQuery || eventTypeFilter !== 'ALL' || selectedExamId
-                ? 'No proctoring logs matched your active search or filter criteria.'
+                ? 'No proctoring logs matched your active query.'
                 : 'Any detected focus loss, tab switch, or window blur will be recorded here.'}
             </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50/70 dark:bg-slate-800/50 text-xs font-semibold text-slate-500 uppercase tracking-wider border-b border-slate-200 dark:border-slate-800">
+            <table className="w-full text-left text-xs sm:text-sm">
+              <thead className="bg-black/[0.02] dark:bg-white/[0.02] text-[10px] font-semibold text-[#86868b] uppercase tracking-wider border-b border-black/5 dark:border-white/10">
                 <tr>
-                  <th className="px-6 py-4">Timestamp</th>
-                  <th className="px-4 py-4">Event Type</th>
-                  <th className="px-4 py-4">Candidate</th>
-                  <th className="px-4 py-4">Examination</th>
-                  <th className="px-4 py-4">Duration</th>
-                  <th className="px-4 py-4">Details</th>
-                  <th className="px-6 py-4 text-right">Audit</th>
+                  <th className="px-6 py-3.5">Timestamp</th>
+                  <th className="px-4 py-3.5">Event Type</th>
+                  <th className="px-4 py-3.5">Candidate</th>
+                  <th className="px-4 py-3.5">Examination</th>
+                  <th className="px-4 py-3.5">Duration</th>
+                  <th className="px-4 py-3.5">Details</th>
+                  <th className="px-6 py-3.5 text-right">Audit</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-black/5 dark:divide-white/5">
                 {filteredLogs.map((log) => {
-                  let badgeClass = 'bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300';
+                  let badgeClass = 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20';
                   if (log.eventType === 'VISIBILITY_HIDDEN') {
-                    badgeClass = 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300';
+                    badgeClass = 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20';
                   } else if (log.eventType === 'WINDOW_RESIZE') {
-                    badgeClass = 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300';
+                    badgeClass = 'bg-black/5 dark:bg-white/10 text-[#86868b] border border-black/5 dark:border-white/10';
                   }
 
                   return (
                     <tr
                       key={log.id}
-                      className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition-colors"
+                      className="hover:bg-black/[0.015] dark:hover:bg-white/[0.02] transition-colors"
                     >
                       {/* Timestamp */}
-                      <td className="px-6 py-4 whitespace-nowrap text-xs font-mono text-slate-600 dark:text-slate-300">
+                      <td className="px-6 py-3.5 whitespace-nowrap text-xs text-[#86868b]">
                         {formatDateTime(log.timestamp)}
                       </td>
 
                       {/* Event Type Badge */}
-                      <td className="px-4 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${badgeClass}`}>
+                      <td className="px-4 py-3.5 whitespace-nowrap">
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${badgeClass}`}>
                           {log.eventType}
                         </span>
                       </td>
 
                       {/* Candidate */}
-                      <td className="px-4 py-4">
-                        <div className="font-semibold text-slate-900 dark:text-white">
+                      <td className="px-4 py-3.5">
+                        <div className="font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">
                           {log.attempt?.student?.name || 'Unknown Student'}
                         </div>
-                        <div className="text-xs text-slate-500 flex items-center gap-1.5 mt-0.5">
+                        <div className="text-[11px] text-[#86868b] flex items-center gap-1.5 mt-0.5">
                           {log.attempt?.student?.studentId && (
-                            <span className="font-mono">{log.attempt.student.studentId}</span>
+                            <span className="font-mono bg-black/5 dark:bg-white/10 px-1 py-0.5 rounded text-[10px]">
+                              {log.attempt.student.studentId}
+                            </span>
                           )}
                           <span>{log.attempt?.student?.email}</span>
                         </div>
                       </td>
 
                       {/* Examination */}
-                      <td className="px-4 py-4 max-w-xs">
-                        <div className="font-medium text-slate-800 dark:text-slate-200 truncate">
+                      <td className="px-4 py-3.5 max-w-xs">
+                        <div className="font-medium text-[#1d1d1f] dark:text-[#f5f5f7] truncate">
                           {log.attempt?.exam?.title || 'Examination'}
                         </div>
-                        <div className="text-[11px] text-slate-400">
+                        <div className="text-[10px] text-[#86868b]">
                           Threshold: {log.attempt?.exam?.focusLossThreshold || 3} incidents
                         </div>
                       </td>
 
                       {/* Duration */}
-                      <td className="px-4 py-4 whitespace-nowrap text-xs text-slate-600 dark:text-slate-400">
+                      <td className="px-4 py-3.5 whitespace-nowrap text-xs text-[#86868b]">
                         {log.durationSeconds != null ? `${log.durationSeconds}s away` : '—'}
                       </td>
 
                       {/* Details */}
-                      <td className="px-4 py-4 text-xs text-slate-600 dark:text-slate-400 max-w-xs truncate">
-                        {log.details || 'Browser window blurred or tab hidden'}
+                      <td className="px-4 py-3.5 text-xs text-[#86868b] max-w-xs truncate">
+                        {log.details || 'Window focus departed'}
                       </td>
 
                       {/* Audit Action */}
-                      <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <td className="px-6 py-3.5 whitespace-nowrap text-right">
                         {log.attemptId ? (
                           <button
                             onClick={() => setSelectedAttemptId(log.attemptId)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors"
+                            className="apple-btn-secondary px-3 py-1 text-xs inline-flex items-center gap-1"
                           >
                             <span>Inspect</span>
                             <ExternalLink className="w-3 h-3" />
                           </button>
                         ) : (
-                          <span className="text-slate-300 dark:text-slate-700">—</span>
+                          <span className="text-[#86868b]">—</span>
                         )}
                       </td>
                     </tr>

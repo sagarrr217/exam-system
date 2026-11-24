@@ -19,57 +19,55 @@ export const FocusLossModal: React.FC<FocusLossModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xl flex items-center justify-center p-4 animate-fade-in">
       <div 
-        className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-lg w-full border border-rose-500/30 overflow-hidden animate-fade-in"
+        className="apple-card max-w-sm sm:max-w-md w-full p-6 text-center animate-apple-spring border border-black/10 dark:border-white/15"
         role="alertdialog"
         aria-modal="true"
       >
-        <div className="bg-gradient-to-r from-rose-600 to-red-600 p-6 text-white text-center">
-          <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center mx-auto mb-3 shadow-inner">
-            <ShieldAlert className="w-10 h-10 text-white" />
-          </div>
-          <h2 className="text-xl font-extrabold tracking-tight">
-            Security & Focus-Loss Alert!
-          </h2>
-          <p className="mt-1 text-xs text-rose-100 font-medium">
-            Proctoring system detected an unauthorized window or tab departure.
-          </p>
+        <div className="w-14 h-14 rounded-2xl bg-rose-500/10 text-[#ff3b30] dark:text-[#ff453a] flex items-center justify-center mx-auto mb-3.5 shadow-sm">
+          <ShieldAlert className="w-7 h-7" />
         </div>
 
-        <div className="p-6 space-y-4 text-center">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900 text-rose-700 dark:text-rose-300 font-bold text-xs uppercase tracking-wider">
-            <AlertTriangle className="w-4 h-4" />
-            <span>
-              Incident Count: {focusLossCount} of {threshold} Allowed
+        <h2 className="text-lg font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7]">
+          Focus Departure Alert
+        </h2>
+        <p className="mt-1 text-xs text-[#86868b] dark:text-[#98989d]">
+          The examination portal detected an active window switch.
+        </p>
+
+        <div className="mt-4 p-3 rounded-2xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/5 dark:border-white/10 space-y-2 text-left">
+          <div className="flex items-center justify-between text-xs font-semibold">
+            <span className="text-[#86868b]">Incident Count:</span>
+            <span className={`px-2 py-0.5 rounded-full ${
+              warningLimitExceeded
+                ? 'bg-rose-500/15 text-[#ff3b30] dark:text-[#ff453a]'
+                : 'bg-amber-500/15 text-amber-600 dark:text-amber-400'
+            }`}>
+              {focusLossCount} / {threshold} Allowed
             </span>
           </div>
 
-          <div className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed text-left space-y-2">
-            <p>
-              Your exam session was paused because the window lost focus. This occurs when switching tabs, minimizing the browser window, or navigating to another application.
-            </p>
-            {warningLimitExceeded ? (
-              <div className="p-3 bg-red-50 dark:bg-red-950/50 rounded-xl border border-red-300 dark:border-red-900 text-red-800 dark:text-red-200 text-xs font-semibold">
-                ⚠️ Warning: You have reached or exceeded the allowed focus-loss threshold ({threshold}). This examination attempt has been flagged for academic integrity review by the proctor.
-              </div>
-            ) : (
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Please remain on this examination window until you have finished and formally submitted your responses.
-              </p>
-            )}
-          </div>
+          <p className="text-xs text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed">
+            Switching tabs, minimizing the browser window, or navigating to another app pauses your session and logs a focus-loss event for instructor audit.
+          </p>
 
-          <div className="pt-2">
-            <button
-              type="button"
-              onClick={onAcknowledge}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold text-white bg-rose-600 hover:bg-rose-700 shadow-lg shadow-rose-600/30 transition-all"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>I Understand & Return to Exam</span>
-            </button>
-          </div>
+          {warningLimitExceeded && (
+            <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-[#ff3b30] dark:text-[#ff453a] text-[11px] font-medium leading-relaxed">
+              ⚠️ Warning: You have reached or exceeded the allowed threshold ({threshold}). This attempt has been flagged for integrity review.
+            </div>
+          )}
+        </div>
+
+        <div className="mt-5">
+          <button
+            type="button"
+            onClick={onAcknowledge}
+            className="w-full py-2.5 px-4 rounded-full text-xs sm:text-sm font-semibold text-white bg-[#0071e3] hover:bg-[#0077ed] dark:bg-[#0a84ff] dark:hover:bg-[#1a8eff] shadow-sm active:scale-98 transition-all flex items-center justify-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Resume Examination</span>
+          </button>
         </div>
       </div>
     </div>

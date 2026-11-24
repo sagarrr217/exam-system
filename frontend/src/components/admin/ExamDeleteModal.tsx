@@ -19,42 +19,33 @@ export const ExamDeleteModal: React.FC<ExamDeleteModalProps> = ({
   if (!isOpen || !exam) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xl flex items-center justify-center p-4 animate-fade-in">
       <div 
-        className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 w-full max-w-md p-6 overflow-hidden"
+        className="apple-card max-w-sm sm:max-w-md w-full p-6 text-center animate-apple-spring border border-black/10 dark:border-white/15"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between mb-4">
-          <div className="w-12 h-12 rounded-2xl bg-rose-100 dark:bg-rose-950/60 text-rose-600 flex items-center justify-center shadow-inner">
-            <AlertTriangle className="w-6 h-6" />
-          </div>
-          <button
-            onClick={onCancel}
-            disabled={isDeleting}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+        <div className="w-12 h-12 rounded-2xl bg-rose-500/10 text-[#ff3b30] dark:text-[#ff453a] flex items-center justify-center mx-auto mb-3.5 shadow-sm">
+          <AlertTriangle className="w-6 h-6" />
         </div>
 
-        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+        <h3 className="text-base font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] mb-1.5">
           Delete Examination?
         </h3>
-        <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">
-          Are you sure you want to permanently delete <strong className="text-slate-900 dark:text-white font-semibold">"{exam.title}"</strong>? All questions, options, and candidate attempts associated with this exam will be removed.
+        <p className="text-xs text-[#86868b] mb-4 leading-relaxed">
+          Are you sure you want to permanently delete <strong className="text-[#1d1d1f] dark:text-[#f5f5f7]">"{exam.title}"</strong>? All questions and associated student attempts will be removed.
         </p>
 
-        <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-xs text-amber-800 dark:text-amber-300 mb-6 flex items-start gap-2">
-          <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-          <span>This action cannot be undone. Any completed candidate scores will be lost.</span>
+        <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-700 dark:text-amber-300 mb-5 text-left flex items-start gap-2">
+          <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
+          <span>This action cannot be undone. All completed score records will be deleted.</span>
         </div>
 
-        <div className="flex items-center justify-end gap-3">
+        <div className="flex items-center justify-end gap-2.5">
           <button
             type="button"
             onClick={onCancel}
             disabled={isDeleting}
-            className="px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="apple-btn-secondary px-4 py-2 text-xs"
           >
             Cancel
           </button>
@@ -62,16 +53,16 @@ export const ExamDeleteModal: React.FC<ExamDeleteModalProps> = ({
             type="button"
             onClick={onConfirm}
             disabled={isDeleting}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-600/20 disabled:opacity-50 transition-all"
+            className="apple-btn-primary bg-[#ff3b30] hover:bg-[#ff453a] dark:bg-[#ff453a] px-4 py-2 text-xs flex items-center gap-1.5 disabled:opacity-50"
           >
             {isDeleting ? (
               <>
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                 <span>Deleting...</span>
               </>
             ) : (
               <>
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="w-3.5 h-3.5" />
                 <span>Delete Exam</span>
               </>
             )}

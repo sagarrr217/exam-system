@@ -29,7 +29,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
   }, []);
 
-  const showToast = useCallback((message: string, type: ToastType = 'info', duration = 4000) => {
+  const showToast = useCallback((message: string, type: ToastType = 'info', duration = 3500) => {
     const id = Math.random().toString(36).substring(2, 9);
     const newToast: Toast = { id, message, type, duration };
 
@@ -50,41 +50,37 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   return (
     <ToastContext.Provider value={{ toasts, showToast, success, error, warning, info, removeToast }}>
       {children}
-      {/* Toast Notification Container */}
-      <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none">
+      {/* Apple Dynamic Island Style Notification Banner */}
+      <div className="fixed top-5 inset-x-0 z-50 flex flex-col items-center gap-2 pointer-events-none px-4">
         {toasts.map((toast) => {
-          let bgClass = 'bg-slate-900 text-white border-slate-700';
           let Icon = Info;
-          let iconColor = 'text-blue-400';
+          let iconColor = 'text-[#0071e3] dark:text-[#0a84ff]';
 
           if (toast.type === 'success') {
-            bgClass = 'bg-emerald-900/95 text-emerald-100 border-emerald-700';
             Icon = CheckCircle2;
-            iconColor = 'text-emerald-400';
+            iconColor = 'text-[#34c759] dark:text-[#30d158]';
           } else if (toast.type === 'error') {
-            bgClass = 'bg-rose-900/95 text-rose-100 border-rose-700';
             Icon = AlertCircle;
-            iconColor = 'text-rose-400';
+            iconColor = 'text-[#ff3b30] dark:text-[#ff453a]';
           } else if (toast.type === 'warning') {
-            bgClass = 'bg-amber-900/95 text-amber-100 border-amber-700';
             Icon = AlertTriangle;
-            iconColor = 'text-amber-400';
+            iconColor = 'text-[#ff9500] dark:text-[#ff9f0a]';
           }
 
           return (
             <div
               key={toast.id}
-              className={`pointer-events-auto flex items-start gap-3 p-4 rounded-xl shadow-xl border backdrop-blur-md transition-all duration-300 animate-fade-in ${bgClass}`}
+              className="pointer-events-auto flex items-center gap-2.5 py-2.5 px-4 rounded-full apple-glass shadow-apple-card animate-apple-spring max-w-md w-auto text-xs sm:text-sm font-medium text-[#1d1d1f] dark:text-[#f5f5f7] border border-black/10 dark:border-white/15"
               role="alert"
             >
-              <Icon className={`w-5 h-5 flex-shrink-0 mt-0.5 ${iconColor}`} />
-              <div className="flex-1 text-sm font-medium leading-relaxed">{toast.message}</div>
+              <Icon className={`w-4 h-4 flex-shrink-0 ${iconColor}`} />
+              <div className="flex-1 leading-snug">{toast.message}</div>
               <button
                 onClick={() => removeToast(toast.id)}
-                className="text-white/70 hover:text-white p-1 rounded-lg transition-colors flex-shrink-0"
-                aria-label="Dismiss toast"
+                className="text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white p-0.5 rounded-full transition-colors flex-shrink-0 ml-1"
+                aria-label="Dismiss notification"
               >
-                <X className="w-4 h-4" />
+                <X className="w-3.5 h-3.5" />
               </button>
             </div>
           );

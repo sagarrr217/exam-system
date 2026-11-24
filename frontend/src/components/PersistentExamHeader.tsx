@@ -10,6 +10,7 @@ import {
   Minimize, 
   User 
 } from 'lucide-react';
+import { ThemeToggle } from './ThemeToggle';
 
 interface PersistentExamHeaderProps {
   examTitle: string;
@@ -59,86 +60,85 @@ export const PersistentExamHeader: React.FC<PersistentExamHeaderProps> = ({
   const isWarningTime = remainingSeconds <= 300 && !isCriticalTime;
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2 sm:py-2.5 flex items-center justify-between gap-2 sm:gap-4">
+    <header className="sticky top-0 z-40 w-full apple-glass-nav transition-colors duration-200">
+      <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between gap-2 sm:gap-4">
         {/* Left: Brand & Exam Title */}
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 flex-shrink-0">
-            <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6" />
+        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-[#0071e3] to-[#409cff] flex items-center justify-center text-white shadow-sm flex-shrink-0">
+            <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 sm:gap-2">
-              <h1 className="font-extrabold text-sm sm:text-lg text-slate-900 dark:text-white truncate">
+              <h1 className="font-semibold text-xs sm:text-base text-[#1d1d1f] dark:text-[#f5f5f7] truncate">
                 {examTitle}
               </h1>
-              <span className="hidden sm:inline-block text-[11px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 uppercase">
+              <span className="hidden sm:inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[#86868b] dark:text-[#98989d] uppercase">
                 {subject}
               </span>
             </div>
-            <div className="flex items-center gap-1.5 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
-              <User className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-400 flex-shrink-0" />
-              <span className="font-medium text-slate-700 dark:text-slate-300 truncate">{studentName}</span>
-              {studentId && <span className="hidden sm:inline">• ID: {studentId}</span>}
+            <div className="flex items-center gap-1.5 text-[11px] text-[#86868b] dark:text-[#98989d]">
+              <User className="w-3 h-3 text-[#86868b] flex-shrink-0" />
+              <span className="font-medium text-[#1d1d1f] dark:text-[#f5f5f7] truncate">{studentName}</span>
+              {studentId && <span className="hidden sm:inline text-[#86868b]">• ID: {studentId}</span>}
             </div>
           </div>
         </div>
 
-        {/* Center: Live Countdown Timer & Answer Counter */}
-        <div className="flex items-center gap-2 sm:gap-6 flex-shrink-0">
-          {/* Answered Progress Counter */}
-          <div className="hidden md:flex flex-col items-center">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Answered</span>
-            <span className="text-sm font-extrabold text-slate-900 dark:text-white">
-              <span className="text-emerald-600 dark:text-emerald-400">{answeredCount}</span>
-              <span className="text-slate-400"> / {totalQuestions}</span>
-            </span>
+        {/* Center: Dynamic Island Countdown Pill & Answered Count */}
+        <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+          {/* Answered Progress Pill */}
+          <div className="hidden md:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
+            <span>Answered:</span>
+            <span>{answeredCount} / {totalQuestions}</span>
           </div>
 
-          {/* Countdown Timer */}
+          {/* iOS Countdown Pill */}
           <div
-            className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl border font-mono font-bold text-xs sm:text-base transition-all ${
+            className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full font-mono text-xs sm:text-sm font-semibold transition-all ${
               isCriticalTime
-                ? 'bg-rose-50 dark:bg-rose-950/60 border-rose-300 dark:border-rose-800 text-rose-600 dark:text-rose-400 animate-pulse ring-2 ring-rose-500/30'
+                ? 'bg-rose-500/15 border border-rose-500/30 text-[#ff3b30] dark:text-[#ff453a] animate-pulse'
                 : isWarningTime
-                ? 'bg-amber-50 dark:bg-amber-950/60 border-amber-300 dark:border-amber-800 text-amber-700 dark:text-amber-300'
-                : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200'
+                ? 'bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-amber-400'
+                : 'bg-black/5 dark:bg-white/10 border border-black/5 dark:border-white/10 text-[#1d1d1f] dark:text-[#f5f5f7]'
             }`}
             title="Remaining examination time"
           >
-            <Clock className={`w-3.5 h-3.5 sm:w-5 sm:h-5 ${isCriticalTime ? 'text-rose-600' : isWarningTime ? 'text-amber-600' : 'text-slate-500'}`} />
+            <Clock className={`w-3.5 h-3.5 ${isCriticalTime ? 'text-[#ff3b30]' : isWarningTime ? 'text-amber-500' : 'text-[#86868b]'}`} />
             <span>{formatTime(remainingSeconds)}</span>
           </div>
         </div>
 
-        {/* Right: Autosave Status, Fullscreen & Submit Button */}
-        <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
+        {/* Right: Autosave Status, Theme, Fullscreen & Submit Button */}
+        <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
           {/* Cloud Autosave Indicator */}
           <div className="hidden lg:flex items-center gap-1.5 text-xs">
             {saveStatus === 'saving' && (
               <span className="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-medium">
                 <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                <span>Saving...</span>
+                <span>Syncing</span>
               </span>
             )}
             {saveStatus === 'saved' && (
               <span className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
-                <Cloud className="w-4 h-4" />
+                <Cloud className="w-3.5 h-3.5" />
                 <span>Saved</span>
               </span>
             )}
             {saveStatus === 'error' && (
-              <span className="inline-flex items-center gap-1.5 text-rose-600 dark:text-rose-400 font-medium">
+              <span className="inline-flex items-center gap-1.5 text-[#ff3b30] dark:text-[#ff453a] font-medium">
                 <AlertCircle className="w-3.5 h-3.5" />
-                <span>Save Error</span>
+                <span>Sync Error</span>
               </span>
             )}
           </div>
+
+          <ThemeToggle variant="icon-only" />
 
           {/* Fullscreen Toggle */}
           {onToggleFullscreen && (
             <button
               onClick={onToggleFullscreen}
-              className="p-1.5 sm:p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="p-1.5 sm:p-2 rounded-full text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 active:scale-95 transition-all"
               title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
               aria-label="Toggle Fullscreen"
             >
@@ -150,7 +150,7 @@ export const PersistentExamHeader: React.FC<PersistentExamHeaderProps> = ({
           <button
             onClick={onSubmitClick}
             disabled={isSubmitting}
-            className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-md shadow-emerald-600/20 disabled:opacity-50 transition-all hover:scale-[1.02] active:scale-[0.98]"
+            className="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold text-white bg-[#34c759] hover:bg-[#30d158] shadow-sm shadow-emerald-500/20 disabled:opacity-50 active:scale-95 transition-all"
           >
             <Send className="w-3.5 h-3.5" />
             <span>Submit<span className="hidden sm:inline"> Exam</span></span>
