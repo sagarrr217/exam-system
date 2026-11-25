@@ -1,40 +1,41 @@
 import React from 'react';
-import { Navigate, useLocation, Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { UserRole } from '../types';
-import { Loader2 } from 'lucide-react';
+import { Skeleton } from './ui/Skeleton';
 
 interface ProtectedRouteProps {
   allowedRoles?: UserRole[];
-  children?: React.ReactNode;
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles, children }) => {
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
   const { user, loading } = useAuth();
-  const location = useLocation();
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--bg-canvas)]">
-        <Loader2 className="w-9 h-9 animate-spin text-[var(--accent-signal)] mb-3" />
-        <p className="font-mono text-xs uppercase tracking-widest text-[var(--text-secondary)]">
-          Verifying Session...
-        </p>
+      <div className="min-h-[70vh] flex items-center justify-center p-6">
+        <div className="w-full max-w-md ui-card p-8 space-y-4">
+          <div className="flex items-center gap-3">
+            <Skeleton className="w-10 h-10 rounded-[12px]" />
+            <div className="space-y-2 flex-1">
+              <Skeleton className="h-4 w-40" />
+              <Skeleton className="h-3 w-28" />
+            </div>
+          </div>
+          <Skeleton className="h-3 w-full" />
+          <Skeleton className="h-11 w-full rounded-[12px]" />
+        </div>
       </div>
     );
   }
 
   if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" replace />;
   }
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
-    if (user.role === 'ADMIN') {
-      return <Navigate to="/admin" replace />;
-    } else {
-      return <Navigate to="/student" replace />;
-    }
+    return <Navigate to={user.role === 'ADMIN' ? '/admin' : '/student'} replace />;
   }
 
-  return children ? <>{children}</> : <Outlet />;
+  return <Outlet />;
 };
