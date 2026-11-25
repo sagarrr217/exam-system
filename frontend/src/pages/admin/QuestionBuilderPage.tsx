@@ -10,17 +10,12 @@ import {
   ArrowUp,
   ArrowDown,
   Image as ImageIcon,
-  CheckCircle2,
-  AlertCircle,
-  Settings2,
-  FileText,
   HelpCircle,
   Sparkles,
   Lock,
-  Layers,
   ChevronDown,
   Upload,
-  Loader2
+  Loader2,
 } from 'lucide-react';
 import { api } from '../../api/client';
 import { useToast } from '../../context/ToastContext';
@@ -46,19 +41,61 @@ interface BuilderQuestion {
   orderIndex: number;
 }
 
+const OPTION_BEARING_TYPES: QuestionType[] = [
+  'MCQ',
+  'TRUE_FALSE',
+  'MULTIPLE_SELECT',
+  'FILL_BLANK',
+  'NUMERICAL',
+];
+
 export const QuestionBuilderPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const isEditing = Boolean(id);
   const navigate = useNavigate();
   const toast = useToast();
 
-  // Loading & Action states
   const [loading, setLoading] = useState(isEditing);
   const [saving, setSaving] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [activeQuestionIndex, setActiveQuestionIndex] = useState<number>(0);
   const [isPublished, setIsPublished] = useState(false);
   const [uploadingImageIndex, setUploadingImageIndex] = useState<number | null>(null);
+
+  const [title, setTitle] = useState('');
+  const [subject, setSubject] = useState('');
+  const [description, setDescription] = useState('');
+  const [instructions, setInstructions] = useState('');
+  const [durationMinutes, setDurationMinutes] = useState(60);
+  const [showAIModal, setShowAIModal] = useState(false);
+
+  const [totalMarks, setTotalMarks] = useState(100);
+  const [passingMarks, setPassingMarks] = useState(40);
+  const [focusLossThreshold, setFocusLossThreshold] = useState(3);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [randomizeQuestions, setRandomizeQuestions] = useState(false);
+  const [randomizeOptions, setRandomizeOptions] = useState(false);
+  const [allowReview, setAllowReview] = useState(true);
+  const [autoSubmit, setAutoSubmit] = useState(true);
+
+  const [questions, setQuestions] = useState<BuilderQuestion[]>([
+    {
+      text: '',
+      type: 'MCQ',
+      marks: 10,
+      isRequired: true,
+      imageUrl: '',
+      explanation: '',
+      orderIndex: 0,
+      options: [
+        { text: 'Option 1', isCorrect: true, orderIndex: 0 },
+        { text: 'Option 2', isCorrect: false, orderIndex: 1 },
+        { text: 'Option 3', isCorrect: false, orderIndex: 2 },
+        { text: 'Option 4', isCorrect: false, orderIndex: 3 },
+      ],
+    },
+  ]);
 
   const handleFileUpload = async (qIdx: number, file: File) => {
     if (!file) return;
@@ -78,7 +115,7 @@ export const QuestionBuilderPage: React.FC = () => {
         const base64 = reader.result as string;
         const res = await api.uploadImage(base64);
         handleUpdateQuestion(qIdx, { imageUrl: res.url });
-        toast.success('Diagram image uploaded successfully to Cloudinary!');
+        toast.success('Diagram image uploaded successfully!');
       } catch (err: any) {
         toast.error(err.message || 'Failed to upload image.');
       } finally {
@@ -88,19 +125,7 @@ export const QuestionBuilderPage: React.FC = () => {
     reader.readAsDataURL(file);
   };
 
-  // Exam Settings State
-  const [title, setTitle] = useState('');
-  const [subject, setSubject] = useState('');
-  const [description, setDescription] = useState('');
-  const [instructions, setInstructions] = useState('');
-  const [durationMinutes, setDurationMinutes] = useState(60);
-
-  // AI Question Generator Modal State
-  const [showAIModal, setShowAIModal] = useState(false);
-
-  const handleOpenAIModal = () => {
-    setShowAIModal(true);
-  };
+  const handleOpenAIModal = () => setShowAIModal(true);
 
   const handleAddAIQuestion = (q: GeneratedQuestion) => {
     const newQuestion: BuilderQuestion = {
@@ -114,10 +139,10 @@ export const QuestionBuilderPage: React.FC = () => {
       options: (q.options || []).map((opt, oIdx) => ({
         text: opt.text,
         isCorrect: Boolean(opt.isCorrect),
-        orderIndex: oIdx
-      }))
+        orderIndex: oIdx,
+      })),
     };
-    setQuestions(prev => [...prev, newQuestion]);
+    setQuestions((prev) => [...prev, newQuestion]);
     setActiveQuestionIndex(questions.length);
   };
 
@@ -133,42 +158,13 @@ export const QuestionBuilderPage: React.FC = () => {
       options: (q.options || []).map((opt, oIdx) => ({
         text: opt.text,
         isCorrect: Boolean(opt.isCorrect),
-        orderIndex: oIdx
-      }))
+        orderIndex: oIdx,
+      })),
     }));
-    setQuestions(prev => [...prev, ...formatted]);
+    setQuestions((prev) => [...prev, ...formatted]);
     setActiveQuestionIndex(questions.length);
   };
-  const [totalMarks, setTotalMarks] = useState(100);
-  const [passingMarks, setPassingMarks] = useState(40);
-  const [focusLossThreshold, setFocusLossThreshold] = useState(3);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [randomizeQuestions, setRandomizeQuestions] = useState(false);
-  const [randomizeOptions, setRandomizeOptions] = useState(false);
-  const [allowReview, setAllowReview] = useState(true);
-  const [autoSubmit, setAutoSubmit] = useState(true);
 
-  // Questions List State
-  const [questions, setQuestions] = useState<BuilderQuestion[]>([
-    {
-      text: '',
-      type: 'MCQ',
-      marks: 10,
-      isRequired: true,
-      imageUrl: '',
-      explanation: '',
-      orderIndex: 0,
-      options: [
-        { text: 'Option 1', isCorrect: true, orderIndex: 0 },
-        { text: 'Option 2', isCorrect: false, orderIndex: 1 },
-        { text: 'Option 3', isCorrect: false, orderIndex: 2 },
-        { text: 'Option 4', isCorrect: false, orderIndex: 3 }
-      ]
-    }
-  ]);
-
-  // Load existing exam if in edit mode
   useEffect(() => {
     if (!id) return;
 
@@ -207,8 +203,8 @@ export const QuestionBuilderPage: React.FC = () => {
               id: opt.id,
               text: opt.text || '',
               isCorrect: Boolean(opt.isCorrect),
-              orderIndex: oIdx
-            }))
+              orderIndex: oIdx,
+            })),
           }));
           setQuestions(loadedQuestions);
         }
@@ -223,16 +219,13 @@ export const QuestionBuilderPage: React.FC = () => {
     loadExam();
   }, [id]);
 
-  // Dynamic sum of question marks
   const sumQuestionMarks = questions.reduce((sum, q) => sum + (Number(q.marks) || 0), 0);
 
-  // Auto-sync total marks with sum of questions if desired
   const handleSyncTotalMarks = () => {
     setTotalMarks(sumQuestionMarks);
-    toast.info(`Total marks set to ${sumQuestionMarks}`);
+    toast.info(`Total marks synced to ${sumQuestionMarks}`);
   };
 
-  // Add Question
   const handleAddQuestion = () => {
     const newQ: BuilderQuestion = {
       text: '',
@@ -246,15 +239,14 @@ export const QuestionBuilderPage: React.FC = () => {
         { text: 'Option 1', isCorrect: true, orderIndex: 0 },
         { text: 'Option 2', isCorrect: false, orderIndex: 1 },
         { text: 'Option 3', isCorrect: false, orderIndex: 2 },
-        { text: 'Option 4', isCorrect: false, orderIndex: 3 }
-      ]
+        { text: 'Option 4', isCorrect: false, orderIndex: 3 },
+      ],
     };
     setQuestions([...questions, newQ]);
     setActiveQuestionIndex(questions.length);
     toast.success('Question added');
   };
 
-  // Duplicate Question
   const handleDuplicateQuestion = (idx: number) => {
     const target = questions[idx];
     const cloned: BuilderQuestion = {
@@ -265,67 +257,60 @@ export const QuestionBuilderPage: React.FC = () => {
       options: target.options.map((opt, oIdx) => ({
         ...opt,
         id: undefined,
-        orderIndex: oIdx
-      }))
+        orderIndex: oIdx,
+      })),
     };
     const updated = [...questions];
     updated.splice(idx + 1, 0, cloned);
-    // re-index order
-    const reindexed = updated.map((q, i) => ({ ...q, orderIndex: i }));
-    setQuestions(reindexed);
+    setQuestions(updated.map((q, i) => ({ ...q, orderIndex: i })));
     setActiveQuestionIndex(idx + 1);
     toast.success('Question duplicated');
   };
 
-  // Delete Question
   const handleDeleteQuestion = (idx: number) => {
     if (questions.length <= 1) {
       toast.warning('An examination must contain at least 1 question.');
       return;
     }
-    const updated = questions.filter((_, i) => i !== idx).map((q, i) => ({ ...q, orderIndex: i }));
+    const updated = questions
+      .filter((_, i) => i !== idx)
+      .map((q, i) => ({ ...q, orderIndex: i }));
     setQuestions(updated);
     setActiveQuestionIndex(Math.max(0, idx - 1));
     toast.info('Question removed');
   };
 
-  // Reorder Question Up
   const handleMoveQuestionUp = (idx: number) => {
     if (idx === 0) return;
     const updated = [...questions];
     const temp = updated[idx - 1];
     updated[idx - 1] = updated[idx];
     updated[idx] = temp;
-    const reindexed = updated.map((q, i) => ({ ...q, orderIndex: i }));
-    setQuestions(reindexed);
+    setQuestions(updated.map((q, i) => ({ ...q, orderIndex: i })));
     setActiveQuestionIndex(idx - 1);
   };
 
-  // Reorder Question Down
   const handleMoveQuestionDown = (idx: number) => {
     if (idx === questions.length - 1) return;
     const updated = [...questions];
     const temp = updated[idx + 1];
     updated[idx + 1] = updated[idx];
     updated[idx] = temp;
-    const reindexed = updated.map((q, i) => ({ ...q, orderIndex: i }));
-    setQuestions(reindexed);
+    setQuestions(updated.map((q, i) => ({ ...q, orderIndex: i })));
     setActiveQuestionIndex(idx + 1);
   };
 
-  // Update Question Field
   const handleUpdateQuestion = (idx: number, patch: Partial<BuilderQuestion>) => {
     setQuestions((prev) =>
       prev.map((q, i) => {
         if (i !== idx) return q;
         const updatedQ = { ...q, ...patch };
 
-        // Handle question type conversion presets
         if (patch.type && patch.type !== q.type) {
           if (patch.type === 'TRUE_FALSE') {
             updatedQ.options = [
               { text: 'True', isCorrect: true, orderIndex: 0 },
-              { text: 'False', isCorrect: false, orderIndex: 1 }
+              { text: 'False', isCorrect: false, orderIndex: 1 },
             ];
           } else if (patch.type === 'MCQ') {
             if (updatedQ.options.length < 2) {
@@ -333,10 +318,9 @@ export const QuestionBuilderPage: React.FC = () => {
                 { text: 'Option 1', isCorrect: true, orderIndex: 0 },
                 { text: 'Option 2', isCorrect: false, orderIndex: 1 },
                 { text: 'Option 3', isCorrect: false, orderIndex: 2 },
-                { text: 'Option 4', isCorrect: false, orderIndex: 3 }
+                { text: 'Option 4', isCorrect: false, orderIndex: 3 },
               ];
             } else {
-              // Ensure single correct answer for MCQ
               let foundFirst = false;
               updatedQ.options = updatedQ.options.map((o) => {
                 if (o.isCorrect && !foundFirst) {
@@ -355,17 +339,13 @@ export const QuestionBuilderPage: React.FC = () => {
                 { text: 'Option 1', isCorrect: true, orderIndex: 0 },
                 { text: 'Option 2', isCorrect: true, orderIndex: 1 },
                 { text: 'Option 3', isCorrect: false, orderIndex: 2 },
-                { text: 'Option 4', isCorrect: false, orderIndex: 3 }
+                { text: 'Option 4', isCorrect: false, orderIndex: 3 },
               ];
             }
           } else if (patch.type === 'FILL_BLANK') {
-            updatedQ.options = [
-              { text: 'Accepted Answer', isCorrect: true, orderIndex: 0 }
-            ];
+            updatedQ.options = [{ text: 'Accepted Answer', isCorrect: true, orderIndex: 0 }];
           } else if (patch.type === 'NUMERICAL') {
-            updatedQ.options = [
-              { text: '0', isCorrect: true, orderIndex: 0 }
-            ];
+            updatedQ.options = [{ text: '0', isCorrect: true, orderIndex: 0 }];
           } else if (patch.type === 'SHORT_ANSWER') {
             updatedQ.options = [];
           } else if (patch.type === 'LONG_ANSWER') {
@@ -379,7 +359,6 @@ export const QuestionBuilderPage: React.FC = () => {
     );
   };
 
-  // Option Operations
   const handleAddOption = (qIdx: number) => {
     const q = questions[qIdx];
     if (q.options.length >= 6) {
@@ -389,7 +368,7 @@ export const QuestionBuilderPage: React.FC = () => {
     const newOption: BuilderOption = {
       text: `Option ${q.options.length + 1}`,
       isCorrect: false,
-      orderIndex: q.options.length
+      orderIndex: q.options.length,
     };
     handleUpdateQuestion(qIdx, { options: [...q.options, newOption] });
   };
@@ -401,9 +380,11 @@ export const QuestionBuilderPage: React.FC = () => {
       return;
     }
     const wasCorrect = q.options[oIdx].isCorrect;
-    const filtered = q.options.filter((_, i) => i !== oIdx).map((opt, i) => ({ ...opt, orderIndex: i }));
+    const filtered = q.options
+      .filter((_, i) => i !== oIdx)
+      .map((opt, i) => ({ ...opt, orderIndex: i }));
     if (wasCorrect && filtered.length > 0) {
-      filtered[0].isCorrect = true; // ensure at least one correct
+      filtered[0].isCorrect = true;
     }
     handleUpdateQuestion(qIdx, { options: filtered });
   };
@@ -412,14 +393,16 @@ export const QuestionBuilderPage: React.FC = () => {
     const q = questions[qIdx];
     const updatedOptions = q.options.map((opt, i) => ({
       ...opt,
-      isCorrect: i === oIdx
+      isCorrect: i === oIdx,
     }));
     handleUpdateQuestion(qIdx, { options: updatedOptions });
   };
 
   const handleToggleCorrectOptionMulti = (qIdx: number, oIdx: number) => {
     const q = questions[qIdx];
-    const updatedOptions = q.options.map((opt, i) => (i === oIdx ? { ...opt, isCorrect: !opt.isCorrect } : opt));
+    const updatedOptions = q.options.map((opt, i) =>
+      i === oIdx ? { ...opt, isCorrect: !opt.isCorrect } : opt
+    );
     handleUpdateQuestion(qIdx, { options: updatedOptions });
   };
 
@@ -429,7 +412,6 @@ export const QuestionBuilderPage: React.FC = () => {
     handleUpdateQuestion(qIdx, { options: updatedOptions });
   };
 
-  // Validation
   const validateForm = (): boolean => {
     if (!title.trim()) {
       toast.error('Exam title is required.');
@@ -492,7 +474,6 @@ export const QuestionBuilderPage: React.FC = () => {
     return true;
   };
 
-  // Build Payload
   const buildPayload = () => ({
     title: title.trim(),
     subject: subject.trim(),
@@ -516,17 +497,16 @@ export const QuestionBuilderPage: React.FC = () => {
       isRequired: Boolean(q.isRequired),
       imageUrl: q.imageUrl ? q.imageUrl.trim() : null,
       explanation: q.explanation ? q.explanation.trim() : null,
-      options: (q.type === 'MCQ' || q.type === 'TRUE_FALSE')
+      options: OPTION_BEARING_TYPES.includes(q.type)
         ? q.options.map((opt, oIdx) => ({
-          text: opt.text.trim(),
-          isCorrect: Boolean(opt.isCorrect),
-          orderIndex: oIdx
-        }))
-        : []
-    }))
+            text: opt.text.trim(),
+            isCorrect: Boolean(opt.isCorrect),
+            orderIndex: oIdx,
+          }))
+        : [],
+    })),
   });
 
-  // Save Draft
   const handleSave = async (showSuccessToast = true): Promise<string | null> => {
     if (!validateForm()) return null;
     setSaving(true);
@@ -555,23 +535,22 @@ export const QuestionBuilderPage: React.FC = () => {
     }
   };
 
-  // Publish Exam
   const handlePublish = async () => {
     if (!validateForm()) return;
     setPublishing(true);
 
     try {
-      // First save latest changes
       const currentExamId = await handleSave(false);
       if (!currentExamId) {
         setPublishing(false);
         return;
       }
 
-      // Then toggle publish
       const res = await api.togglePublish(currentExamId);
       setIsPublished(res.isPublished);
-      toast.success(res.message || 'Examination published successfully! Candidates can now take this exam.');
+      toast.success(
+        res.message || 'Examination published successfully! Candidates can now take this exam.'
+      );
     } catch (err: any) {
       toast.error(err.message || 'Publishing validation failed.');
     } finally {
@@ -582,64 +561,63 @@ export const QuestionBuilderPage: React.FC = () => {
   if (loading) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
-        <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-        <p className="text-sm text-slate-500 font-medium">Loading question builder...</p>
+        <div className="w-8 h-8 border-2 border-[var(--accent-signal)] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+        <p className="font-mono text-xs text-[var(--text-secondary)]">Loading question builder...</p>
       </div>
     );
   }
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 pb-32 space-y-6 animate-fade-in">
-      {/* Sticky Top Header Bar */}
-      <div className="sticky top-16 z-30 apple-glass-nav p-3.5 sm:p-4 rounded-2xl border border-black/5 dark:border-white/10 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      {/* Sticky Builder Toolbar */}
+      <div className="sticky top-16 z-30 studio-glass p-3.5 sm:p-4 rounded-2xl border border-[var(--border-strong)] shadow-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div className="flex items-center gap-3">
           <Link
             to="/admin/exams"
-            className="p-1.5 rounded-full text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+            className="p-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tray)] transition-colors"
             title="Back to Exams"
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#86868b]">
+              <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--text-tertiary)]">
                 {isEditing ? 'Exam Editor' : 'Exam Creator'}
               </span>
               {isPublished ? (
-                <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+                <span className="inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/25">
                   <Globe className="w-3 h-3" />
                   Published
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
+                <span className="inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/25">
                   <Lock className="w-3 h-3" />
                   Draft
                 </span>
               )}
             </div>
-            <h1 className="text-base font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] truncate max-w-sm sm:max-w-md">
+            <h1 className="text-base font-bold text-[var(--text-primary)] truncate max-w-sm sm:max-w-md">
               {title.trim() || 'Untitled Examination'}
             </h1>
           </div>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={handleOpenAIModal}
-            className="apple-btn-secondary px-3 py-1.5 text-xs flex items-center gap-1.5"
+            className="btn-ghost-surface px-3 py-2 text-xs flex items-center gap-1.5 border-[var(--accent-signal)]/30"
             title="Generate questions using Google Gemini AI"
           >
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            <span className="hidden sm:inline">AI Generate</span>
+            <Sparkles className="w-3.5 h-3.5 text-[var(--accent-signal)]" />
+            <span className="hidden sm:inline">AI Studio</span>
           </button>
 
           <button
             type="button"
             onClick={() => handleSave(true)}
             disabled={saving || publishing}
-            className="apple-btn-secondary px-3.5 py-1.5 text-xs flex items-center gap-1.5 disabled:opacity-50"
+            className="btn-ghost-surface px-3.5 py-2 text-xs flex items-center gap-1.5 disabled:opacity-50"
           >
             <Save className="w-3.5 h-3.5" />
             <span>{saving ? 'Saving...' : 'Save Draft'}</span>
@@ -649,7 +627,7 @@ export const QuestionBuilderPage: React.FC = () => {
             type="button"
             onClick={handlePublish}
             disabled={saving || publishing}
-            className="apple-btn-primary px-4 py-1.5 text-xs flex items-center gap-1.5 disabled:opacity-50"
+            className="btn-signal px-4 py-2 text-xs flex items-center gap-1.5 disabled:opacity-50"
           >
             <Globe className="w-3.5 h-3.5" />
             <span>{publishing ? 'Validating...' : isPublished ? 'Re-Publish' : 'Publish Exam'}</span>
@@ -657,29 +635,30 @@ export const QuestionBuilderPage: React.FC = () => {
         </div>
       </div>
 
-      {/* SECTION 1: Examination Header Card (Settings & Metadata) */}
-      <div className="apple-card p-6 sm:p-8 space-y-5">
+      {/* SECTION 1: Examination Settings Card */}
+      <div className="studio-card p-6 sm:p-8 space-y-5">
         <div>
           <input
             type="text"
+            aria-label="Examination Title"
             placeholder="Examination Title (e.g. CS401: Advanced Data Structures)"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white placeholder-slate-300 dark:placeholder-slate-700 bg-transparent border-b border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-blue-600 focus:outline-none transition-colors pb-1"
+            className="w-full font-display text-2xl sm:text-3xl font-bold text-[var(--text-primary)] placeholder-[var(--text-tertiary)] bg-transparent border-b border-transparent hover:border-[var(--border-hairline)] focus:border-[var(--accent-signal)] focus:outline-none transition-colors pb-1"
           />
           <input
             type="text"
+            aria-label="Subject or Department"
             placeholder="Subject or Department (e.g. Computer Science & Engineering)"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
-            className="w-full text-sm font-medium text-slate-600 dark:text-slate-400 placeholder-slate-400 bg-transparent border-b border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-blue-600 focus:outline-none transition-colors mt-2 pb-1"
+            className="w-full text-sm font-medium text-[var(--text-secondary)] placeholder-[var(--text-tertiary)] bg-transparent border-b border-transparent hover:border-[var(--border-hairline)] focus:border-[var(--accent-signal)] focus:outline-none transition-colors mt-2 pb-1"
           />
         </div>
 
-        {/* Description & Instructions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
           <div>
-            <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
+            <label className="font-mono text-[11px] uppercase tracking-wider font-semibold text-[var(--text-secondary)] block mb-1.5">
               Description / Overview
             </label>
             <textarea
@@ -687,12 +666,12 @@ export const QuestionBuilderPage: React.FC = () => {
               placeholder="Brief course or syllabus overview..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full text-sm p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-800 dark:text-slate-200 resize-none"
+              className="w-full text-sm p-3 rounded-xl bg-[var(--bg-tray)] focus:bg-[var(--bg-surface)] border border-[var(--border-hairline)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-signal)] text-[var(--text-primary)] resize-none"
             />
           </div>
 
           <div>
-            <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
+            <label className="font-mono text-[11px] uppercase tracking-wider font-semibold text-[var(--text-secondary)] block mb-1.5">
               Candidate Instructions
             </label>
             <textarea
@@ -700,36 +679,35 @@ export const QuestionBuilderPage: React.FC = () => {
               placeholder="Important rules (e.g. No tab switching allowed)..."
               value={instructions}
               onChange={(e) => setInstructions(e.target.value)}
-              className="w-full text-sm p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-800 dark:text-slate-200 resize-none"
+              className="w-full text-sm p-3 rounded-xl bg-[var(--bg-tray)] focus:bg-[var(--bg-surface)] border border-[var(--border-hairline)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-signal)] text-[var(--text-primary)] resize-none"
             />
           </div>
         </div>
 
-        {/* Numeric Configuration Grid */}
-        <div className="pt-4 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="pt-4 border-t border-[var(--border-hairline)] grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div>
-            <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block mb-1">
-              Duration (minutes)
+            <label className="font-mono text-[10px] uppercase font-bold text-[var(--text-secondary)] block mb-1">
+              Duration (mins)
             </label>
             <input
               type="number"
               min={1}
               value={durationMinutes}
               onChange={(e) => setDurationMinutes(Math.max(1, Number(e.target.value)))}
-              className="w-full p-2.5 rounded-xl text-sm font-semibold bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900 dark:text-white"
+              className="w-full p-2.5 rounded-xl font-mono text-sm font-bold bg-[var(--bg-tray)] border border-[var(--border-hairline)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-signal)] text-[var(--text-primary)]"
             />
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="text-xs font-bold text-slate-600 dark:text-slate-400">
+              <label className="font-mono text-[10px] uppercase font-bold text-[var(--text-secondary)]">
                 Total Marks
               </label>
               {sumQuestionMarks !== totalMarks && (
                 <button
                   type="button"
                   onClick={handleSyncTotalMarks}
-                  className="text-[10px] text-blue-600 hover:underline font-semibold"
+                  className="font-mono text-[10px] text-[var(--accent-signal)] hover:underline font-bold"
                 >
                   Sync ({sumQuestionMarks})
                 </button>
@@ -740,12 +718,12 @@ export const QuestionBuilderPage: React.FC = () => {
               min={1}
               value={totalMarks}
               onChange={(e) => setTotalMarks(Math.max(1, Number(e.target.value)))}
-              className="w-full p-2.5 rounded-xl text-sm font-semibold bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900 dark:text-white"
+              className="w-full p-2.5 rounded-xl font-mono text-sm font-bold bg-[var(--bg-tray)] border border-[var(--border-hairline)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-signal)] text-[var(--text-primary)]"
             />
           </div>
 
           <div>
-            <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block mb-1">
+            <label className="font-mono text-[10px] uppercase font-bold text-[var(--text-secondary)] block mb-1">
               Passing Marks
             </label>
             <input
@@ -754,12 +732,12 @@ export const QuestionBuilderPage: React.FC = () => {
               max={totalMarks}
               value={passingMarks}
               onChange={(e) => setPassingMarks(Math.max(0, Number(e.target.value)))}
-              className="w-full p-2.5 rounded-xl text-sm font-semibold bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900 dark:text-white"
+              className="w-full p-2.5 rounded-xl font-mono text-sm font-bold bg-[var(--bg-tray)] border border-[var(--border-hairline)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-signal)] text-[var(--text-primary)]"
             />
           </div>
 
           <div>
-            <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block mb-1">
+            <label className="font-mono text-[10px] uppercase font-bold text-[var(--text-secondary)] block mb-1">
               Focus-Loss Limit
             </label>
             <input
@@ -768,112 +746,87 @@ export const QuestionBuilderPage: React.FC = () => {
               max={10}
               value={focusLossThreshold}
               onChange={(e) => setFocusLossThreshold(Math.max(1, Number(e.target.value)))}
-              className="w-full p-2.5 rounded-xl text-sm font-semibold bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900 dark:text-white"
+              className="w-full p-2.5 rounded-xl font-mono text-sm font-bold bg-[var(--bg-tray)] border border-[var(--border-hairline)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-signal)] text-[var(--text-primary)]"
             />
           </div>
         </div>
 
-        {/* Schedule Availability Windows */}
         <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block mb-1">
+            <label className="font-mono text-[10px] uppercase font-bold text-[var(--text-secondary)] block mb-1">
               Available From (Optional)
             </label>
             <input
               type="datetime-local"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full p-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-800 dark:text-slate-200"
+              className="w-full p-2.5 rounded-xl font-mono text-xs bg-[var(--bg-tray)] border border-[var(--border-hairline)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-signal)] text-[var(--text-primary)]"
             />
           </div>
 
           <div>
-            <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block mb-1">
+            <label className="font-mono text-[10px] uppercase font-bold text-[var(--text-secondary)] block mb-1">
               Available Until (Optional)
             </label>
             <input
               type="datetime-local"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full p-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-800 dark:text-slate-200"
+              className="w-full p-2.5 rounded-xl font-mono text-xs bg-[var(--bg-tray)] border border-[var(--border-hairline)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-signal)] text-[var(--text-primary)]"
             />
           </div>
         </div>
 
-        {/* Exam Configuration Toggles */}
-        <div className="pt-4 border-t border-slate-100 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <label className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-slate-100/70 transition-colors">
-            <input
-              type="checkbox"
-              checked={randomizeQuestions}
-              onChange={(e) => setRandomizeQuestions(e.target.checked)}
-              className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300"
-            />
-            <div>
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
-                Shuffle Questions
-              </span>
-              <span className="text-[11px] text-slate-500">
-                Randomize question presentation order for each student
-              </span>
-            </div>
-          </label>
-
-          <label className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-slate-100/70 transition-colors">
-            <input
-              type="checkbox"
-              checked={randomizeOptions}
-              onChange={(e) => setRandomizeOptions(e.target.checked)}
-              className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300"
-            />
-            <div>
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
-                Shuffle Options
-              </span>
-              <span className="text-[11px] text-slate-500">
-                Randomize choice choices for multiple choice questions
-              </span>
-            </div>
-          </label>
-
-          <label className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-slate-100/70 transition-colors">
-            <input
-              type="checkbox"
-              checked={allowReview}
-              onChange={(e) => setAllowReview(e.target.checked)}
-              className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300"
-            />
-            <div>
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
-                Allow Answer Review
-              </span>
-              <span className="text-[11px] text-slate-500">
-                Permit students to see correct answers post-submission
-              </span>
-            </div>
-          </label>
-
-          <label className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-slate-100/70 transition-colors">
-            <input
-              type="checkbox"
-              checked={autoSubmit}
-              onChange={(e) => setAutoSubmit(e.target.checked)}
-              className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300"
-            />
-            <div>
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
-                Auto-Submit on Timer Expiry
-              </span>
-              <span className="text-[11px] text-slate-500">
-                Automatically submit candidate attempt without data loss
-              </span>
-            </div>
-          </label>
+        <div className="pt-4 border-t border-[var(--border-hairline)] grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          {[
+            {
+              checked: randomizeQuestions,
+              onChange: setRandomizeQuestions,
+              title: 'Shuffle Questions',
+              desc: 'Randomize question order for each candidate',
+            },
+            {
+              checked: randomizeOptions,
+              onChange: setRandomizeOptions,
+              title: 'Shuffle Options',
+              desc: 'Randomize choices for MCQ items',
+            },
+            {
+              checked: allowReview,
+              onChange: setAllowReview,
+              title: 'Allow Answer Review',
+              desc: 'Permit students to view solutions after grading',
+            },
+            {
+              checked: autoSubmit,
+              onChange: setAutoSubmit,
+              title: 'Auto-Submit on Timer Expiry',
+              desc: 'Automatically submit attempt without data loss',
+            },
+          ].map((toggle, idx) => (
+            <label
+              key={idx}
+              className="flex items-center gap-3 p-3.5 rounded-xl bg-[var(--bg-tray)]/70 border border-[var(--border-hairline)] cursor-pointer hover:border-[var(--border-strong)] transition-colors"
+            >
+              <input
+                type="checkbox"
+                checked={toggle.checked}
+                onChange={(e) => toggle.onChange(e.target.checked)}
+                className="w-4 h-4 rounded accent-[var(--accent-signal)]"
+              />
+              <div>
+                <span className="text-xs font-bold text-[var(--text-primary)] block">
+                  {toggle.title}
+                </span>
+                <span className="text-[11px] text-[var(--text-secondary)]">{toggle.desc}</span>
+              </div>
+            </label>
+          ))}
         </div>
       </div>
 
-      {/* SECTION 2: Questions Cards List */}
-      <div className="space-y-6">
+      {/* SECTION 2: Question Cards */}
+      <div className="space-y-5">
         {questions.map((q, qIdx) => {
           const isActive = activeQuestionIndex === qIdx;
 
@@ -881,33 +834,28 @@ export const QuestionBuilderPage: React.FC = () => {
             <div
               key={qIdx}
               onClick={() => setActiveQuestionIndex(qIdx)}
-              className={`rounded-2xl border transition-all duration-200 overflow-hidden ${isActive
-                ? 'bg-white dark:bg-slate-900 border-l-8 border-l-blue-600 border-slate-300 dark:border-slate-700 shadow-lg'
-                : 'bg-white/80 dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm hover:border-slate-300 dark:hover:border-slate-700'
-                }`}
+              className={`gform-card overflow-hidden ${isActive ? 'is-active' : ''}`}
             >
-              {/* Question Card Content */}
               <div className="p-6 sm:p-7 space-y-5">
-                {/* Top Row: Question Number, Prompt & Type Selector */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <span className="w-8 h-8 rounded-xl bg-blue-100 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 font-extrabold text-sm flex items-center justify-center">
-                      {qIdx + 1}
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-8 h-8 rounded-lg bg-[var(--accent-signal)]/15 text-[var(--accent-signal)] font-mono font-bold text-sm flex items-center justify-center">
+                      {String(qIdx + 1).padStart(2, '0')}
                     </span>
-                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                    <span className="font-mono text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
                       Question {qIdx + 1} of {questions.length}
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    {/* Question Type Selector */}
+                  <div className="flex items-center gap-2.5">
                     <div className="relative">
                       <select
+                        aria-label={`Question ${qIdx + 1} type`}
                         value={q.type}
                         onChange={(e) =>
                           handleUpdateQuestion(qIdx, { type: e.target.value as QuestionType })
                         }
-                        className="appearance-none pl-3 pr-8 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                        className="appearance-none pl-3 pr-8 py-1.5 rounded-lg text-xs font-semibold bg-[var(--bg-tray)] border border-[var(--border-hairline)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-signal)]"
                       >
                         <option value="MCQ">Multiple Choice (Single)</option>
                         <option value="MULTIPLE_SELECT">Multiple Select (Checkboxes)</option>
@@ -917,12 +865,13 @@ export const QuestionBuilderPage: React.FC = () => {
                         <option value="SHORT_ANSWER">Short Answer</option>
                         <option value="LONG_ANSWER">Detailed 5-Marker Essay</option>
                       </select>
-                      <ChevronDown className="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                      <ChevronDown className="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] pointer-events-none" />
                     </div>
 
-                    {/* Marks Input */}
-                    <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-xl border border-slate-200 dark:border-slate-700">
-                      <span className="text-xs font-semibold text-slate-500">Marks:</span>
+                    <div className="flex items-center gap-1.5 bg-[var(--bg-tray)] px-2.5 py-1.5 rounded-lg border border-[var(--border-hairline)]">
+                      <span className="font-mono text-[11px] font-semibold text-[var(--text-secondary)]">
+                        Marks:
+                      </span>
                       <input
                         type="number"
                         min={1}
@@ -931,34 +880,38 @@ export const QuestionBuilderPage: React.FC = () => {
                         onChange={(e) =>
                           handleUpdateQuestion(qIdx, { marks: Math.max(1, Number(e.target.value)) })
                         }
-                        className="w-12 text-xs font-bold text-slate-900 dark:text-white bg-transparent focus:outline-none text-center"
+                        className="w-12 font-mono text-xs font-bold text-[var(--text-primary)] bg-transparent focus:outline-none text-center"
                       />
                     </div>
                   </div>
                 </div>
 
-                {/* Question Text Area */}
                 <div>
                   <textarea
                     rows={2}
                     placeholder={`Enter Question ${qIdx + 1} prompt here...`}
                     value={q.text}
                     onChange={(e) => handleUpdateQuestion(qIdx, { text: e.target.value })}
-                    className="w-full text-base sm:text-lg font-medium p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900 dark:text-white placeholder-slate-400 resize-none transition-all"
+                    className="w-full text-base sm:text-lg font-medium p-3.5 rounded-xl bg-[var(--bg-tray)] focus:bg-[var(--bg-surface)] border border-[var(--border-hairline)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-signal)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] resize-none transition-all"
                   />
                 </div>
 
-                {/* Optional Image URL Input & Preview */}
+                {/* Image Attachment */}
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <div className="flex items-center gap-2">
-                      <ImageIcon className="w-3.5 h-3.5 text-slate-400" />
-                      <span className="text-xs font-semibold text-slate-500">Image Diagram Attachment (Optional)</span>
+                      <ImageIcon className="w-3.5 h-3.5 text-[var(--text-tertiary)]" />
+                      <span className="font-mono text-[11px] font-semibold text-[var(--text-secondary)]">
+                        Diagram Attachment (Optional)
+                      </span>
                     </div>
-                    <label className={`cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg border transition-all ${uploadingImageIndex === qIdx
-                      ? 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed'
-                      : 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-900/50 hover:bg-blue-50 dark:hover:bg-blue-900/20'
-                      }`}>
+                    <label
+                      className={`cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-lg border transition-all ${
+                        uploadingImageIndex === qIdx
+                          ? 'bg-[var(--bg-tray)] text-[var(--text-tertiary)] cursor-not-allowed'
+                          : 'bg-[var(--bg-surface)] text-[#0891B2] dark:text-[#22D3EE] border-[#0891B2]/30 hover:bg-[#0891B2]/10'
+                      }`}
+                    >
                       {uploadingImageIndex === qIdx ? (
                         <>
                           <Loader2 className="w-3 h-3 animate-spin" />
@@ -988,14 +941,14 @@ export const QuestionBuilderPage: React.FC = () => {
                     placeholder="https://example.com/diagram.png or upload above"
                     value={q.imageUrl || ''}
                     onChange={(e) => handleUpdateQuestion(qIdx, { imageUrl: e.target.value })}
-                    className="w-full text-xs p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-800 dark:text-slate-200"
+                    className="w-full font-mono text-xs p-2.5 rounded-xl bg-[var(--bg-tray)] border border-[var(--border-hairline)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-signal)] text-[var(--text-primary)]"
                   />
                   {q.imageUrl && (
-                    <div className="mt-2.5 relative inline-block group">
+                    <div className="mt-2.5 relative inline-block">
                       <img
                         src={q.imageUrl}
                         alt="Question preview"
-                        className="max-h-40 rounded-xl border border-slate-200 dark:border-slate-700 object-contain shadow-sm"
+                        className="max-h-40 rounded-xl border border-[var(--border-hairline)] object-contain"
                         onError={(e) => {
                           (e.target as any).style.display = 'none';
                         }}
@@ -1003,7 +956,7 @@ export const QuestionBuilderPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleUpdateQuestion(qIdx, { imageUrl: '' })}
-                        className="absolute top-1.5 right-1.5 p-1 bg-slate-900/80 hover:bg-rose-600 text-white rounded-lg text-xs transition-colors"
+                        className="absolute top-1.5 right-1.5 p-1 bg-black/80 hover:bg-rose-600 text-white rounded-lg text-xs transition-colors"
                         title="Remove image"
                       >
                         <Trash2 className="w-3 h-3" />
@@ -1012,59 +965,54 @@ export const QuestionBuilderPage: React.FC = () => {
                   )}
                 </div>
 
-                {/* 1. MCQ Single Select & TRUE_FALSE Options */}
+                {/* MCQ & TRUE_FALSE */}
                 {(q.type === 'MCQ' || q.type === 'TRUE_FALSE') && (
                   <div className="space-y-3 pt-2">
-                    <div className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center justify-between">
-                      <span>Answer Choices (Select radio to set single correct answer)</span>
-                      <span className="text-[11px] font-medium text-slate-400">
-                        {q.options.length} {q.options.length === 1 ? 'choice' : 'choices'}
-                      </span>
+                    <div className="font-mono text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider flex items-center justify-between">
+                      <span>Answer Choices (Select correct option)</span>
+                      <span className="text-[var(--text-tertiary)]">{q.options.length} choices</span>
                     </div>
 
                     <div className="space-y-2">
                       {q.options.map((opt, oIdx) => (
                         <div
                           key={oIdx}
-                          className={`flex items-center gap-3 p-2.5 rounded-xl border transition-all ${opt.isCorrect
-                            ? 'bg-emerald-50/70 dark:bg-emerald-950/30 border-emerald-300 dark:border-emerald-800'
-                            : 'bg-slate-50/60 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700'
-                            }`}
+                          className={`flex items-center gap-3 p-2.5 rounded-xl border transition-all ${
+                            opt.isCorrect
+                              ? 'bg-emerald-500/10 border-emerald-500/35'
+                              : 'bg-[var(--bg-tray)]/50 border-[var(--border-hairline)]'
+                          }`}
                         >
-                          {/* Radio Button for Correct Answer */}
-                          <label className="cursor-pointer flex items-center gap-2 pl-1" title="Mark as correct answer">
+                          <label className="cursor-pointer flex items-center gap-2 pl-1">
                             <input
                               type="radio"
                               name={`correct-answer-q-${qIdx}`}
                               checked={opt.isCorrect}
                               onChange={() => handleSetCorrectOption(qIdx, oIdx)}
-                              className="w-4 h-4 text-emerald-600 focus:ring-emerald-500 border-slate-300"
+                              className="w-4 h-4 accent-emerald-600"
                             />
                             {opt.isCorrect && (
-                              <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider hidden sm:inline">
+                              <span className="font-mono text-[10px] font-bold text-emerald-700 dark:text-emerald-300 uppercase hidden sm:inline">
                                 Correct
                               </span>
                             )}
                           </label>
 
-                          {/* Option Text Input */}
                           <input
                             type="text"
                             disabled={q.type === 'TRUE_FALSE'}
                             placeholder={`Choice ${oIdx + 1}...`}
                             value={opt.text}
                             onChange={(e) => handleUpdateOptionText(qIdx, oIdx, e.target.value)}
-                            className="flex-1 text-sm bg-transparent border-0 focus:outline-none focus:ring-0 text-slate-900 dark:text-white font-medium"
+                            className="flex-1 text-sm bg-transparent border-0 focus:outline-none text-[var(--text-primary)] font-medium"
                           />
 
-                          {/* Remove Option Button (MCQ only) */}
                           {q.type === 'MCQ' && (
                             <button
                               type="button"
                               onClick={() => handleRemoveOption(qIdx, oIdx)}
                               disabled={q.options.length <= 2}
-                              title={q.options.length <= 2 ? 'Minimum 2 options required' : 'Remove choice'}
-                              className="p-1 rounded-lg text-slate-400 hover:text-rose-600 disabled:opacity-30 transition-colors"
+                              className="p-1 rounded-lg text-[var(--text-tertiary)] hover:text-rose-500 disabled:opacity-30 transition-colors"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
@@ -1073,12 +1021,11 @@ export const QuestionBuilderPage: React.FC = () => {
                       ))}
                     </div>
 
-                    {/* Add Option Button (MCQ only) */}
                     {q.type === 'MCQ' && q.options.length < 6 && (
                       <button
                         type="button"
                         onClick={() => handleAddOption(qIdx)}
-                        className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline pt-1"
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--accent-signal)] hover:underline pt-1"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span>Add Option</span>
@@ -1087,34 +1034,33 @@ export const QuestionBuilderPage: React.FC = () => {
                   </div>
                 )}
 
-                {/* 2. MULTIPLE_SELECT Options (Checkboxes) */}
+                {/* MULTIPLE_SELECT */}
                 {q.type === 'MULTIPLE_SELECT' && (
                   <div className="space-y-3 pt-2">
-                    <div className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center justify-between">
-                      <span>Multi-Select Choices (Check all options that are correct)</span>
-                      <span className="text-[11px] font-medium text-slate-400">
-                        {q.options.length} {q.options.length === 1 ? 'choice' : 'choices'}
-                      </span>
+                    <div className="font-mono text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider flex items-center justify-between">
+                      <span>Multi-Select Choices (Check all correct)</span>
+                      <span className="text-[var(--text-tertiary)]">{q.options.length} choices</span>
                     </div>
 
                     <div className="space-y-2">
                       {q.options.map((opt, oIdx) => (
                         <div
                           key={oIdx}
-                          className={`flex items-center gap-3 p-2.5 rounded-xl border transition-all ${opt.isCorrect
-                            ? 'bg-indigo-50/70 dark:bg-indigo-950/30 border-indigo-300 dark:border-indigo-800'
-                            : 'bg-slate-50/60 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700'
-                            }`}
+                          className={`flex items-center gap-3 p-2.5 rounded-xl border transition-all ${
+                            opt.isCorrect
+                              ? 'bg-[#0891B2]/10 border-[#0891B2]/35'
+                              : 'bg-[var(--bg-tray)]/50 border-[var(--border-hairline)]'
+                          }`}
                         >
-                          <label className="cursor-pointer flex items-center gap-2 pl-1" title="Toggle correct answer">
+                          <label className="cursor-pointer flex items-center gap-2 pl-1">
                             <input
                               type="checkbox"
                               checked={opt.isCorrect}
                               onChange={() => handleToggleCorrectOptionMulti(qIdx, oIdx)}
-                              className="w-4 h-4 text-indigo-600 focus:ring-indigo-500 rounded border-slate-300"
+                              className="w-4 h-4 rounded accent-[#0891B2]"
                             />
                             {opt.isCorrect && (
-                              <span className="text-[10px] font-bold text-indigo-700 dark:text-indigo-300 uppercase tracking-wider hidden sm:inline">
+                              <span className="font-mono text-[10px] font-bold text-[#0891B2] dark:text-[#22D3EE] uppercase hidden sm:inline">
                                 Correct
                               </span>
                             )}
@@ -1125,15 +1071,14 @@ export const QuestionBuilderPage: React.FC = () => {
                             placeholder={`Option ${oIdx + 1}...`}
                             value={opt.text}
                             onChange={(e) => handleUpdateOptionText(qIdx, oIdx, e.target.value)}
-                            className="flex-1 text-sm bg-transparent border-0 focus:outline-none focus:ring-0 text-slate-900 dark:text-white font-medium"
+                            className="flex-1 text-sm bg-transparent border-0 focus:outline-none text-[var(--text-primary)] font-medium"
                           />
 
                           <button
                             type="button"
                             onClick={() => handleRemoveOption(qIdx, oIdx)}
                             disabled={q.options.length <= 2}
-                            title={q.options.length <= 2 ? 'Minimum 2 options required' : 'Remove choice'}
-                            className="p-1 rounded-lg text-slate-400 hover:text-rose-600 disabled:opacity-30 transition-colors"
+                            className="p-1 rounded-lg text-[var(--text-tertiary)] hover:text-rose-500 disabled:opacity-30 transition-colors"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -1145,7 +1090,7 @@ export const QuestionBuilderPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleAddOption(qIdx)}
-                        className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline pt-1"
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0891B2] dark:text-[#22D3EE] hover:underline pt-1"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span>Add Option</span>
@@ -1154,20 +1099,19 @@ export const QuestionBuilderPage: React.FC = () => {
                   </div>
                 )}
 
-                {/* 3. FILL_BLANK Accepted Answers */}
+                {/* FILL_BLANK */}
                 {q.type === 'FILL_BLANK' && (
                   <div className="space-y-3 pt-2">
-                    <div className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center justify-between">
-                      <span>Accepted Answers for Fill in the Blank (Case-insensitive)</span>
-                      <span className="text-[11px] font-medium text-slate-400">
-                        {q.options.length} acceptable value{q.options.length > 1 ? 's' : ''}
-                      </span>
+                    <div className="font-mono text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
+                      Accepted Answers (Case-insensitive)
                     </div>
-
                     <div className="space-y-2">
                       {q.options.map((opt, oIdx) => (
-                        <div key={oIdx} className="flex items-center gap-3 p-2.5 rounded-xl border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50/40 dark:bg-emerald-950/20">
-                          <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400 pl-1">
+                        <div
+                          key={oIdx}
+                          className="flex items-center gap-3 p-2.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10"
+                        >
+                          <span className="font-mono text-xs font-bold text-emerald-700 dark:text-emerald-400 pl-1">
                             Accepted #{oIdx + 1}:
                           </span>
                           <input
@@ -1175,7 +1119,7 @@ export const QuestionBuilderPage: React.FC = () => {
                             placeholder="e.g. Mitochondria"
                             value={opt.text}
                             onChange={(e) => handleUpdateOptionText(qIdx, oIdx, e.target.value)}
-                            className="flex-1 text-sm bg-transparent border-0 focus:outline-none focus:ring-0 text-slate-900 dark:text-white font-medium"
+                            className="flex-1 text-sm bg-transparent border-0 focus:outline-none text-[var(--text-primary)] font-medium"
                           />
                           {q.options.length > 1 && (
                             <button
@@ -1184,7 +1128,7 @@ export const QuestionBuilderPage: React.FC = () => {
                                 const filtered = q.options.filter((_, i) => i !== oIdx);
                                 handleUpdateQuestion(qIdx, { options: filtered });
                               }}
-                              className="p-1 rounded-lg text-slate-400 hover:text-rose-600 transition-colors"
+                              className="p-1 rounded-lg text-[var(--text-tertiary)] hover:text-rose-500"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
@@ -1192,33 +1136,32 @@ export const QuestionBuilderPage: React.FC = () => {
                         </div>
                       ))}
                     </div>
-
                     <button
                       type="button"
-                      onClick={() => {
-                        const newOption: BuilderOption = {
-                          text: '',
-                          isCorrect: true,
-                          orderIndex: q.options.length
-                        };
-                        handleUpdateQuestion(qIdx, { options: [...q.options, newOption] });
-                      }}
+                      onClick={() =>
+                        handleUpdateQuestion(qIdx, {
+                          options: [
+                            ...q.options,
+                            { text: '', isCorrect: true, orderIndex: q.options.length },
+                          ],
+                        })
+                      }
                       className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline pt-1"
                     >
                       <Plus className="w-3.5 h-3.5" />
-                      <span>Add Alternative Spelling / Answer</span>
+                      <span>Add Alternative Answer</span>
                     </button>
                   </div>
                 )}
 
-                {/* 4. NUMERICAL Expected Solution */}
+                {/* NUMERICAL */}
                 {q.type === 'NUMERICAL' && (
-                  <div className="space-y-3 pt-2">
-                    <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                      <span>Exact Numerical Solution</span>
+                  <div className="space-y-2.5 pt-2">
+                    <div className="font-mono text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
+                      Exact Numerical Solution
                     </div>
-                    <div className="flex items-center gap-3 p-3 rounded-xl border border-blue-200 dark:border-blue-900/50 bg-blue-50/40 dark:bg-blue-950/20 max-w-md">
-                      <span className="text-xs font-bold text-blue-700 dark:text-blue-400">
+                    <div className="flex items-center gap-3 p-3 rounded-xl border border-[#0891B2]/35 bg-[#0891B2]/10 max-w-md">
+                      <span className="font-mono text-xs font-bold text-[#0891B2] dark:text-[#22D3EE]">
                         Target Value:
                       </span>
                       <input
@@ -1226,77 +1169,64 @@ export const QuestionBuilderPage: React.FC = () => {
                         step="any"
                         placeholder="e.g. 42 or 3.1415"
                         value={q.options[0]?.text || ''}
-                        onChange={(e) => {
-                          const updated = [
-                            { text: e.target.value, isCorrect: true, orderIndex: 0 }
-                          ];
-                          handleUpdateQuestion(qIdx, { options: updated });
-                        }}
-                        className="flex-1 text-sm bg-transparent border-0 focus:outline-none font-mono font-bold text-slate-900 dark:text-white"
+                        onChange={(e) =>
+                          handleUpdateQuestion(qIdx, {
+                            options: [{ text: e.target.value, isCorrect: true, orderIndex: 0 }],
+                          })
+                        }
+                        className="flex-1 text-sm bg-transparent border-0 focus:outline-none font-mono font-bold text-[var(--text-primary)]"
                       />
                     </div>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="font-mono text-[11px] text-[var(--text-tertiary)]">
                       Evaluated with floating-point tolerance of ±0.001 during auto-grading.
                     </p>
                   </div>
                 )}
 
-                {/* 5. Short Answer Info */}
                 {q.type === 'SHORT_ANSWER' && (
-                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 text-xs text-slate-500 space-y-1">
-                    <p className="font-semibold text-slate-700 dark:text-slate-300">
-                      Short Answer Question (1 - 2 Marks)
+                  <div className="p-4 rounded-xl bg-[var(--bg-tray)] border border-[var(--border-hairline)] text-xs text-[var(--text-secondary)]">
+                    <p className="font-bold text-[var(--text-primary)] mb-0.5">
+                      Short Answer Question
                     </p>
-                    <p>
-                      Candidates will be presented with a concise multi-line response textarea during the examination.
-                    </p>
+                    <p>Candidates receive a concise multi-line response box with live counters.</p>
                   </div>
                 )}
 
-                {/* 6. Long / Detailed 5-Marker Essay Info */}
                 {q.type === 'LONG_ANSWER' && (
-                  <div className="p-4 rounded-xl bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-xs text-indigo-800 dark:text-indigo-200 space-y-1">
-                    <div className="flex items-center justify-between">
-                      <p className="font-bold text-indigo-900 dark:text-indigo-100">
-                        Detailed 5-Marker Essay / Comprehensive Response
-                      </p>
-                      <span className="px-2 py-0.5 rounded-full bg-indigo-200/60 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 text-[10px] font-extrabold">
-                        5 Marks Default
-                      </span>
-                    </div>
-                    <p className="text-slate-600 dark:text-slate-400">
-                      Candidates will be provided with an expanded 10-line response textarea with live word and character counters.
+                  <div className="p-4 rounded-xl bg-[#0891B2]/10 border border-[#0891B2]/25 text-xs text-[var(--text-secondary)]">
+                    <p className="font-bold text-[var(--text-primary)] mb-0.5">
+                      Detailed 5-Marker Essay / Comprehensive Response
                     </p>
+                    <p>Candidates receive an expanded 8-row essay editor with live word counters.</p>
                   </div>
                 )}
 
-                {/* Explanation Input (Visible in Review) */}
-                <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
-                  <label className="text-xs font-semibold text-slate-500 flex items-center gap-1.5 mb-1.5">
+                {/* Solution Explanation */}
+                <div className="pt-2 border-t border-[var(--border-hairline)]">
+                  <label className="font-mono text-[11px] font-semibold text-[var(--text-secondary)] flex items-center gap-1.5 mb-1.5">
                     <HelpCircle className="w-3.5 h-3.5" />
-                    <span>Solution Explanation (Shown to students upon review if permitted)</span>
+                    <span>Solution Explanation (Shown on candidate review if permitted)</span>
                   </label>
                   <input
                     type="text"
                     placeholder="Provide solution context, reference citation, or rationale..."
                     value={q.explanation || ''}
                     onChange={(e) => handleUpdateQuestion(qIdx, { explanation: e.target.value })}
-                    className="w-full text-xs p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-800 dark:text-slate-200"
+                    className="w-full text-xs p-2.5 rounded-xl bg-[var(--bg-tray)] border border-[var(--border-hairline)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-signal)] text-[var(--text-primary)]"
                   />
                 </div>
               </div>
 
-              {/* Bottom Card Action Bar */}
-              <div className="px-6 py-3 bg-slate-50/70 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+              {/* Card Bottom Bar */}
+              <div className="px-6 py-3 bg-[var(--bg-tray)]/60 border-t border-[var(--border-hairline)] flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  {/* Reorder Buttons */}
-                  <div className="flex items-center gap-1 border-r border-slate-200 dark:border-slate-700 pr-3">
+                  <div className="flex items-center gap-1 border-r border-[var(--border-hairline)] pr-3">
                     <button
                       type="button"
                       onClick={() => handleMoveQuestionUp(qIdx)}
                       disabled={qIdx === 0}
                       title="Move Question Up"
-                      className="p-1 rounded-lg text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 disabled:opacity-30 transition-colors"
+                      className="p-1 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] disabled:opacity-30"
                     >
                       <ArrowUp className="w-4 h-4" />
                     </button>
@@ -1305,42 +1235,38 @@ export const QuestionBuilderPage: React.FC = () => {
                       onClick={() => handleMoveQuestionDown(qIdx)}
                       disabled={qIdx === questions.length - 1}
                       title="Move Question Down"
-                      className="p-1 rounded-lg text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 disabled:opacity-30 transition-colors"
+                      className="p-1 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] disabled:opacity-30"
                     >
                       <ArrowDown className="w-4 h-4" />
                     </button>
                   </div>
 
-                  {/* Required Switch */}
-                  <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-slate-600 dark:text-slate-400">
+                  <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-[var(--text-secondary)]">
                     <input
                       type="checkbox"
                       checked={q.isRequired}
                       onChange={(e) => handleUpdateQuestion(qIdx, { isRequired: e.target.checked })}
-                      className="w-3.5 h-3.5 rounded text-blue-600 focus:ring-blue-500 border-slate-300"
+                      className="w-3.5 h-3.5 rounded accent-[var(--accent-signal)]"
                     />
                     <span>Required</span>
                   </label>
                 </div>
 
                 <div className="flex items-center gap-1.5">
-                  {/* Duplicate Question */}
                   <button
                     type="button"
                     onClick={() => handleDuplicateQuestion(qIdx)}
                     title="Duplicate Question"
-                    className="p-1.5 rounded-lg text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-700 transition-colors"
+                    className="p-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)]"
                   >
                     <Copy className="w-4 h-4" />
                   </button>
-
-                  {/* Delete Question */}
                   <button
                     type="button"
                     onClick={() => handleDeleteQuestion(qIdx)}
                     disabled={questions.length <= 1}
                     title="Delete Question"
-                    className="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 disabled:opacity-30 transition-colors"
+                    className="p-1.5 rounded-lg text-[var(--text-secondary)] hover:text-rose-500 hover:bg-rose-500/10 disabled:opacity-30"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -1351,45 +1277,44 @@ export const QuestionBuilderPage: React.FC = () => {
         })}
       </div>
 
-      {/* Floating Bottom Add Bar (Google Forms Style) */}
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-900/90 dark:bg-slate-800/95 backdrop-blur-md px-5 py-3 rounded-2xl shadow-2xl border border-slate-700 text-white flex items-center gap-4">
-        <span className="text-xs font-bold text-slate-300">
-          {questions.length} Question{questions.length === 1 ? '' : 's'} • {sumQuestionMarks} Marks
+      {/* Floating Bottom Action Dock */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 studio-glass px-4 sm:px-5 py-2.5 rounded-2xl shadow-2xl border border-[var(--border-strong)] flex items-center gap-3 sm:gap-4">
+        <span className="font-mono text-xs font-bold text-[var(--text-primary)] whitespace-nowrap tabular-nums">
+          {questions.length} Qs • {sumQuestionMarks} Marks
         </span>
 
-        <div className="h-4 w-px bg-slate-700"></div>
+        <div className="h-4 w-px bg-[var(--border-strong)]" />
 
         <button
           type="button"
           onClick={handleAddQuestion}
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-md transition-colors"
+          className="btn-signal px-3.5 py-1.5 text-xs inline-flex items-center gap-1.5 whitespace-nowrap"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-3.5 h-3.5" />
           <span>Add Question</span>
         </button>
 
         <button
           type="button"
           onClick={handleOpenAIModal}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 transition-colors"
+          className="btn-ghost-surface px-3 py-1.5 text-xs inline-flex items-center gap-1.5 whitespace-nowrap"
           title="Auto-generate questions with Gemini"
         >
-          <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-          <span>AI Generate</span>
+          <Sparkles className="w-3.5 h-3.5 text-[var(--accent-signal)]" />
+          <span className="hidden sm:inline">AI Studio</span>
         </button>
 
         <button
           type="button"
           onClick={() => handleSave(true)}
           disabled={saving || publishing}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-700 hover:bg-slate-600 text-white transition-colors disabled:opacity-50"
+          className="btn-ghost-surface px-3 py-1.5 text-xs inline-flex items-center gap-1.5 disabled:opacity-50"
         >
           <Save className="w-3.5 h-3.5" />
-          <span>Save</span>
+          <span className="hidden sm:inline">Save</span>
         </button>
       </div>
 
-      {/* AI Question Studio Assistant Modal (with PDF, Image & Prompt Chat) */}
       <AIChatAssistantModal
         isOpen={showAIModal}
         onClose={() => setShowAIModal(false)}

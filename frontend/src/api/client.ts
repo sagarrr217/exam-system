@@ -45,8 +45,9 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
   }
 
   if (response.status === 401 && !endpoint.startsWith('/auth/login') && !endpoint.startsWith('/auth/register')) {
-    // If token is invalid or expired, clear it so user can cleanly re-authenticate
+    // If token is invalid, expired, or belongs to a removed account, clear it and notify AuthContext
     localStorage.removeItem('token');
+    window.dispatchEvent(new Event('examsecure:unauthorized'));
   }
 
   if (!response.ok) {

@@ -13,15 +13,16 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ variant = 'segmented',
   if (variant === 'icon-only') {
     return (
       <button
+        type="button"
         onClick={toggleTheme}
-        className={`p-2 rounded-full text-slate-600 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10 active:scale-95 transition-all ${className}`}
+        className={`w-9 h-9 rounded-lg border border-[var(--border-hairline)] bg-[var(--bg-surface)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] active:scale-95 transition-all ${className}`}
         aria-label={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
-        title={`Current: ${theme} (${resolvedTheme}). Click to toggle.`}
+        title={`Theme: ${theme} (${resolvedTheme})`}
       >
         {resolvedTheme === 'dark' ? (
           <Sun className="w-4 h-4 text-amber-400" />
         ) : (
-          <Moon className="w-4 h-4 text-slate-700" />
+          <Moon className="w-4 h-4 text-[#141413]" />
         )}
       </button>
     );
@@ -37,23 +38,34 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ variant = 'segmented',
     <div
       role="radiogroup"
       aria-label="Color scheme preference"
-      className={`inline-flex items-center p-1 rounded-full bg-slate-200/70 dark:bg-zinc-800/80 backdrop-blur-md border border-black/5 dark:border-white/10 shadow-inner ${className}`}
+      className={`inline-flex items-center p-1 rounded-xl bg-[var(--bg-tray)] border border-[var(--border-hairline)] ${className}`}
     >
       {options.map((opt) => {
         const isActive = theme === opt.value;
         return (
           <button
             key={opt.value}
+            type="button"
             role="radio"
             aria-checked={isActive}
             onClick={() => setTheme(opt.value)}
-            className={`relative flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-all duration-200 ${
+            className={`relative flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-150 ${
               isActive
-                ? 'bg-white dark:bg-zinc-700 text-slate-900 dark:text-white shadow-sm shadow-black/10'
-                : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200'
+                ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm border border-[var(--border-hairline)]'
+                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-transparent'
             }`}
           >
-            <span className={isActive ? (opt.value === 'light' ? 'text-amber-500' : opt.value === 'dark' ? 'text-blue-400' : 'text-slate-700 dark:text-slate-200') : ''}>
+            <span
+              className={
+                isActive
+                  ? opt.value === 'light'
+                    ? 'text-amber-500'
+                    : opt.value === 'dark'
+                    ? 'text-[#22D3EE]'
+                    : 'text-[#E04F2D] dark:text-[#FF5A36]'
+                  : ''
+              }
+            >
               {opt.icon}
             </span>
             <span className="hidden sm:inline">{opt.label}</span>

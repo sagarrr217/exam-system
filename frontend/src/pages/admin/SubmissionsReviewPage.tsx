@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { 
-  Users, 
-  Search, 
-  Download, 
-  CheckCircle2, 
-  AlertCircle, 
-  ShieldAlert, 
+import {
+  Search,
+  Download,
+  CheckCircle2,
+  AlertCircle,
+  ShieldAlert,
   ExternalLink,
   RefreshCw,
   FileCheck,
-  ChevronDown
+  ChevronDown,
 } from 'lucide-react';
 import { api } from '../../api/client';
 import { useToast } from '../../context/ToastContext';
@@ -33,7 +32,6 @@ export const SubmissionsReviewPage: React.FC = () => {
   const [exporting, setExporting] = useState(false);
   const [selectedAttemptId, setSelectedAttemptId] = useState<string | null>(null);
 
-  // Load Exams for dropdown filter
   useEffect(() => {
     const fetchExams = async () => {
       try {
@@ -46,7 +44,6 @@ export const SubmissionsReviewPage: React.FC = () => {
     fetchExams();
   }, []);
 
-  // Fetch Submissions
   const fetchSubmissions = async (isManual = false) => {
     if (isManual) setRefreshing(true);
     else setLoading(true);
@@ -78,13 +75,12 @@ export const SubmissionsReviewPage: React.FC = () => {
 
   const handleExportCsv = async () => {
     if (!selectedExamId && exams.length > 0) {
-      // If none selected, default to first exam
       const firstId = exams[0].id;
       setExporting(true);
       try {
         await downloadExamCsv(firstId, exams[0].title);
         toast.success(`Exported CSV for "${exams[0].title}"`);
-      } catch (err: any) {
+      } catch {
         toast.error('Failed to export CSV');
       } finally {
         setExporting(false);
@@ -109,71 +105,113 @@ export const SubmissionsReviewPage: React.FC = () => {
     }
   };
 
-  // Filter Submissions
-  const filteredSubmissions = submissions.filter((sub) => {
-    const matchesSearch =
-      sub.student?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      sub.student?.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (sub.student?.studentId && sub.student.studentId.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      sub.exam?.title?.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredSubmissions = useMemo(() => {
+    return submissions.filter((sub) => {
+      const matchesSearch =
+        sub.student?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        sub.student?.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (sub.student?.studentId &&
+          sub.student.studentId.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        sub.exam?.title?.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesStatus =
-      statusFilter === 'ALL' ||
-      (statusFilter === 'PASSED' && sub.passed) ||
-      (statusFilter === 'FAILED' && !sub.passed);
+      const matchesStatus =
+        statusFilter === 'ALL' ||
+        (statusFilter === 'PASSED' && sub.passed) ||
+        (statusFilter === 'FAILED' && !sub.passed);
 
-    return matchesSearch && matchesStatus;
-  });
+      return matchesSearch && matchesStatus;
+    });
+  }, [submissions, searchQuery, statusFilter]);
+
+  // Score Distribution Histogram Buckets (0-25, 25-50, 50-75, 75-100)
+  const scoreBuckets = useMemo(() => {
+    const counts = [0, 0, 0, 0];
+    filteredSubmissions.forEach((s) => {
+      const pct = Number(s.percentage) || 0;
+      if (pct < 25) counts[0]++;
+      else if (pct < 50) counts[1]++;
+      else if (pct < 75) counts[2]++;
+      else counts[3]++;
+    });
+    const maxCount = Math.max(1, ...counts);
+    return [
+      { label: '0–24%', count: counts[0], pct: (counts[0] / maxCount) * 100 },
+      { label: '25–49%', count: counts[1], pct: (counts[1] / maxCount) * 100 },
+      { label: '50–74%', count: counts[2], pct: (counts[2] / maxCount) * 100 },
+      { label: '75–100%', count: counts[3], pct: (counts[3] / maxCount) * 100 },
+    ];
+  }, [filteredSubmissions]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 animate-fade-in">
-      {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-500 text-white flex items-center justify-center shadow-sm">
-            <Users className="w-5 h-5" />
-          </div>
-          <div>
-            <h1 className="text-xl sm:text-2xl font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] tracking-tight">
-              Candidate Submissions & Grading
-            </h1>
-            <p className="text-xs text-[#86868b]">
-              Candidate assessments, autograded scoring, and proctoring audit trail
-            </p>
-          </div>
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-[var(--border-hairline)]">
+        <div className="space-y-1.5">
+          <span className="font-mono text-[11px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded bg-[#0891B2]/10 dark:bg-[#22D3EE]/10 text-[#0891B2] dark:text-[#22D3EE] border border-[#0891B2]/20 dark:border-[#22D3EE]/25">
+            Evaluation & Gradebook
+          </span>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)] tracking-tight">
+            Candidate Submissions & Grading
+          </h1>
+          <p className="text-sm text-[var(--text-secondary)]">
+            Autograded scoring breakdown, proctoring risk classification, and cohort CSV exports.
+          </p>
         </div>
 
-        {/* Actions */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <button
+            type="button"
             onClick={() => fetchSubmissions(true)}
             disabled={loading || refreshing}
-            className="apple-btn-secondary px-3.5 py-1.5 text-xs flex items-center gap-1.5 disabled:opacity-50"
+            className="btn-ghost-surface px-3.5 py-2 text-xs inline-flex items-center gap-1.5 disabled:opacity-50"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
             <span>Refresh</span>
           </button>
 
           <button
+            type="button"
             onClick={handleExportCsv}
             disabled={exporting || (submissions.length === 0 && !selectedExamId)}
-            className="apple-btn-primary px-4 py-1.5 text-xs flex items-center gap-1.5 disabled:opacity-50"
+            className="btn-signal px-4 py-2 text-xs inline-flex items-center gap-1.5 disabled:opacity-50"
           >
             <Download className="w-3.5 h-3.5" />
-            <span>{exporting ? 'Exporting...' : 'Export Results'}</span>
+            <span>{exporting ? 'Exporting...' : 'Export CSV'}</span>
           </button>
         </div>
       </div>
 
-      {/* Filter and Search Bar */}
-      <div className="apple-card p-4 flex flex-col md:flex-row items-center justify-between gap-3">
-        {/* Left: Exam Filter Dropdown & Search */}
+      {/* Cohort Score Distribution Telemetry Strip */}
+      {!loading && filteredSubmissions.length > 0 && (
+        <div className="studio-card p-5 grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {scoreBuckets.map((b) => (
+            <div key={b.label} className="space-y-1.5">
+              <div className="flex items-center justify-between font-mono text-[11px]">
+                <span className="text-[var(--text-secondary)]">{b.label}</span>
+                <span className="font-bold text-[var(--text-primary)] tabular-nums">
+                  {b.count} {b.count === 1 ? 'attempt' : 'attempts'}
+                </span>
+              </div>
+              <div className="h-2 rounded-full bg-[var(--bg-tray)] overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-[#0891B2] dark:bg-[#22D3EE] transition-all duration-500"
+                  style={{ width: `${b.pct}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Filter Toolbar */}
+      <div className="studio-card p-4 flex flex-col md:flex-row items-center justify-between gap-3">
         <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto">
-          <div className="relative w-full sm:w-60">
+          <div className="relative w-full sm:w-64">
             <select
+              aria-label="Filter by examination"
               value={selectedExamId}
               onChange={(e) => handleExamFilterChange(e.target.value)}
-              className="w-full appearance-none pl-3.5 pr-8 py-1.5 rounded-full text-xs font-medium bg-black/5 dark:bg-white/10 border border-transparent focus:border-black/10 dark:focus:border-white/20 text-[#1d1d1f] dark:text-[#f5f5f7] focus:outline-none"
+              className="w-full appearance-none pl-3.5 pr-8 py-2 rounded-xl text-xs font-medium bg-[var(--bg-tray)] border border-[var(--border-hairline)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-strong)]"
             >
               <option value="">All Examinations ({exams.length})</option>
               {exams.map((exam) => (
@@ -182,69 +220,66 @@ export const SubmissionsReviewPage: React.FC = () => {
                 </option>
               ))}
             </select>
-            <ChevronDown className="w-3.5 h-3.5 absolute right-3 top-1/2 -translate-y-1/2 text-[#86868b] pointer-events-none" />
+            <ChevronDown className="w-3.5 h-3.5 absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] pointer-events-none" />
           </div>
 
-          {/* Search Candidate */}
-          <div className="relative w-full sm:w-60">
-            <Search className="w-3.5 h-3.5 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#86868b]" />
+          <div className="relative w-full sm:w-64">
+            <Search className="w-3.5 h-3.5 absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
             <input
               type="text"
+              aria-label="Search candidates"
               placeholder="Search candidate name or ID..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3.5 py-1.5 rounded-full text-xs bg-black/5 dark:bg-white/10 border border-transparent focus:border-black/10 dark:focus:border-white/20 text-[#1d1d1f] dark:text-[#f5f5f7] placeholder-[#86868b] focus:outline-none focus:bg-white dark:focus:bg-[#1c1c1e] transition-all"
+              className="w-full pl-9 pr-3.5 py-2 rounded-xl text-xs bg-[var(--bg-tray)] focus:bg-[var(--bg-surface)] border border-[var(--border-hairline)] focus:border-[var(--border-strong)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none transition-all"
             />
           </div>
         </div>
 
-        {/* Right: Pass / Fail Filter iOS Segmented Buttons */}
-        <div className="inline-flex p-1 rounded-full bg-black/5 dark:bg-white/10 border border-black/5 dark:border-white/5">
-          <button
-            onClick={() => setStatusFilter('ALL')}
-            className={`px-3.5 py-1 rounded-full text-xs font-medium transition-all ${
-              statusFilter === 'ALL'
-                ? 'bg-white dark:bg-[#2c2c2e] text-[#1d1d1f] dark:text-white shadow-sm'
-                : 'text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white'
-            }`}
-          >
-            All ({submissions.length})
-          </button>
-          <button
-            onClick={() => setStatusFilter('PASSED')}
-            className={`px-3.5 py-1 rounded-full text-xs font-medium transition-all ${
-              statusFilter === 'PASSED'
-                ? 'bg-white dark:bg-[#2c2c2e] text-emerald-600 dark:text-emerald-400 shadow-sm'
-                : 'text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white'
-            }`}
-          >
-            Passed ({submissions.filter((s) => s.passed).length})
-          </button>
-          <button
-            onClick={() => setStatusFilter('FAILED')}
-            className={`px-3.5 py-1 rounded-full text-xs font-medium transition-all ${
-              statusFilter === 'FAILED'
-                ? 'bg-white dark:bg-[#2c2c2e] text-[#ff3b30] dark:text-[#ff453a] shadow-sm'
-                : 'text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white'
-            }`}
-          >
-            Failed ({submissions.filter((s) => !s.passed).length})
-          </button>
+        <div className="inline-flex p-1 rounded-xl bg-[var(--bg-tray)] border border-[var(--border-hairline)]">
+          {(
+            [
+              { id: 'ALL', label: `All (${submissions.length})`, color: 'text-[var(--text-primary)]' },
+              {
+                id: 'PASSED',
+                label: `Passed (${submissions.filter((s) => s.passed).length})`,
+                color: 'text-emerald-600 dark:text-emerald-400',
+              },
+              {
+                id: 'FAILED',
+                label: `Failed (${submissions.filter((s) => !s.passed).length})`,
+                color: 'text-rose-600 dark:text-rose-400',
+              },
+            ] as const
+          ).map((f) => (
+            <button
+              key={f.id}
+              type="button"
+              onClick={() => setStatusFilter(f.id)}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                statusFilter === f.id
+                  ? `bg-[var(--bg-surface)] ${f.color} border border-[var(--border-hairline)] shadow-sm`
+                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-transparent'
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Submissions Roster Table */}
-      <div className="apple-card overflow-hidden">
+      {/* Submissions Table */}
+      <div className="studio-card overflow-hidden">
         {loading ? (
-          <div className="p-16 text-center text-[#86868b]">
-            <div className="w-6 h-6 border-2 border-[#0071e3] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-            <p className="text-xs">Loading candidate submissions...</p>
+          <div className="p-16 text-center text-[var(--text-secondary)]">
+            <div className="w-6 h-6 border-2 border-[var(--accent-signal)] border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+            <p className="font-mono text-xs">Loading candidate submissions...</p>
           </div>
         ) : filteredSubmissions.length === 0 ? (
-          <div className="p-16 text-center text-[#86868b]">
-            <FileCheck className="w-8 h-8 mx-auto mb-2 opacity-40 text-[#86868b]" />
-            <h3 className="text-sm font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">No submissions found</h3>
-            <p className="text-xs text-[#86868b] max-w-sm mx-auto mt-1">
+          <div className="p-16 text-center text-[var(--text-secondary)]">
+            <FileCheck className="w-8 h-8 mx-auto mb-2 opacity-40" />
+            <h3 className="text-sm font-bold text-[var(--text-primary)]">No submissions found</h3>
+            <p className="text-xs max-w-sm mx-auto mt-1">
               {searchQuery || statusFilter !== 'ALL' || selectedExamId
                 ? 'No candidate submissions matched your active filters.'
                 : 'Completed assessments will appear here once submitted.'}
@@ -253,7 +288,7 @@ export const SubmissionsReviewPage: React.FC = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs sm:text-sm">
-              <thead className="bg-black/[0.02] dark:bg-white/[0.02] text-[10px] font-semibold text-[#86868b] uppercase tracking-wider border-b border-black/5 dark:border-white/10">
+              <thead className="bg-[var(--bg-tray)]/70 font-mono text-[10px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider border-b border-[var(--border-hairline)]">
                 <tr>
                   <th className="px-6 py-3.5">Candidate</th>
                   <th className="px-4 py-3.5">Examination</th>
@@ -265,25 +300,23 @@ export const SubmissionsReviewPage: React.FC = () => {
                   <th className="px-6 py-3.5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-black/5 dark:divide-white/5">
+              <tbody className="divide-y divide-[var(--border-hairline)]">
                 {filteredSubmissions.map((sub) => {
-                  const focusLossCount = sub._count?.focusLossLogs ?? (sub.focusLossLogs ? sub.focusLossLogs.length : 0);
+                  const focusLossCount =
+                    sub._count?.focusLossLogs ??
+                    (sub.focusLossLogs ? sub.focusLossLogs.length : 0);
                   const threshold = sub.exam?.focusLossThreshold || 3;
                   const isHighRisk = focusLossCount >= threshold;
 
                   return (
-                    <tr
-                      key={sub.id}
-                      className="hover:bg-black/[0.015] dark:hover:bg-white/[0.02] transition-colors"
-                    >
-                      {/* Candidate */}
+                    <tr key={sub.id} className="hover:bg-[var(--bg-tray)]/40 transition-colors">
                       <td className="px-6 py-3.5">
-                        <div className="font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">
+                        <div className="font-semibold text-[var(--text-primary)]">
                           {sub.student?.name || 'Unknown Candidate'}
                         </div>
-                        <div className="text-[11px] text-[#86868b] flex items-center gap-2 mt-0.5">
+                        <div className="font-mono text-[11px] text-[var(--text-secondary)] flex items-center gap-2 mt-0.5">
                           {sub.student?.studentId && (
-                            <span className="font-mono bg-black/5 dark:bg-white/10 px-1.5 py-0.5 rounded text-[10px]">
+                            <span className="bg-[var(--bg-tray)] px-1.5 py-0.5 rounded text-[10px]">
                               {sub.student.studentId}
                             </span>
                           )}
@@ -291,44 +324,43 @@ export const SubmissionsReviewPage: React.FC = () => {
                         </div>
                       </td>
 
-                      {/* Examination */}
                       <td className="px-4 py-3.5 max-w-xs">
-                        <div className="font-medium text-[#1d1d1f] dark:text-[#f5f5f7] truncate">
+                        <div className="font-medium text-[var(--text-primary)] truncate">
                           {sub.exam?.title || 'Examination'}
                         </div>
-                        <div className="text-[11px] text-[#86868b]">
+                        <div className="font-mono text-[11px] text-[var(--text-secondary)]">
                           {sub.exam?.subject}
                         </div>
                       </td>
 
-                      {/* Score */}
-                      <td className="px-4 py-3.5 whitespace-nowrap">
-                        <div className="font-bold text-[#1d1d1f] dark:text-[#f5f5f7]">
-                          {sub.score} <span className="text-xs text-[#86868b] font-normal">/ {sub.exam?.totalMarks || 100}</span>
+                      <td className="px-4 py-3.5 whitespace-nowrap font-mono tabular-nums">
+                        <div className="font-bold text-[var(--text-primary)]">
+                          {sub.score}{' '}
+                          <span className="text-xs text-[var(--text-tertiary)] font-normal">
+                            / {sub.exam?.totalMarks || 100}
+                          </span>
                         </div>
-                        <div className="text-[11px] font-semibold text-[#0071e3] dark:text-[#0a84ff]">
+                        <div className="text-[11px] font-semibold text-[#0891B2] dark:text-[#22D3EE]">
                           {sub.percentage?.toFixed(1)}%
                         </div>
                       </td>
 
-                      {/* Status */}
                       <td className="px-4 py-3.5 whitespace-nowrap">
                         {sub.passed ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded font-mono text-[10px] font-bold uppercase bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/25">
                             <CheckCircle2 className="w-3 h-3" />
                             Passed
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded font-mono text-[10px] font-bold uppercase bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/25">
                             <AlertCircle className="w-3 h-3" />
                             Failed
                           </span>
                         )}
                       </td>
 
-                      {/* Answered Count */}
-                      <td className="px-4 py-3.5 whitespace-nowrap text-xs">
-                        <div className="font-medium text-[#1d1d1f] dark:text-[#f5f5f7]">
+                      <td className="px-4 py-3.5 whitespace-nowrap font-mono text-xs tabular-nums">
+                        <div className="font-medium text-[var(--text-primary)]">
                           {sub.totalAnswered} answered
                         </div>
                         {sub.totalUnanswered > 0 && (
@@ -338,30 +370,28 @@ export const SubmissionsReviewPage: React.FC = () => {
                         )}
                       </td>
 
-                      {/* Proctoring Risk */}
                       <td className="px-4 py-3.5 whitespace-nowrap">
                         {isHighRisk ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded font-mono text-[10px] font-bold uppercase bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/25">
                             <ShieldAlert className="w-3 h-3" />
                             High Risk ({focusLossCount})
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium text-[#86868b] bg-black/5 dark:bg-white/10">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded font-mono text-[10px] font-medium text-[var(--text-secondary)] bg-[var(--bg-tray)]">
                             {focusLossCount} {focusLossCount === 1 ? 'incident' : 'incidents'}
                           </span>
                         )}
                       </td>
 
-                      {/* Submitted At */}
-                      <td className="px-4 py-3.5 whitespace-nowrap text-xs text-[#86868b]">
+                      <td className="px-4 py-3.5 whitespace-nowrap font-mono text-xs text-[var(--text-secondary)]">
                         {formatDateTime(sub.submittedAt)}
                       </td>
 
-                      {/* Action */}
                       <td className="px-6 py-3.5 whitespace-nowrap text-right">
                         <button
+                          type="button"
                           onClick={() => setSelectedAttemptId(sub.id)}
-                          className="apple-btn-secondary px-3 py-1 text-xs inline-flex items-center gap-1"
+                          className="btn-ghost-surface px-3 py-1.5 text-xs inline-flex items-center gap-1"
                         >
                           <span>Review</span>
                           <ExternalLink className="w-3 h-3" />
@@ -376,7 +406,6 @@ export const SubmissionsReviewPage: React.FC = () => {
         )}
       </div>
 
-      {/* Submission Audit Modal */}
       <SubmissionDetailModal
         attemptId={selectedAttemptId}
         onClose={() => setSelectedAttemptId(null)}

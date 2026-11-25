@@ -1,100 +1,172 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useRoleGateway } from '../context/RoleGatewayContext';
 import { ThemeToggle } from './ThemeToggle';
-import { 
-  ShieldCheck, 
-  LogOut, 
-  Menu, 
-  X, 
-  BookOpen, 
-  LayoutDashboard, 
-  FileText, 
-  Users, 
-  Eye, 
-  User as UserIcon,
-  ChevronRight
+import { BrandMark } from './BrandMark';
+import {
+  LogOut,
+  Menu,
+  X,
+  BookOpen,
+  LayoutDashboard,
+  FileText,
+  Users,
+  Eye,
+  ChevronRight,
+  ArrowRight,
+  ArrowLeftRight,
+  Compass,
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const { user, logout, isStudent, isAdmin } = useAuth();
+  const { openGateway } = useRoleGateway();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // If inside an active exam session (/exam/...), do NOT show standard navigation
+  // Never render global nav inside active restricted exam room
   if (location.pathname.startsWith('/exam/')) {
     return null;
   }
 
-  // If not logged in, show sleek Apple-style public header
-  if (!user) {
+  const isLanding = location.pathname === '/' || location.pathname === '/get-started';
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
+  const navItemClass = (path: string, exact = false) => {
+    const isActive = exact
+      ? location.pathname === path
+      : location.pathname === path || (path !== '/' && location.pathname.startsWith(path));
+
+    return `inline-flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
+      isActive
+        ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border-hairline)] shadow-sm'
+        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 border border-transparent'
+    }`;
+  };
+
+  // Public or Landing Header
+  if (!user || isLanding) {
     return (
-      <header className="sticky top-0 z-40 w-full apple-glass-nav transition-colors duration-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#0071e3] to-[#409cff] flex items-center justify-center text-white shadow-sm shadow-[#0071e3]/20 group-hover:scale-105 active:scale-95 transition-all">
-              <ShieldCheck className="w-5 h-5" />
+      <header className="sticky top-0 z-40 w-full studio-nav transition-colors duration-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+          {/* Brand Logo */}
+          <Link to="/" className="flex items-center gap-3 group">
+            <BrandMark size="md" className="group-hover:scale-105 transition-transform" />
+            <div className="leading-tight">
+              <div className="font-display font-bold text-base sm:text-lg tracking-tight text-[var(--text-primary)] flex items-center gap-2">
+                <span>ExamSecure</span>
+                <span className="hidden sm:inline-flex items-center gap-1 font-mono text-[10px] font-medium px-1.5 py-0.5 rounded bg-[var(--bg-tray)] border border-[var(--border-hairline)] text-[var(--text-secondary)]">
+                  v4.2
+                </span>
+              </div>
+              <span className="hidden sm:block font-mono text-[10px] tracking-wider uppercase text-[var(--text-tertiary)]">
+                Dual-Interface Assessment Core
+              </span>
             </div>
-            <span className="font-semibold text-lg tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7]">
-              Exam<span className="text-[#0071e3] dark:text-[#0a84ff]">Secure</span>
-            </span>
           </Link>
-          <div className="flex items-center gap-3">
+
+          {/* Center Section Links on Landing */}
+          {isLanding && (
+            <nav className="hidden lg:flex items-center gap-1 text-xs font-medium text-[var(--text-secondary)]">
+              <a
+                href="#sandbox"
+                className="px-3 py-1.5 rounded-lg hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              >
+                Live Sandbox
+              </a>
+              <a
+                href="#architecture"
+                className="px-3 py-1.5 rounded-lg hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              >
+                Architecture
+              </a>
+              <a
+                href="#interfaces"
+                className="px-3 py-1.5 rounded-lg hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              >
+                Dual Interfaces
+              </a>
+              <a
+                href="#workflow"
+                className="px-3 py-1.5 rounded-lg hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              >
+                Workflow
+              </a>
+            </nav>
+          )}
+
+          {/* Right Controls */}
+          <div className="flex items-center gap-2.5 sm:gap-3">
             <ThemeToggle variant="icon-only" />
-            <Link
-              to="/login"
-              className="text-sm font-medium text-[#1d1d1f] dark:text-[#f5f5f7] hover:text-[#0071e3] dark:hover:text-[#0a84ff] px-3.5 py-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-all"
-            >
-              Sign In
-            </Link>
-            <Link
-              to="/register"
-              className="text-sm font-medium text-white bg-[#0071e3] hover:bg-[#0077ed] dark:bg-[#0a84ff] dark:hover:bg-[#1a8eff] px-4 py-1.5 rounded-full shadow-sm shadow-blue-500/20 active:scale-95 transition-all"
-            >
-              Create Account
-            </Link>
+
+            {user ? (
+              <>
+                <button
+                  type="button"
+                  onClick={openGateway}
+                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] transition-colors"
+                >
+                  <ArrowLeftRight className="w-3.5 h-3.5" />
+                  <span>Switch Role</span>
+                </button>
+                <Link
+                  to={isAdmin ? '/admin' : '/student'}
+                  className="btn-signal px-4 py-2 text-xs sm:text-sm inline-flex items-center gap-1.5"
+                >
+                  <span>{isAdmin ? 'Admin Console' : 'Student Hub'}</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="hidden sm:inline-flex text-xs sm:text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] px-3 py-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                >
+                  Sign In
+                </Link>
+                <button
+                  type="button"
+                  onClick={openGateway}
+                  className="btn-signal px-4 py-2 text-xs sm:text-sm inline-flex items-center gap-1.5"
+                >
+                  <span>Get Started</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </>
+            )}
           </div>
         </div>
       </header>
     );
   }
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
-  const navItemClass = (path: string) => {
-    const isActive = location.pathname === path || (path !== '/' && location.pathname.startsWith(path));
-    return `inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all ${
-      isActive
-        ? 'bg-black/8 dark:bg-white/15 text-[#1d1d1f] dark:text-white shadow-sm shadow-black/5'
-        : 'text-[#86868b] dark:text-[#98989d] hover:text-[#1d1d1f] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10'
-    }`;
-  };
-
+  // Authenticated Workspace Navbar (Student or Admin)
   return (
-    <header className="sticky top-0 z-40 w-full apple-glass-nav transition-colors duration-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Left: Logo & Nav items */}
-        <div className="flex items-center gap-6 lg:gap-8">
-          <Link to={isAdmin ? '/admin' : '/student'} className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#0071e3] to-[#409cff] flex items-center justify-center text-white shadow-sm shadow-[#0071e3]/20 group-hover:scale-105 active:scale-95 transition-all">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <div>
-              <span className="font-semibold text-lg tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7]">
-                Exam<span className="text-[#0071e3] dark:text-[#0a84ff]">Secure</span>
+    <header className="sticky top-0 z-40 w-full studio-nav transition-colors duration-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+        {/* Left: Brand & Nav items */}
+        <div className="flex items-center gap-3 xl:gap-5 flex-shrink-0">
+          <Link to={isAdmin ? '/admin' : '/student'} className="flex items-center gap-2.5 group flex-shrink-0">
+            <BrandMark size="md" className="group-hover:scale-105 transition-transform" />
+            <div className="leading-tight">
+              <span className="font-display font-bold text-base sm:text-lg tracking-tight text-[var(--text-primary)]">
+                ExamSecure
               </span>
-              <span className="block text-[10px] font-medium tracking-wide text-[#86868b] dark:text-[#8e8e93] -mt-1">
+              <span className="block font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--accent-signal)]">
                 {isAdmin ? 'Admin Console' : 'Student Workspace'}
               </span>
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1 p-1 rounded-full bg-black/[0.03] dark:bg-white/[0.06] border border-black/[0.04] dark:border-white/[0.06]">
+          {/* Desktop Navigation (>= lg 1024px) */}
+          <nav className="hidden lg:flex items-center gap-1 p-1 rounded-xl bg-[var(--bg-tray)] border border-[var(--border-hairline)] flex-shrink-0">
             {isStudent && (
               <Link to="/student" className={navItemClass('/student')}>
                 <BookOpen className="w-3.5 h-3.5" />
@@ -104,7 +176,7 @@ export const Navbar: React.FC = () => {
 
             {isAdmin && (
               <>
-                <Link to="/admin" className={navItemClass('/admin')}>
+                <Link to="/admin" className={navItemClass('/admin', true)}>
                   <LayoutDashboard className="w-3.5 h-3.5" />
                   <span>Overview</span>
                 </Link>
@@ -114,7 +186,7 @@ export const Navbar: React.FC = () => {
                 </Link>
                 <Link to="/admin/builder" className={navItemClass('/admin/builder')}>
                   <FileText className="w-3.5 h-3.5" />
-                  <span>Question Builder</span>
+                  <span>Builder</span>
                 </Link>
                 <Link to="/admin/submissions" className={navItemClass('/admin/submissions')}>
                   <Users className="w-3.5 h-3.5" />
@@ -129,35 +201,61 @@ export const Navbar: React.FC = () => {
           </nav>
         </div>
 
-        {/* Right: Theme Toggle, User Profile & Actions */}
-        <div className="hidden md:flex items-center gap-3">
-          <ThemeToggle variant="segmented" />
+        {/* Right: Showcase, Switch Role, Theme Toggle, Profile & Sign Out */}
+        <div className="hidden lg:flex items-center gap-2 flex-shrink-0">
+          <Link
+            to="/"
+            className="w-9 h-9 rounded-lg border border-[var(--border-hairline)] bg-[var(--bg-surface)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] transition-all flex-shrink-0"
+            title="3D Showcase Landing"
+            aria-label="3D Showcase Landing"
+          >
+            <Compass className="w-4 h-4" />
+          </Link>
 
-          <div className="flex items-center gap-2.5 pl-3 border-l border-black/10 dark:border-white/10">
-            <div className="w-8 h-8 rounded-full bg-[#f2f2f7] dark:bg-[#2c2c2e] border border-black/5 dark:border-white/10 flex items-center justify-center text-[#1d1d1f] dark:text-[#f5f5f7] font-medium text-xs">
-              <UserIcon className="w-4 h-4 text-[#86868b] dark:text-[#98989d]" />
-            </div>
-            <div className="text-left text-xs leading-tight">
-              <div className="font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] flex items-center gap-1.5">
-                <span>{user.name}</span>
+          <button
+            type="button"
+            onClick={openGateway}
+            className="inline-flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-lg text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-[var(--bg-tray)] border border-[var(--border-hairline)] hover:border-[var(--border-strong)] transition-all whitespace-nowrap flex-shrink-0"
+            title="Switch between Student & Admin Workspaces"
+          >
+            <ArrowLeftRight className="w-3.5 h-3.5 text-[var(--accent-signal)]" />
+            <span className="hidden xl:inline">Switch Role</span>
+          </button>
+
+          <ThemeToggle variant="icon-only" />
+
+          <div className="flex items-center gap-2 pl-2 border-l border-[var(--border-hairline)]">
+            <div className="hidden xl:block text-right text-xs leading-tight max-w-[140px]">
+              <div className="font-semibold text-[var(--text-primary)] flex items-center justify-end gap-1.5">
+                <span className="truncate">{user.name}</span>
                 <span
-                  className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider ${
+                  className={`font-mono text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider border flex-shrink-0 ${
                     isAdmin
-                      ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20'
-                      : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20'
+                      ? 'bg-[var(--accent-signal)]/10 text-[var(--accent-signal)] border-[var(--accent-signal)]/25'
+                      : 'bg-[#0891B2]/10 dark:bg-[#22D3EE]/10 text-[#0891B2] dark:text-[#22D3EE] border-[#0891B2]/25 dark:border-[#22D3EE]/25'
                   }`}
                 >
                   {user.role}
                 </span>
               </div>
-              <div className="text-[#86868b] dark:text-[#8e8e93] text-[11px]">
-                {user.studentId ? `ID: ${user.studentId}` : user.email}
+              <div className="font-mono text-[10px] text-[var(--text-tertiary)] truncate">
+                {user.studentId ? user.studentId : user.email}
               </div>
             </div>
+            <span
+              className={`xl:hidden font-mono text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider border flex-shrink-0 ${
+                isAdmin
+                  ? 'bg-[var(--accent-signal)]/10 text-[var(--accent-signal)] border-[var(--accent-signal)]/25'
+                  : 'bg-[#0891B2]/10 dark:bg-[#22D3EE]/10 text-[#0891B2] dark:text-[#22D3EE] border-[#0891B2]/25 dark:border-[#22D3EE]/25'
+              }`}
+            >
+              {user.role}
+            </span>
 
             <button
+              type="button"
               onClick={handleLogout}
-              className="ml-1 p-2 rounded-full text-[#86868b] dark:text-[#98989d] hover:text-[#ff3b30] dark:hover:text-[#ff453a] hover:bg-black/5 dark:hover:bg-white/10 active:scale-95 transition-all"
+              className="p-2 rounded-lg text-[var(--text-secondary)] hover:text-rose-500 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 active:scale-95 transition-all flex-shrink-0"
               title="Sign Out"
               aria-label="Sign Out"
             >
@@ -166,12 +264,13 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile menu and theme toggles */}
-        <div className="md:hidden flex items-center gap-2">
+        {/* Mobile & Tablet Controls (< lg 1024px) */}
+        <div className="lg:hidden flex items-center gap-2">
           <ThemeToggle variant="icon-only" />
           <button
+            type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-full text-[#1d1d1f] dark:text-[#f5f5f7] hover:bg-black/5 dark:hover:bg-white/10 active:scale-95 transition-all"
+            className="p-2 rounded-lg border border-[var(--border-hairline)] bg-[var(--bg-surface)] text-[var(--text-primary)] active:scale-95 transition-all"
             aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -179,23 +278,22 @@ export const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile sheet navigation menu */}
+      {/* Mobile & Tablet Navigation Sheet */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-black/10 dark:border-white/10 bg-white/95 dark:bg-[#1c1c1e]/95 backdrop-blur-2xl px-4 pt-3 pb-5 space-y-3 animate-fade-in">
-          {/* User Info Tile */}
-          <div className="p-3.5 bg-[#f5f5f7] dark:bg-[#2c2c2e] rounded-2xl border border-black/5 dark:border-white/10 flex items-center justify-between">
+        <div className="lg:hidden border-b border-[var(--border-hairline)] bg-[var(--bg-surface)] px-4 pt-3 pb-5 space-y-3 animate-fade-in">
+          <div className="p-3.5 bg-[var(--bg-tray)] rounded-xl border border-[var(--border-hairline)] flex items-center justify-between">
             <div>
-              <div className="font-semibold text-sm text-[#1d1d1f] dark:text-[#f5f5f7]">{user.name}</div>
-              <div className="text-xs text-[#86868b] dark:text-[#98989d]">{user.email}</div>
-              <div className="mt-1">
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
+              <div className="font-semibold text-sm text-[var(--text-primary)]">{user.name}</div>
+              <div className="font-mono text-[11px] text-[var(--text-secondary)]">{user.email}</div>
+              <span
+                className={`mt-1.5 inline-block font-mono text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
                   isAdmin
-                    ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400'
-                    : 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                }`}>
-                  {user.role}
-                </span>
-              </div>
+                    ? 'bg-[var(--accent-signal)]/15 text-[var(--accent-signal)]'
+                    : 'bg-[#22D3EE]/15 text-[#0891B2] dark:text-[#22D3EE]'
+                }`}
+              >
+                {user.role}
+              </span>
             </div>
             <ThemeToggle variant="segmented" />
           </div>
@@ -205,84 +303,76 @@ export const Navbar: React.FC = () => {
               <Link
                 to="/student"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-[#1d1d1f] dark:text-[#f5f5f7] hover:bg-black/5 dark:hover:bg-white/10"
+                className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--bg-tray)]"
               >
                 <div className="flex items-center gap-2.5">
-                  <BookOpen className="w-4 h-4 text-[#0071e3] dark:text-[#0a84ff]" />
+                  <BookOpen className="w-4 h-4 text-[#0891B2] dark:text-[#22D3EE]" />
                   <span>My Examinations</span>
                 </div>
-                <ChevronRight className="w-4 h-4 text-[#86868b]" />
+                <ChevronRight className="w-4 h-4 text-[var(--text-tertiary)]" />
               </Link>
             )}
 
             {isAdmin && (
               <>
-                <Link
-                  to="/admin"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-[#1d1d1f] dark:text-[#f5f5f7] hover:bg-black/5 dark:hover:bg-white/10"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <LayoutDashboard className="w-4 h-4 text-[#0071e3] dark:text-[#0a84ff]" />
-                    <span>Dashboard Overview</span>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-[#86868b]" />
-                </Link>
-                <Link
-                  to="/admin/exams"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-[#1d1d1f] dark:text-[#f5f5f7] hover:bg-black/5 dark:hover:bg-white/10"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <BookOpen className="w-4 h-4 text-[#0071e3] dark:text-[#0a84ff]" />
-                    <span>Exams Management</span>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-[#86868b]" />
-                </Link>
-                <Link
-                  to="/admin/builder"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-[#1d1d1f] dark:text-[#f5f5f7] hover:bg-black/5 dark:hover:bg-white/10"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <FileText className="w-4 h-4 text-[#0071e3] dark:text-[#0a84ff]" />
-                    <span>Question Builder</span>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-[#86868b]" />
-                </Link>
-                <Link
-                  to="/admin/submissions"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-[#1d1d1f] dark:text-[#f5f5f7] hover:bg-black/5 dark:hover:bg-white/10"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <Users className="w-4 h-4 text-[#0071e3] dark:text-[#0a84ff]" />
-                    <span>Submissions & Grading</span>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-[#86868b]" />
-                </Link>
-                <Link
-                  to="/admin/logs"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-[#1d1d1f] dark:text-[#f5f5f7] hover:bg-black/5 dark:hover:bg-white/10"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <Eye className="w-4 h-4 text-[#0071e3] dark:text-[#0a84ff]" />
-                    <span>Proctoring Audit Logs</span>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-[#86868b]" />
-                </Link>
+                {[
+                  { to: '/admin', icon: LayoutDashboard, label: 'Dashboard Overview' },
+                  { to: '/admin/exams', icon: BookOpen, label: 'Exams Management' },
+                  { to: '/admin/builder', icon: FileText, label: 'Question Builder' },
+                  { to: '/admin/submissions', icon: Users, label: 'Submissions & Grading' },
+                  { to: '/admin/logs', icon: Eye, label: 'Proctoring Audit Logs' },
+                ].map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.to}
+                      to={item.to}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--bg-tray)]"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <Icon className="w-4 h-4 text-[var(--accent-signal)]" />
+                        <span>{item.label}</span>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-[var(--text-tertiary)]" />
+                    </Link>
+                  );
+                })}
               </>
             )}
+
+            <Link
+              to="/"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-tray)]"
+            >
+              <div className="flex items-center gap-2.5">
+                <Compass className="w-4 h-4" />
+                <span>3D Landing Showcase</span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-[var(--text-tertiary)]" />
+            </Link>
           </div>
 
-          <div className="pt-2 border-t border-black/10 dark:border-white/10">
+          <div className="pt-2 border-t border-[var(--border-hairline)] grid grid-cols-2 gap-2">
             <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                openGateway();
+              }}
+              className="flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-semibold text-[var(--text-primary)] bg-[var(--bg-tray)] border border-[var(--border-hairline)]"
+            >
+              <ArrowLeftRight className="w-4 h-4 text-[var(--accent-signal)]" />
+              <span>Switch Role</span>
+            </button>
+            <button
+              type="button"
               onClick={() => {
                 setMobileMenuOpen(false);
                 handleLogout();
               }}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium text-[#ff3b30] dark:text-[#ff453a] bg-rose-500/10 hover:bg-rose-500/15 active:scale-98 transition-all"
+              className="flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-semibold text-rose-500 bg-rose-500/10 border border-rose-500/20"
             >
               <LogOut className="w-4 h-4" />
               <span>Sign Out</span>

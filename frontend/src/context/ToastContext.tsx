@@ -50,34 +50,39 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   return (
     <ToastContext.Provider value={{ toasts, showToast, success, error, warning, info, removeToast }}>
       {children}
-      {/* Apple Dynamic Island Style Notification Banner */}
-      <div className="fixed top-5 inset-x-0 z-50 flex flex-col items-center gap-2 pointer-events-none px-4">
+      {/* Precision Telemetry Notification Stack */}
+      <div className="fixed top-5 inset-x-0 z-[70] flex flex-col items-center gap-2 pointer-events-none px-4">
         {toasts.map((toast) => {
           let Icon = Info;
-          let iconColor = 'text-[#0071e3] dark:text-[#0a84ff]';
+          let iconColor = 'text-[#0E7490] dark:text-[#22D3EE]';
+          let accentBorder = 'border-[var(--border-strong)]';
 
           if (toast.type === 'success') {
             Icon = CheckCircle2;
-            iconColor = 'text-[#34c759] dark:text-[#30d158]';
+            iconColor = 'text-[#15803D] dark:text-[#10B981]';
+            accentBorder = 'border-emerald-500/30';
           } else if (toast.type === 'error') {
             Icon = AlertCircle;
-            iconColor = 'text-[#ff3b30] dark:text-[#ff453a]';
+            iconColor = 'text-[#DC2626] dark:text-[#EF4444]';
+            accentBorder = 'border-rose-500/35';
           } else if (toast.type === 'warning') {
             Icon = AlertTriangle;
-            iconColor = 'text-[#ff9500] dark:text-[#ff9f0a]';
+            iconColor = 'text-[#D97706] dark:text-[#F59E0B]';
+            accentBorder = 'border-amber-500/35';
           }
 
           return (
             <div
               key={toast.id}
-              className="pointer-events-auto flex items-center gap-2.5 py-2.5 px-4 rounded-full apple-glass shadow-apple-card animate-apple-spring max-w-md w-auto text-xs sm:text-sm font-medium text-[#1d1d1f] dark:text-[#f5f5f7] border border-black/10 dark:border-white/15"
+              className={`pointer-events-auto flex items-center gap-2.5 py-2.5 px-4 rounded-xl studio-glass shadow-xl animate-apple-spring max-w-md w-auto text-xs sm:text-sm font-medium text-[var(--text-primary)] border ${accentBorder}`}
               role="alert"
             >
               <Icon className={`w-4 h-4 flex-shrink-0 ${iconColor}`} />
               <div className="flex-1 leading-snug">{toast.message}</div>
               <button
+                type="button"
                 onClick={() => removeToast(toast.id)}
-                className="text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white p-0.5 rounded-full transition-colors flex-shrink-0 ml-1"
+                className="text-[var(--text-tertiary)] hover:text-[var(--text-primary)] p-0.5 rounded-md transition-colors flex-shrink-0 ml-1"
                 aria-label="Dismiss notification"
               >
                 <X className="w-3.5 h-3.5" />

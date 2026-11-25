@@ -13,30 +13,31 @@ export const QuestionPalette: React.FC<QuestionPaletteProps> = ({
   questions,
   currentQuestionIndex,
   onSelectQuestion,
-  answers
+  answers,
 }) => {
-  // Compute counts
   let answeredCount = 0;
   let reviewCount = 0;
   let unansweredCount = 0;
 
   questions.forEach((q) => {
     const ans = answers[q.id];
-    const isAnswered = ans && (ans.selectedOptionId != null || (ans.textAnswer && ans.textAnswer.trim().length > 0 && ans.textAnswer.trim() !== '[]'));
+    const isAnswered =
+      ans &&
+      (ans.selectedOptionId != null ||
+        (ans.textAnswer && ans.textAnswer.trim().length > 0 && ans.textAnswer.trim() !== '[]'));
     const isReview = ans?.isMarkedForReview;
 
-    if (isReview) {
-      reviewCount++;
-    } else if (isAnswered) {
-      answeredCount++;
-    } else {
-      unansweredCount++;
-    }
+    if (isReview) reviewCount++;
+    else if (isAnswered) answeredCount++;
+    else unansweredCount++;
   });
 
   const getQuestionStatus = (q: Question) => {
     const ans = answers[q.id];
-    const isAnswered = ans && (ans.selectedOptionId != null || (ans.textAnswer && ans.textAnswer.trim().length > 0 && ans.textAnswer.trim() !== '[]'));
+    const isAnswered =
+      ans &&
+      (ans.selectedOptionId != null ||
+        (ans.textAnswer && ans.textAnswer.trim().length > 0 && ans.textAnswer.trim() !== '[]'));
     const isReview = ans?.isMarkedForReview;
 
     if (isReview) return 'review';
@@ -45,61 +46,76 @@ export const QuestionPalette: React.FC<QuestionPaletteProps> = ({
   };
 
   return (
-    <div className="apple-card p-5">
-      <h3 className="font-semibold text-xs sm:text-sm text-[#1d1d1f] dark:text-[#f5f5f7] mb-3">
-        Question Navigation
-      </h3>
+    <div className="studio-card p-5 space-y-4">
+      <div className="flex items-center justify-between">
+        <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
+          Question Matrix
+        </h3>
+        <span className="font-mono text-[10px] text-[var(--text-tertiary)]">
+          {questions.length} Total
+        </span>
+      </div>
 
-      {/* iOS Segmented Status Counters */}
-      <div className="grid grid-cols-3 gap-1.5 mb-4 p-2 rounded-2xl bg-black/[0.03] dark:bg-white/[0.04] text-center text-xs">
+      {/* Status Counters */}
+      <div className="grid grid-cols-3 gap-1.5 p-2.5 rounded-xl bg-[var(--bg-tray)] border border-[var(--border-hairline)] text-center">
         <div className="flex flex-col items-center">
-          <div className="flex items-center gap-1 text-[#34c759] dark:text-[#30d158] font-semibold text-xs">
+          <div className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-mono font-bold text-xs tabular-nums">
             <CheckCircle2 className="w-3 h-3" />
             <span>{answeredCount}</span>
           </div>
-          <span className="text-[10px] text-[#86868b] mt-0.5">Answered</span>
+          <span className="font-mono text-[9px] uppercase text-[var(--text-tertiary)] mt-0.5">
+            Done
+          </span>
         </div>
 
-        <div className="flex flex-col items-center border-x border-black/5 dark:border-white/10">
-          <div className="flex items-center gap-1 text-[#ff9500] dark:text-[#ff9f0a] font-semibold text-xs">
+        <div className="flex flex-col items-center border-x border-[var(--border-hairline)]">
+          <div className="flex items-center gap-1 text-amber-600 dark:text-amber-400 font-mono font-bold text-xs tabular-nums">
             <Bookmark className="w-3 h-3" />
             <span>{reviewCount}</span>
           </div>
-          <span className="text-[10px] text-[#86868b] mt-0.5">Review</span>
+          <span className="font-mono text-[9px] uppercase text-[var(--text-tertiary)] mt-0.5">
+            Flagged
+          </span>
         </div>
 
         <div className="flex flex-col items-center">
-          <div className="flex items-center gap-1 text-[#86868b] font-semibold text-xs">
+          <div className="flex items-center gap-1 text-[var(--text-secondary)] font-mono font-bold text-xs tabular-nums">
             <HelpCircle className="w-3 h-3" />
             <span>{unansweredCount}</span>
           </div>
-          <span className="text-[10px] text-[#86868b] mt-0.5">Pending</span>
+          <span className="font-mono text-[9px] uppercase text-[var(--text-tertiary)] mt-0.5">
+            Open
+          </span>
         </div>
       </div>
 
-      {/* Number Buttons Grid */}
-      <div className="grid grid-cols-5 gap-2 max-h-[380px] overflow-y-auto p-1">
+      {/* Number Grid */}
+      <div className="grid grid-cols-5 gap-2 max-h-[360px] overflow-y-auto p-1">
         {questions.map((question, index) => {
           const status = getQuestionStatus(question);
           const isActive = index === currentQuestionIndex;
 
-          let btnClasses = 'border text-xs font-semibold rounded-xl h-9 w-full flex items-center justify-center active:scale-95 transition-all ';
+          let btnClasses =
+            'border font-mono text-xs font-bold rounded-lg h-9 w-full flex items-center justify-center active:scale-95 transition-all ';
 
           if (isActive) {
-            btnClasses += 'ring-2 ring-[#0071e3] dark:ring-[#0a84ff] ring-offset-2 ring-offset-[#f5f5f7] dark:ring-offset-black ';
+            btnClasses +=
+              'ring-2 ring-[var(--accent-signal)] ring-offset-2 ring-offset-[var(--bg-canvas)] ';
           }
 
           if (status === 'answered') {
-            btnClasses += 'bg-[#34c759] dark:bg-[#30d158] border-transparent text-white shadow-sm shadow-emerald-500/20';
+            btnClasses += 'bg-emerald-600 dark:bg-emerald-500 border-transparent text-white';
           } else if (status === 'review') {
-            btnClasses += 'bg-[#ff9500] dark:bg-[#ff9f0a] border-transparent text-white shadow-sm shadow-amber-500/20';
+            btnClasses += 'bg-amber-500 border-transparent text-white';
           } else {
-            btnClasses += 'bg-black/5 dark:bg-white/10 border-black/5 dark:border-white/10 text-[#1d1d1f] dark:text-[#f5f5f7] hover:bg-black/10 dark:hover:bg-white/15';
+            btnClasses +=
+              'bg-[var(--bg-tray)] border-[var(--border-hairline)] text-[var(--text-primary)] hover:border-[var(--border-strong)]';
           }
 
           return (
             <button
               key={question.id}
+              type="button"
               onClick={() => onSelectQuestion(index)}
               className={btnClasses}
               title={`Question ${index + 1} (${status})`}
@@ -110,23 +126,29 @@ export const QuestionPalette: React.FC<QuestionPaletteProps> = ({
         })}
       </div>
 
-      {/* Legend */}
-      <div className="mt-4 pt-3.5 border-t border-black/5 dark:border-white/10 space-y-1.5 text-[11px] text-[#86868b]">
-        <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-[#34c759] flex-shrink-0" />
-          <span>Answered</span>
+      {/* Legend & Keyboard Hint */}
+      <div className="pt-3.5 border-t border-[var(--border-hairline)] space-y-2 text-[11px] text-[var(--text-secondary)]">
+        <div className="grid grid-cols-2 gap-1.5">
+          <div className="flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-sm bg-emerald-500 flex-shrink-0" />
+            <span>Answered</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-sm bg-amber-500 flex-shrink-0" />
+            <span>Flagged</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-sm bg-[var(--bg-tray)] border border-[var(--border-strong)] flex-shrink-0" />
+            <span>Open</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-sm border-2 border-[var(--accent-signal)] flex-shrink-0" />
+            <span>Active</span>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-[#ff9500] flex-shrink-0" />
-          <span>Marked for Review</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-black/15 dark:bg-white/20 flex-shrink-0" />
-          <span>Unanswered</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full border-2 border-[#0071e3] dark:border-[#0a84ff] flex-shrink-0" />
-          <span>Active Target</span>
+        <div className="pt-2 border-t border-[var(--border-hairline)] font-mono text-[10px] text-[var(--text-tertiary)] flex items-center justify-between">
+          <span>KEYS: ← / → NAV</span>
+          <span>M FLAG</span>
         </div>
       </div>
     </div>
