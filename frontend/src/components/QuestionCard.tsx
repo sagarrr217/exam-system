@@ -1,428 +1,263 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Question, StudentAnswer, Option } from '../types';
-import {
-  Bookmark,
-  RotateCcw,
-  ArrowLeft,
-  ArrowRight,
-  Check,
-  X,
-  Image as ImageIcon,
-  CheckSquare,
-  Square,
-  Hash,
-  PenTool,
-  AlignLeft,
-  FileText,
-} from 'lucide-react';
+import React from 'react';
+import { Bookmark, Check, Eraser } from 'lucide-react';
+import { Question } from '../types';
+import { Badge } from './ui/Badge';
+import { Button } from './ui/Button';
+import { cn } from './ui/cn';
+
+interface AnswerDraft {
+  selectedOptionId?: string;
+  textAnswer?: string;
+  isMarkedForReview: boolean;
+}
 
 interface QuestionCardProps {
   question: Question;
-  questionIndex: number;
+  index: number;
   totalQuestions: number;
-  answer?: StudentAnswer;
-  onOptionSelect: (optionId: string) => void;
-  onTextAnswerChange: (text: string) => void;
-  onToggleReview: () => void;
-  onClearAnswer: () => void;
-  onPrev: () => void;
-  onNext: () => void;
-  hasPrev: boolean;
-  hasNext: boolean;
-  disabled?: boolean;
+  answer: AnswerDraft;
+  onAnswerChange: (next: Partial<AnswerDraft>) => void;
+}
+
+const TYPE_LABELS: Record<string, string> = {
+  MCQ: 'Multiple Choice',
+  MULTIPLE_SELECT: 'Multiple Select',
+  TRUE_FALSE: 'True / False',
+  FILL_BLANK: 'Fill in the Blank',
+  NUMERICAL: 'Numerical Value',
+  SHORT_ANSWER: 'Short Answer',
+  LONG_ANSWER: 'Long Essay',
+};
+
+function parseMultiSelect(textAnswer?: string): string[] {
+  if (!textAnswer) return [];
+  try {
+    const parsed = JSON.parse(textAnswer);
+    if (Array.isArray(parsed)) return parsed.map(String);
+  } catch {
+    // Fallback comma list
+  }
+  return textAnswer
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
 }
 
 export const QuestionCard: React.FC<QuestionCardProps> = ({
   question,
-  questionIndex,
+  index,
   totalQuestions,
   answer,
-  onOptionSelect,
-  onTextAnswerChange,
-  onToggleReview,
-  onClearAnswer,
-  onPrev,
-  onNext,
-  hasPrev,
-  hasNext,
-  disabled = false,
+  onAnswerChange,
 }) => {
-  const [localText, setLocalText] = useState(answer?.textAnswer || '');
+  const options = [...(question.options || [])].sort(
+    (a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0)
+  );
+  const multiSelected =
+    question.type === 'MULTIPLE_SELECT' ? parseMultiSelect(answer.textAnswer) : [];
 
-  useEffect(() => {
-    setLocalText(answer?.textAnswer || '');
-  }, [question.id, answer?.textAnswer]);
-
-  const handleTextBlur = () => {
-    if (localText !== (answer?.textAnswer || '')) {
-      onTextAnswerChange(localText);
-    }
+  const handleToggleMulti = (optionId: string) => {
+    const exists = multiSelected.includes(optionId);
+    const next = exists
+      ? multiSelected.filter((id) => id !== optionId)
+      : [...multiSelected, optionId];
+    onAnswerChange({ textAnswer: JSON.stringify(next), selectedOptionId: undefined });
   };
 
-  const getOptionLetter = (idx: number) => String.fromCharCode(65 + idx);
-  const isMarkedForReview = !!answer?.isMarkedForReview;
-
-  const selectedMultiIds: string[] = useMemo(() => {
-    if (!answer?.textAnswer) {
-      return answer?.selectedOptionId ? [answer.selectedOptionId] : [];
-    }
-    try {
-      if (answer.textAnswer.trim().startsWith('[')) {
-        return JSON.parse(answer.textAnswer);
-      }
-      return answer.textAnswer
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean);
-    } catch {
-      return answer.textAnswer ? [answer.textAnswer] : [];
-    }
-  }, [answer?.textAnswer, answer?.selectedOptionId]);
-
-  const handleToggleMulti = (optId: string) => {
-    const next = selectedMultiIds.includes(optId)
-      ? selectedMultiIds.filter((id) => id !== optId)
-      : [...selectedMultiIds, optId];
-    const serialized = JSON.stringify(next);
-    setLocalText(serialized);
-    onTextAnswerChange(serialized);
-  };
-
-  const hasAnyAnswer = Boolean(
-    answer?.selectedOptionId ||
-      (answer?.textAnswer &&
-        answer.textAnswer.trim().length > 0 &&
-        answer.textAnswer.trim() !== '[]') ||
-      (localText.trim().length > 0 && localText.trim() !== '[]')
+  const hasValue = Boolean(
+    answer.selectedOptionId ||
+      (question.type === 'MULTIPLE_SELECT'
+        ? multiSelected.length > 0
+        : (answer.textAnswer || '').trim().length > 0)
   );
 
-  const getQuestionTypeLabel = (type: string) => {
-    switch (type) {
-      case 'MCQ':
-        return 'Single Choice';
-      case 'MULTIPLE_SELECT':
-        return 'Multiple Select';
-      case 'TRUE_FALSE':
-        return 'True / False';
-      case 'FILL_BLANK':
-        return 'Fill in Blank';
-      case 'NUMERICAL':
-        return 'Numerical Answer';
-      case 'SHORT_ANSWER':
-        return 'Short Answer';
-      case 'LONG_ANSWER':
-        return 'Comprehensive Essay';
-      default:
-        return type.replace('_', ' ');
-    }
-  };
-
   return (
-    <div className="studio-card overflow-hidden flex flex-col">
-      {/* Header */}
-      <div className="px-6 py-4 border-b border-[var(--border-hairline)] bg-[var(--bg-tray)]/40 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2 sm:gap-2.5 font-mono">
-          <span className="px-3 py-1 rounded-lg bg-[var(--accent-signal)]/10 text-[var(--accent-signal)] border border-[var(--accent-signal)]/25 font-bold text-xs">
-            Q{String(questionIndex + 1).padStart(2, '0')} / {String(totalQuestions).padStart(2, '0')}
-          </span>
-          <span className="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-[var(--bg-tray)] text-[var(--text-secondary)] border border-[var(--border-hairline)]">
-            {question.marks} {question.marks === 1 ? 'Mark' : 'Marks'}
-          </span>
-          <span className="text-[11px] font-medium px-2.5 py-1 rounded-lg bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border-hairline)]">
-            {getQuestionTypeLabel(question.type)}
-          </span>
+    <div className="ui-card p-6 sm:p-8 space-y-6 bg-[var(--bg-surface)]">
+      {/* Header Row */}
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-[var(--border-default)]">
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge variant="brand">
+            Question {index + 1} of {totalQuestions}
+          </Badge>
+          <Badge variant="neutral">{TYPE_LABELS[question.type] || question.type}</Badge>
+          <Badge variant="success">+{question.marks} marks</Badge>
+          {question.isRequired && <Badge variant="warning">Required</Badge>}
         </div>
 
-        <button
-          type="button"
-          onClick={onToggleReview}
-          disabled={disabled}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all active:scale-95 ${
-            isMarkedForReview
-              ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/35'
-              : 'text-[var(--text-secondary)] border-[var(--border-hairline)] bg-[var(--bg-surface)] hover:border-[var(--border-strong)]'
-          }`}
+        <Button
+          variant={answer.isMarkedForReview ? 'primary' : 'secondary'}
+          size="sm"
+          onClick={() => onAnswerChange({ isMarkedForReview: !answer.isMarkedForReview })}
+          leftIcon={<Bookmark className="w-4 h-4" />}
         >
-          <Bookmark className={`w-3.5 h-3.5 ${isMarkedForReview ? 'fill-current text-amber-500' : ''}`} />
-          <span>{isMarkedForReview ? 'Flagged for Review' : 'Mark for Review'}</span>
-        </button>
+          {answer.isMarkedForReview ? 'Marked for Review' : 'Mark for Review'}
+        </Button>
       </div>
 
-      {/* Body */}
-      <div className="p-6 sm:p-8 flex-1 space-y-6">
-        <div className="text-base sm:text-lg font-semibold text-[var(--text-primary)] leading-relaxed">
+      {/* Prompt */}
+      <div className="space-y-4">
+        <p className="text-lg font-medium text-[var(--text-primary)] leading-relaxed whitespace-pre-wrap">
           {question.text}
-        </div>
+        </p>
 
         {question.imageUrl && (
-          <div className="max-w-xl mx-auto rounded-xl overflow-hidden border border-[var(--border-hairline)] bg-[var(--bg-tray)]/50 p-3">
-            <div className="flex items-center gap-1.5 mb-2 font-mono text-[10px] uppercase font-medium text-[var(--text-tertiary)]">
-              <ImageIcon className="w-3.5 h-3.5" />
-              <span>Reference Diagram</span>
-            </div>
+          <div className="rounded-[12px] border border-[var(--border-default)] bg-[var(--bg-tray)] p-3 inline-block max-w-full">
             <img
               src={question.imageUrl}
-              alt="Question illustration"
-              className="max-h-72 w-full object-contain rounded-lg"
+              alt={`Diagram for question ${index + 1}`}
+              className="max-h-80 w-auto rounded-[8px] object-contain"
             />
           </div>
         )}
+      </div>
 
-        <div className="pt-1">
-          {/* 1. MCQ */}
-          {question.type === 'MCQ' && (
-            <div className="space-y-2.5">
-              {question.options.map((option: Option, idx: number) => {
-                const isSelected = answer?.selectedOptionId === option.id;
-                return (
-                  <button
-                    key={option.id}
-                    type="button"
-                    disabled={disabled}
-                    onClick={() => onOptionSelect(option.id)}
-                    className={`w-full text-left p-3.5 sm:p-4 rounded-xl border transition-all flex items-start gap-3.5 active:scale-[0.99] ${
-                      isSelected
-                        ? 'border-[var(--accent-signal)] bg-[var(--accent-signal)]/10'
-                        : 'border-[var(--border-hairline)] bg-[var(--bg-tray)]/40 hover:border-[var(--border-strong)]'
-                    }`}
-                  >
-                    <div
-                      className={`w-7 h-7 rounded-lg font-mono flex items-center justify-center font-bold text-xs flex-shrink-0 transition-colors ${
-                        isSelected
-                          ? 'bg-[var(--accent-signal)] text-white'
-                          : 'bg-[var(--bg-surface)] text-[var(--text-secondary)] border border-[var(--border-hairline)]'
-                      }`}
-                    >
-                      {getOptionLetter(idx)}
-                    </div>
-                    <div className="flex-1 text-xs sm:text-sm font-medium text-[var(--text-primary)] leading-relaxed pt-1">
-                      {option.text}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          )}
+      {/* Answer Input Area */}
+      {(question.type === 'MCQ' || question.type === 'TRUE_FALSE') && (
+        <div className="space-y-3" role="radiogroup" aria-label={`Answer choices for question ${index + 1}`}>
+          {options.map((opt, optIdx) => {
+            const isSelected = answer.selectedOptionId === opt.id;
+            const letter =
+              question.type === 'TRUE_FALSE'
+                ? opt.text.slice(0, 1).toUpperCase()
+                : String.fromCharCode(65 + optIdx);
 
-          {/* 2. MULTIPLE_SELECT */}
-          {question.type === 'MULTIPLE_SELECT' && (
-            <div className="space-y-2.5">
-              <div className="font-mono text-[11px] font-semibold text-[#0891B2] dark:text-[#22D3EE] mb-2">
-                * Select all applicable choices:
-              </div>
-              {question.options.map((option: Option, idx: number) => {
-                const isSelected = selectedMultiIds.includes(option.id);
-                return (
-                  <button
-                    key={option.id}
-                    type="button"
-                    disabled={disabled}
-                    onClick={() => handleToggleMulti(option.id)}
-                    className={`w-full text-left p-3.5 sm:p-4 rounded-xl border transition-all flex items-start gap-3.5 active:scale-[0.99] ${
-                      isSelected
-                        ? 'border-[#0891B2] dark:border-[#22D3EE] bg-[#0891B2]/10 dark:bg-[#22D3EE]/10'
-                        : 'border-[var(--border-hairline)] bg-[var(--bg-tray)]/40 hover:border-[var(--border-strong)]'
-                    }`}
-                  >
-                    <div
-                      className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
-                        isSelected
-                          ? 'bg-[#0891B2] dark:bg-[#22D3EE] text-white dark:text-[#0A0B0E]'
-                          : 'bg-[var(--bg-surface)] text-[var(--text-tertiary)] border border-[var(--border-hairline)]'
-                      }`}
-                    >
-                      {isSelected ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4" />}
-                    </div>
-                    <div className="flex-1 text-xs sm:text-sm font-medium text-[var(--text-primary)] leading-relaxed pt-1">
-                      <span className="font-mono font-bold mr-2 text-[var(--text-tertiary)]">
-                        {getOptionLetter(idx)}.
-                      </span>
-                      {option.text}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
-          {/* 3. TRUE / FALSE */}
-          {question.type === 'TRUE_FALSE' && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              {question.options.map((option: Option) => {
-                const isSelected = answer?.selectedOptionId === option.id;
-                const isTrue = option.text.toLowerCase().includes('true');
-
-                return (
-                  <button
-                    key={option.id}
-                    type="button"
-                    disabled={disabled}
-                    onClick={() => onOptionSelect(option.id)}
-                    className={`p-5 rounded-xl border transition-all flex items-center justify-center gap-2.5 active:scale-98 ${
-                      isSelected
-                        ? isTrue
-                          ? 'border-emerald-500 bg-emerald-500/15 text-emerald-700 dark:text-emerald-300'
-                          : 'border-rose-500 bg-rose-500/15 text-rose-700 dark:text-rose-300'
-                        : 'border-[var(--border-hairline)] bg-[var(--bg-tray)]/40 hover:border-[var(--border-strong)] text-[var(--text-primary)]'
-                    }`}
-                  >
-                    {isTrue ? (
-                      <Check
-                        className={`w-5 h-5 ${
-                          isSelected ? 'text-emerald-500' : 'text-[var(--text-tertiary)]'
-                        }`}
-                      />
-                    ) : (
-                      <X
-                        className={`w-5 h-5 ${
-                          isSelected ? 'text-rose-500' : 'text-[var(--text-tertiary)]'
-                        }`}
-                      />
-                    )}
-                    <span className="text-base font-bold">{option.text}</span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
-          {/* 4. FILL_BLANK */}
-          {question.type === 'FILL_BLANK' && (
-            <div className="space-y-2.5">
-              <label className="flex items-center gap-1.5 font-mono text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
-                <PenTool className="w-3.5 h-3.5 text-[var(--accent-signal)]" />
-                <span>Fill in the missing answer:</span>
-              </label>
-              <input
-                type="text"
-                value={localText}
-                disabled={disabled}
-                onChange={(e) => setLocalText(e.target.value)}
-                onBlur={handleTextBlur}
-                placeholder="Type your response..."
-                className="w-full px-4 py-3 rounded-xl bg-[var(--bg-tray)] focus:bg-[var(--bg-surface)] border border-[var(--border-hairline)] text-sm font-medium text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-signal)] transition-all"
-              />
-              <div className="flex justify-between items-center font-mono text-[11px] text-[var(--text-tertiary)]">
-                <span>Case-insensitive academic match</span>
-                <span>Autosaves on blur</span>
-              </div>
-            </div>
-          )}
-
-          {/* 5. NUMERICAL */}
-          {question.type === 'NUMERICAL' && (
-            <div className="space-y-2.5">
-              <label className="flex items-center gap-1.5 font-mono text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
-                <Hash className="w-3.5 h-3.5 text-[#0891B2] dark:text-[#22D3EE]" />
-                <span>Enter numerical value:</span>
-              </label>
-              <input
-                type="number"
-                step="any"
-                value={localText}
-                disabled={disabled}
-                onChange={(e) => setLocalText(e.target.value)}
-                onBlur={handleTextBlur}
-                placeholder="e.g. 42 or 3.1415"
-                className="w-full max-w-sm px-4 py-3 rounded-xl bg-[var(--bg-tray)] focus:bg-[var(--bg-surface)] border border-[var(--border-hairline)] font-mono text-base font-bold text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[#0891B2] dark:focus:ring-[#22D3EE] transition-all"
-              />
-              <div className="flex justify-between items-center font-mono text-[11px] text-[var(--text-tertiary)]">
-                <span>Tolerance ±0.001</span>
-                <span>Autosaves on blur</span>
-              </div>
-            </div>
-          )}
-
-          {/* 6. SHORT_ANSWER */}
-          {question.type === 'SHORT_ANSWER' && (
-            <div className="space-y-2">
-              <label className="flex items-center gap-1.5 font-mono text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
-                <AlignLeft className="w-3.5 h-3.5 text-[var(--accent-signal)]" />
-                <span>Short Answer Response</span>
-              </label>
-              <textarea
-                rows={4}
-                value={localText}
-                disabled={disabled}
-                onChange={(e) => setLocalText(e.target.value)}
-                onBlur={handleTextBlur}
-                placeholder="Type your explanation here..."
-                className="w-full p-4 rounded-xl bg-[var(--bg-tray)] focus:bg-[var(--bg-surface)] border border-[var(--border-hairline)] text-sm font-medium text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-signal)] transition-all leading-relaxed"
-              />
-              <div className="flex justify-between items-center font-mono text-[11px] text-[var(--text-tertiary)]">
-                <span>{localText.trim().split(/\s+/).filter(Boolean).length} Words</span>
-                <span>{localText.length} Characters</span>
-              </div>
-            </div>
-          )}
-
-          {/* 7. LONG_ANSWER */}
-          {question.type === 'LONG_ANSWER' && (
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between">
-                <label className="flex items-center gap-1.5 font-mono text-xs font-semibold text-[#0891B2] dark:text-[#22D3EE] uppercase tracking-wider">
-                  <FileText className="w-3.5 h-3.5" />
-                  <span>Comprehensive 5-Marker Essay</span>
-                </label>
-                <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-[#0891B2]/10 text-[#0891B2] dark:text-[#22D3EE] border border-[#0891B2]/25">
-                  Descriptive
+            return (
+              <button
+                key={opt.id}
+                type="button"
+                role="radio"
+                aria-checked={isSelected}
+                onClick={() =>
+                  onAnswerChange({ selectedOptionId: opt.id, textAnswer: opt.text })
+                }
+                className={cn(
+                  'w-full min-h-[52px] px-4 py-3.5 rounded-[12px] border text-left flex items-center gap-4 transition-colors focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)]',
+                  isSelected
+                    ? 'border-[var(--accent-primary)] bg-blue-50/75 dark:bg-blue-950/50 text-[var(--text-primary)] font-semibold'
+                    : 'border-[var(--border-default)] bg-[var(--bg-canvas)] text-[var(--text-primary)] hover:border-[var(--border-strong)] hover:bg-[var(--bg-tray)]/50'
+                )}
+              >
+                <span
+                  className={cn(
+                    'w-8 h-8 rounded-[8px] font-mono text-sm font-bold flex items-center justify-center shrink-0 border',
+                    isSelected
+                      ? 'bg-[var(--accent-primary)] text-white border-transparent'
+                      : 'bg-[var(--bg-surface)] text-[var(--text-secondary)] border-[var(--border-default)]'
+                  )}
+                >
+                  {letter}
                 </span>
-              </div>
-              <textarea
-                rows={8}
-                value={localText}
-                disabled={disabled}
-                onChange={(e) => setLocalText(e.target.value)}
-                onBlur={handleTextBlur}
-                placeholder="Write your comprehensive analysis, architectural breakdown, or derivation here..."
-                className="w-full p-4 rounded-xl bg-[var(--bg-tray)] focus:bg-[var(--bg-surface)] border border-[var(--border-hairline)] text-sm font-medium text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[#0891B2] dark:focus:ring-[#22D3EE] transition-all leading-relaxed"
-              />
-              <div className="flex justify-between items-center font-mono text-[11px] text-[var(--text-tertiary)]">
-                <span>{localText.trim().split(/\s+/).filter(Boolean).length} Words</span>
-                <span>{localText.length} Characters</span>
-              </div>
-            </div>
-          )}
+                <span className="flex-1 text-base leading-snug">{opt.text}</span>
+              </button>
+            );
+          })}
         </div>
-      </div>
+      )}
 
-      {/* Footer Navigation */}
-      <div className="p-4 sm:p-5 bg-[var(--bg-tray)]/40 border-t border-[var(--border-hairline)] flex items-center justify-between gap-3">
-        <button
-          type="button"
-          onClick={() => {
-            setLocalText('');
-            onClearAnswer();
-          }}
-          disabled={disabled || !hasAnyAnswer}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:text-rose-500 disabled:opacity-30 transition-colors"
-        >
-          <RotateCcw className="w-3.5 h-3.5" />
-          <span>Clear</span>
-        </button>
-
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={onPrev}
-            disabled={!hasPrev || disabled}
-            className="btn-ghost-surface px-3.5 py-2 text-xs flex items-center gap-1.5 disabled:opacity-30 disabled:cursor-not-allowed"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Previous</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={onNext}
-            disabled={!hasNext || disabled}
-            className="btn-signal px-4 py-2 text-xs flex items-center gap-1.5 disabled:opacity-30 disabled:cursor-not-allowed"
-          >
-            <span>Next</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+      {question.type === 'MULTIPLE_SELECT' && (
+        <div className="space-y-3" role="group" aria-label={`Multiple select choices for question ${index + 1}`}>
+          <p className="text-sm font-medium text-[var(--text-secondary)]">
+            Select all options that apply:
+          </p>
+          {options.map((opt) => {
+            const checked = multiSelected.includes(opt.id);
+            return (
+              <button
+                key={opt.id}
+                type="button"
+                role="checkbox"
+                aria-checked={checked}
+                onClick={() => handleToggleMulti(opt.id)}
+                className={cn(
+                  'w-full min-h-[52px] px-4 py-3.5 rounded-[12px] border text-left flex items-center gap-4 transition-colors focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)]',
+                  checked
+                    ? 'border-[var(--accent-primary)] bg-blue-50/75 dark:bg-blue-950/50 text-[var(--text-primary)] font-semibold'
+                    : 'border-[var(--border-default)] bg-[var(--bg-canvas)] text-[var(--text-primary)] hover:border-[var(--border-strong)]'
+                )}
+              >
+                <span
+                  className={cn(
+                    'w-6 h-6 rounded-[6px] border-2 flex items-center justify-center shrink-0',
+                    checked
+                      ? 'bg-[var(--accent-primary)] border-[var(--accent-primary)] text-white'
+                      : 'border-[var(--border-strong)] bg-[var(--bg-surface)]'
+                  )}
+                  aria-hidden="true"
+                >
+                  {checked && <Check className="w-4 h-4" />}
+                </span>
+                <span className="flex-1 text-base leading-snug">{opt.text}</span>
+              </button>
+            );
+          })}
         </div>
-      </div>
+      )}
+
+      {(question.type === 'FILL_BLANK' || question.type === 'NUMERICAL' || question.type === 'SHORT_ANSWER') && (
+        <div className="space-y-2">
+          <label
+            htmlFor={`q-input-${question.id}`}
+            className="block text-sm font-semibold text-[var(--text-secondary)]"
+          >
+            {question.type === 'NUMERICAL' ? 'Enter numeric value' : 'Enter your response'}
+          </label>
+          <input
+            id={`q-input-${question.id}`}
+            type="text"
+            inputMode={question.type === 'NUMERICAL' ? 'decimal' : 'text'}
+            value={answer.textAnswer || ''}
+            onChange={(e) =>
+              onAnswerChange({ textAnswer: e.target.value, selectedOptionId: undefined })
+            }
+            placeholder={
+              question.type === 'NUMERICAL'
+                ? 'e.g. 42.5'
+                : 'Type your concise answer here...'
+            }
+            className="w-full min-h-[48px] px-4 rounded-[12px] border border-[var(--border-default)] bg-[var(--bg-canvas)] text-base text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent-primary)] focus:outline-none font-sans"
+          />
+        </div>
+      )}
+
+      {question.type === 'LONG_ANSWER' && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <label
+              htmlFor={`q-essay-${question.id}`}
+              className="block text-sm font-semibold text-[var(--text-secondary)]"
+            >
+              Written Response
+            </label>
+            <span className="text-xs font-mono text-[var(--text-muted)]">
+              {(answer.textAnswer || '').trim().split(/\s+/).filter(Boolean).length} words
+            </span>
+          </div>
+          <textarea
+            id={`q-essay-${question.id}`}
+            rows={7}
+            value={answer.textAnswer || ''}
+            onChange={(e) =>
+              onAnswerChange({ textAnswer: e.target.value, selectedOptionId: undefined })
+            }
+            placeholder="Compose your detailed explanation here..."
+            className="w-full p-4 rounded-[12px] border border-[var(--border-default)] bg-[var(--bg-canvas)] text-base text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent-primary)] focus:outline-none leading-relaxed"
+          />
+        </div>
+      )}
+
+      {/* Clear Action */}
+      {hasValue && (
+        <div className="pt-2 flex justify-end">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onAnswerChange({ selectedOptionId: undefined, textAnswer: '' })}
+            leftIcon={<Eraser className="w-4 h-4" />}
+          >
+            Clear Response
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

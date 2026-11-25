@@ -1,383 +1,256 @@
-import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { useRoleGateway } from '../context/RoleGatewayContext';
-import { ThemeToggle } from './ThemeToggle';
-import { BrandMark } from './BrandMark';
+import React, { useState, useEffect } from 'react';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
+  ArrowRight,
   LogOut,
+  ArrowLeftRight,
   Menu,
   X,
-  BookOpen,
-  LayoutDashboard,
-  FileText,
-  Users,
-  Eye,
-  ChevronRight,
-  ArrowRight,
-  ArrowLeftRight,
-  Compass,
+  ClipboardList,
+  Sparkles,
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { useRoleGateway } from '../context/RoleGatewayContext';
+import { useToast } from '../context/ToastContext';
+import { BrandMark } from './BrandMark';
+import { ThemeToggle } from './ThemeToggle';
+import { Button } from './ui/Button';
+import { Badge } from './ui/Badge';
+import { cn } from './ui/cn';
 
 export const Navbar: React.FC = () => {
-  const { user, logout, isStudent, isAdmin } = useAuth();
+  const { user, isStudent, logout } = useAuth();
   const { openGateway } = useRoleGateway();
-  const navigate = useNavigate();
+  const toast = useToast();
   const location = useLocation();
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Never render global nav inside active restricted exam room
-  if (location.pathname.startsWith('/exam/')) {
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname, location.hash]);
+
+  // Dedicated workspace chromes own their navigation
+  if (location.pathname.startsWith('/exam') || location.pathname.startsWith('/admin')) {
     return null;
   }
 
-  const isLanding = location.pathname === '/' || location.pathname === '/get-started';
-
   const handleLogout = () => {
     logout();
-    navigate('/');
+    toast.info('Signed out successfully');
+    navigate('/login');
   };
 
-  const navItemClass = (path: string, exact = false) => {
-    const isActive = exact
-      ? location.pathname === path
-      : location.pathname === path || (path !== '/' && location.pathname.startsWith(path));
+  return (
+    <header className="sticky top-0 z-[var(--z-sticky)] ui-nav">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+        {/* Left: Brand */}
+        <Link
+          to={isStudent && location.pathname.startsWith('/student') ? '/student' : '/'}
+          className="shrink-0 rounded-[12px] focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)]"
+        >
+          <BrandMark size="md" />
+        </Link>
 
-    return `inline-flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
-      isActive
-        ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border-hairline)] shadow-sm'
-        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 border border-transparent'
-    }`;
-  };
-
-  // Public or Landing Header
-  if (!user || isLanding) {
-    return (
-      <header className="sticky top-0 z-40 w-full studio-nav transition-colors duration-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-          {/* Brand Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <BrandMark size="md" className="group-hover:scale-105 transition-transform" />
-            <div className="leading-tight">
-              <div className="font-display font-bold text-base sm:text-lg tracking-tight text-[var(--text-primary)] flex items-center gap-2">
-                <span>ExamSecure</span>
-                <span className="hidden sm:inline-flex items-center gap-1 font-mono text-[10px] font-medium px-1.5 py-0.5 rounded bg-[var(--bg-tray)] border border-[var(--border-hairline)] text-[var(--text-secondary)]">
-                  v4.2
-                </span>
-              </div>
-              <span className="hidden sm:block font-mono text-[10px] tracking-wider uppercase text-[var(--text-tertiary)]">
-                Dual-Interface Assessment Core
-              </span>
-            </div>
-          </Link>
-
-          {/* Center Section Links on Landing */}
-          {isLanding && (
-            <nav className="hidden lg:flex items-center gap-1 text-xs font-medium text-[var(--text-secondary)]">
+        {/* Center Navigation (desktop only — zero multi-line wrapping) */}
+        <nav aria-label="Main navigation" className="hidden md:flex items-center gap-2">
+          {location.pathname === '/' ? (
+            <>
               <a
                 href="#sandbox"
-                className="px-3 py-1.5 rounded-lg hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                className="min-h-[44px] px-3.5 inline-flex items-center rounded-[10px] text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tray)] transition-colors"
               >
                 Live Sandbox
               </a>
               <a
-                href="#architecture"
-                className="px-3 py-1.5 rounded-lg hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                href="#capabilities"
+                className="min-h-[44px] px-3.5 inline-flex items-center rounded-[10px] text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tray)] transition-colors"
               >
-                Architecture
-              </a>
-              <a
-                href="#interfaces"
-                className="px-3 py-1.5 rounded-lg hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-              >
-                Dual Interfaces
+                Capabilities
               </a>
               <a
                 href="#workflow"
-                className="px-3 py-1.5 rounded-lg hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                className="min-h-[44px] px-3.5 inline-flex items-center rounded-[10px] text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tray)] transition-colors"
               >
-                Workflow
+                How It Works
               </a>
-            </nav>
+            </>
+          ) : isStudent ? (
+            <>
+              <NavLink
+                to="/student"
+                end
+                className={({ isActive }) =>
+                  cn(
+                    'min-h-[44px] px-3.5 inline-flex items-center gap-2 rounded-[10px] text-sm font-medium transition-colors',
+                    isActive
+                      ? 'bg-teal-50 text-[var(--accent-secondary)] font-semibold dark:bg-teal-950/60'
+                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tray)]'
+                  )
+                }
+              >
+                <ClipboardList className="w-4 h-4" aria-hidden="true" />
+                My Assessments
+              </NavLink>
+              <Link
+                to="/"
+                className="min-h-[44px] px-3.5 inline-flex items-center gap-2 rounded-[10px] text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tray)] transition-colors"
+              >
+                <Sparkles className="w-4 h-4" aria-hidden="true" />
+                3D Overview
+              </Link>
+            </>
+          ) : (
+            <Link
+              to="/"
+              className="min-h-[44px] px-3.5 inline-flex items-center rounded-[10px] text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tray)] transition-colors"
+            >
+              Overview
+            </Link>
+          )}
+        </nav>
+
+        {/* Right Actions */}
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <ThemeToggle />
+
+          {user ? (
+            <div className="hidden md:flex items-center gap-2.5">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={openGateway}
+                leftIcon={<ArrowLeftRight className="w-4 h-4" />}
+              >
+                Switch Role
+              </Button>
+              <Link
+                to={user.role === 'ADMIN' ? '/admin' : '/student'}
+                className="min-h-[44px] px-3.5 inline-flex items-center gap-2 rounded-[12px] border border-[var(--border-default)] bg-[var(--bg-surface)] hover:bg-[var(--bg-tray)] transition-colors"
+              >
+                <span className="text-sm font-semibold text-[var(--text-primary)] max-w-[140px] truncate">
+                  {user.name}
+                </span>
+                <Badge variant={user.role === 'ADMIN' ? 'brand' : 'teal'}>
+                  {user.role === 'ADMIN' ? 'Admin' : 'Student'}
+                </Badge>
+              </Link>
+              <button
+                type="button"
+                onClick={handleLogout}
+                aria-label="Sign out"
+                title="Sign out"
+                className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-[12px] border border-[var(--border-default)] text-[var(--text-secondary)] hover:text-[var(--accent-danger)] hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            </div>
+          ) : (
+            <div className="hidden sm:flex items-center gap-2">
+              <Link
+                to="/login"
+                className="min-h-[44px] px-4 inline-flex items-center rounded-[12px] text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tray)] transition-colors"
+              >
+                Sign In
+              </Link>
+              <Button
+                variant="primary"
+                size="md"
+                onClick={openGateway}
+                rightIcon={<ArrowRight className="w-4 h-4" />}
+              >
+                Get Started
+              </Button>
+            </div>
           )}
 
-          {/* Right Controls */}
-          <div className="flex items-center gap-2.5 sm:gap-3">
-            <ThemeToggle variant="icon-only" />
-
-            {user ? (
-              <>
-                <button
-                  type="button"
-                  onClick={openGateway}
-                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] transition-colors"
-                >
-                  <ArrowLeftRight className="w-3.5 h-3.5" />
-                  <span>Switch Role</span>
-                </button>
-                <Link
-                  to={isAdmin ? '/admin' : '/student'}
-                  className="btn-signal px-4 py-2 text-xs sm:text-sm inline-flex items-center gap-1.5"
-                >
-                  <span>{isAdmin ? 'Admin Console' : 'Student Hub'}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link
-                  to="/login"
-                  className="hidden sm:inline-flex text-xs sm:text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] px-3 py-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-                >
-                  Sign In
-                </Link>
-                <button
-                  type="button"
-                  onClick={openGateway}
-                  className="btn-signal px-4 py-2 text-xs sm:text-sm inline-flex items-center gap-1.5"
-                >
-                  <span>Get Started</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </>
+          {/* Mobile Compact CTA + Menu Toggle */}
+          <div className="flex md:hidden items-center gap-2">
+            {!user && (
+              <Button variant="primary" size="sm" onClick={openGateway}>
+                Get Started
+              </Button>
             )}
-          </div>
-        </div>
-      </header>
-    );
-  }
-
-  // Authenticated Workspace Navbar (Student or Admin)
-  return (
-    <header className="sticky top-0 z-40 w-full studio-nav transition-colors duration-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-        {/* Left: Brand & Nav items */}
-        <div className="flex items-center gap-3 xl:gap-5 flex-shrink-0">
-          <Link to={isAdmin ? '/admin' : '/student'} className="flex items-center gap-2.5 group flex-shrink-0">
-            <BrandMark size="md" className="group-hover:scale-105 transition-transform" />
-            <div className="leading-tight">
-              <span className="font-display font-bold text-base sm:text-lg tracking-tight text-[var(--text-primary)]">
-                ExamSecure
-              </span>
-              <span className="block font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--accent-signal)]">
-                {isAdmin ? 'Admin Console' : 'Student Workspace'}
-              </span>
-            </div>
-          </Link>
-
-          {/* Desktop Navigation (>= lg 1024px) */}
-          <nav className="hidden lg:flex items-center gap-1 p-1 rounded-xl bg-[var(--bg-tray)] border border-[var(--border-hairline)] flex-shrink-0">
-            {isStudent && (
-              <Link to="/student" className={navItemClass('/student')}>
-                <BookOpen className="w-3.5 h-3.5" />
-                <span>My Examinations</span>
-              </Link>
-            )}
-
-            {isAdmin && (
-              <>
-                <Link to="/admin" className={navItemClass('/admin', true)}>
-                  <LayoutDashboard className="w-3.5 h-3.5" />
-                  <span>Overview</span>
-                </Link>
-                <Link to="/admin/exams" className={navItemClass('/admin/exams')}>
-                  <BookOpen className="w-3.5 h-3.5" />
-                  <span>Exams</span>
-                </Link>
-                <Link to="/admin/builder" className={navItemClass('/admin/builder')}>
-                  <FileText className="w-3.5 h-3.5" />
-                  <span>Builder</span>
-                </Link>
-                <Link to="/admin/submissions" className={navItemClass('/admin/submissions')}>
-                  <Users className="w-3.5 h-3.5" />
-                  <span>Submissions</span>
-                </Link>
-                <Link to="/admin/logs" className={navItemClass('/admin/logs')}>
-                  <Eye className="w-3.5 h-3.5" />
-                  <span>Proctoring</span>
-                </Link>
-              </>
-            )}
-          </nav>
-        </div>
-
-        {/* Right: Showcase, Switch Role, Theme Toggle, Profile & Sign Out */}
-        <div className="hidden lg:flex items-center gap-2 flex-shrink-0">
-          <Link
-            to="/"
-            className="w-9 h-9 rounded-lg border border-[var(--border-hairline)] bg-[var(--bg-surface)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] transition-all flex-shrink-0"
-            title="3D Showcase Landing"
-            aria-label="3D Showcase Landing"
-          >
-            <Compass className="w-4 h-4" />
-          </Link>
-
-          <button
-            type="button"
-            onClick={openGateway}
-            className="inline-flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-lg text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-[var(--bg-tray)] border border-[var(--border-hairline)] hover:border-[var(--border-strong)] transition-all whitespace-nowrap flex-shrink-0"
-            title="Switch between Student & Admin Workspaces"
-          >
-            <ArrowLeftRight className="w-3.5 h-3.5 text-[var(--accent-signal)]" />
-            <span className="hidden xl:inline">Switch Role</span>
-          </button>
-
-          <ThemeToggle variant="icon-only" />
-
-          <div className="flex items-center gap-2 pl-2 border-l border-[var(--border-hairline)]">
-            <div className="hidden xl:block text-right text-xs leading-tight max-w-[140px]">
-              <div className="font-semibold text-[var(--text-primary)] flex items-center justify-end gap-1.5">
-                <span className="truncate">{user.name}</span>
-                <span
-                  className={`font-mono text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider border flex-shrink-0 ${
-                    isAdmin
-                      ? 'bg-[var(--accent-signal)]/10 text-[var(--accent-signal)] border-[var(--accent-signal)]/25'
-                      : 'bg-[#0891B2]/10 dark:bg-[#22D3EE]/10 text-[#0891B2] dark:text-[#22D3EE] border-[#0891B2]/25 dark:border-[#22D3EE]/25'
-                  }`}
-                >
-                  {user.role}
-                </span>
-              </div>
-              <div className="font-mono text-[10px] text-[var(--text-tertiary)] truncate">
-                {user.studentId ? user.studentId : user.email}
-              </div>
-            </div>
-            <span
-              className={`xl:hidden font-mono text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider border flex-shrink-0 ${
-                isAdmin
-                  ? 'bg-[var(--accent-signal)]/10 text-[var(--accent-signal)] border-[var(--accent-signal)]/25'
-                  : 'bg-[#0891B2]/10 dark:bg-[#22D3EE]/10 text-[#0891B2] dark:text-[#22D3EE] border-[#0891B2]/25 dark:border-[#22D3EE]/25'
-              }`}
-            >
-              {user.role}
-            </span>
-
             <button
               type="button"
-              onClick={handleLogout}
-              className="p-2 rounded-lg text-[var(--text-secondary)] hover:text-rose-500 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 active:scale-95 transition-all flex-shrink-0"
-              title="Sign Out"
-              aria-label="Sign Out"
+              onClick={() => setMobileMenuOpen((v) => !v)}
+              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={mobileMenuOpen}
+              className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-[12px] border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] hover:bg-[var(--bg-tray)]"
             >
-              <LogOut className="w-4 h-4" />
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
-        </div>
-
-        {/* Mobile & Tablet Controls (< lg 1024px) */}
-        <div className="lg:hidden flex items-center gap-2">
-          <ThemeToggle variant="icon-only" />
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-lg border border-[var(--border-hairline)] bg-[var(--bg-surface)] text-[var(--text-primary)] active:scale-95 transition-all"
-            aria-label="Toggle navigation menu"
-          >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
         </div>
       </div>
 
-      {/* Mobile & Tablet Navigation Sheet */}
+      {/* Mobile Drawer Panel */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-b border-[var(--border-hairline)] bg-[var(--bg-surface)] px-4 pt-3 pb-5 space-y-3 animate-fade-in">
-          <div className="p-3.5 bg-[var(--bg-tray)] rounded-xl border border-[var(--border-hairline)] flex items-center justify-between">
-            <div>
-              <div className="font-semibold text-sm text-[var(--text-primary)]">{user.name}</div>
-              <div className="font-mono text-[11px] text-[var(--text-secondary)]">{user.email}</div>
-              <span
-                className={`mt-1.5 inline-block font-mono text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
-                  isAdmin
-                    ? 'bg-[var(--accent-signal)]/15 text-[var(--accent-signal)]'
-                    : 'bg-[#22D3EE]/15 text-[#0891B2] dark:text-[#22D3EE]'
-                }`}
+        <div className="md:hidden border-t border-[var(--border-default)] bg-[var(--bg-surface)] px-4 py-4 space-y-2 animate-ui-in">
+          {location.pathname === '/' && (
+            <>
+              <a
+                href="#sandbox"
+                className="min-h-[44px] px-3 rounded-[10px] flex items-center text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--bg-tray)]"
               >
-                {user.role}
-              </span>
-            </div>
-            <ThemeToggle variant="segmented" />
-          </div>
+                Live Sandbox
+              </a>
+              <a
+                href="#capabilities"
+                className="min-h-[44px] px-3 rounded-[10px] flex items-center text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--bg-tray)]"
+              >
+                Capabilities
+              </a>
+              <a
+                href="#workflow"
+                className="min-h-[44px] px-3 rounded-[10px] flex items-center text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--bg-tray)]"
+              >
+                How It Works
+              </a>
+            </>
+          )}
 
-          <div className="space-y-1">
-            {isStudent && (
+          {user ? (
+            <div className="pt-2 border-t border-[var(--border-default)] space-y-2">
               <Link
-                to="/student"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--bg-tray)]"
+                to={user.role === 'ADMIN' ? '/admin' : '/student'}
+                className="min-h-[44px] px-3 rounded-[10px] flex items-center justify-between text-sm font-semibold text-[var(--text-primary)] bg-[var(--bg-tray)]"
               >
-                <div className="flex items-center gap-2.5">
-                  <BookOpen className="w-4 h-4 text-[#0891B2] dark:text-[#22D3EE]" />
-                  <span>My Examinations</span>
-                </div>
-                <ChevronRight className="w-4 h-4 text-[var(--text-tertiary)]" />
+                <span>{user.name}</span>
+                <Badge variant={user.role === 'ADMIN' ? 'brand' : 'teal'}>
+                  {user.role === 'ADMIN' ? 'Admin' : 'Student'}
+                </Badge>
               </Link>
-            )}
-
-            {isAdmin && (
-              <>
-                {[
-                  { to: '/admin', icon: LayoutDashboard, label: 'Dashboard Overview' },
-                  { to: '/admin/exams', icon: BookOpen, label: 'Exams Management' },
-                  { to: '/admin/builder', icon: FileText, label: 'Question Builder' },
-                  { to: '/admin/submissions', icon: Users, label: 'Submissions & Grading' },
-                  { to: '/admin/logs', icon: Eye, label: 'Proctoring Audit Logs' },
-                ].map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.to}
-                      to={item.to}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--bg-tray)]"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <Icon className="w-4 h-4 text-[var(--accent-signal)]" />
-                        <span>{item.label}</span>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-[var(--text-tertiary)]" />
-                    </Link>
-                  );
-                })}
-              </>
-            )}
-
-            <Link
-              to="/"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-tray)]"
-            >
-              <div className="flex items-center gap-2.5">
-                <Compass className="w-4 h-4" />
-                <span>3D Landing Showcase</span>
-              </div>
-              <ChevronRight className="w-4 h-4 text-[var(--text-tertiary)]" />
-            </Link>
-          </div>
-
-          <div className="pt-2 border-t border-[var(--border-hairline)] grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                setMobileMenuOpen(false);
-                openGateway();
-              }}
-              className="flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-semibold text-[var(--text-primary)] bg-[var(--bg-tray)] border border-[var(--border-hairline)]"
-            >
-              <ArrowLeftRight className="w-4 h-4 text-[var(--accent-signal)]" />
-              <span>Switch Role</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setMobileMenuOpen(false);
-                handleLogout();
-              }}
-              className="flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-semibold text-rose-500 bg-rose-500/10 border border-rose-500/20"
-            >
-              <LogOut className="w-4 h-4" />
-              <span>Sign Out</span>
-            </button>
-          </div>
+              <Button variant="secondary" size="md" fullWidth onClick={openGateway}>
+                Switch Role (Student / Admin)
+              </Button>
+              <Button
+                variant="ghost"
+                size="md"
+                fullWidth
+                onClick={handleLogout}
+                leftIcon={<LogOut className="w-4 h-4 text-[var(--accent-danger)]" />}
+                className="text-[var(--accent-danger)]"
+              >
+                Sign Out
+              </Button>
+            </div>
+          ) : (
+            <div className="pt-2 border-t border-[var(--border-default)] flex flex-col gap-2">
+              <Link
+                to="/login"
+                className="min-h-[44px] px-4 rounded-[12px] border border-[var(--border-default)] flex items-center justify-center text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--bg-tray)]"
+              >
+                Sign In
+              </Link>
+              <Link
+                to="/register"
+                className="min-h-[44px] px-4 rounded-[12px] bg-[var(--bg-tray)] flex items-center justify-center text-sm font-semibold text-[var(--text-primary)]"
+              >
+                Create Account
+              </Link>
+            </div>
+          )}
         </div>
       )}
     </header>

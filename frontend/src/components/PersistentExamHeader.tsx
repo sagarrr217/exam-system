@@ -1,175 +1,155 @@
 import React from 'react';
 import {
   Clock,
-  Cloud,
-  RefreshCw,
-  AlertCircle,
+  ShieldAlert,
+  CheckCircle2,
+  Loader2,
+  Maximize2,
+  LayoutGrid,
   Send,
-  Maximize,
-  Minimize,
-  User,
 } from 'lucide-react';
-import { ThemeToggle } from './ThemeToggle';
 import { BrandMark } from './BrandMark';
+import { Button } from './ui/Button';
+import { Badge } from './ui/Badge';
+import { cn } from './ui/cn';
 
 interface PersistentExamHeaderProps {
   examTitle: string;
-  subject: string;
-  studentName: string;
-  studentId?: string | null;
-  remainingSeconds: number;
+  currentQuestionIndex: number;
   totalQuestions: number;
-  answeredCount: number;
+  remainingSeconds: number;
+  focusLossCount: number;
+  focusLossThreshold: number;
   saveStatus: 'saved' | 'saving' | 'error';
-  onSubmitClick: () => void;
-  isSubmitting: boolean;
-  isFullscreen?: boolean;
-  onToggleFullscreen?: () => void;
+  isFullscreen: boolean;
+  onRequestFullscreen: () => void;
+  onTogglePalette: () => void;
+  onOpenSubmitModal: () => void;
+}
+
+function formatClock(totalSeconds: number) {
+  const safe = Math.max(0, Math.floor(totalSeconds));
+  const hrs = Math.floor(safe / 3600);
+  const mins = Math.floor((safe % 3600) / 60);
+  const secs = safe % 60;
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  return hrs > 0 ? `${hrs}:${pad(mins)}:${pad(secs)}` : `${pad(mins)}:${pad(secs)}`;
 }
 
 export const PersistentExamHeader: React.FC<PersistentExamHeaderProps> = ({
   examTitle,
-  subject,
-  studentName,
-  studentId,
-  remainingSeconds,
+  currentQuestionIndex,
   totalQuestions,
-  answeredCount,
+  remainingSeconds,
+  focusLossCount,
+  focusLossThreshold,
   saveStatus,
-  onSubmitClick,
-  isSubmitting,
   isFullscreen,
-  onToggleFullscreen,
+  onRequestFullscreen,
+  onTogglePalette,
+  onOpenSubmitModal,
 }) => {
-  const formatTime = (seconds: number) => {
-    if (seconds <= 0) return '00:00';
-    const hrs = Math.floor(seconds / 3600);
-    const mins = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    const pad = (n: number) => n.toString().padStart(2, '0');
-    if (hrs > 0) return `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
-    return `${pad(mins)}:${pad(secs)}`;
-  };
-
-  const isCriticalTime = remainingSeconds <= 60;
-  const isWarningTime = remainingSeconds <= 300 && !isCriticalTime;
-  const completionPct =
-    totalQuestions > 0 ? Math.round((answeredCount / totalQuestions) * 100) : 0;
+  const isCriticalTime = remainingSeconds > 0 && remainingSeconds <= 60;
+  const isLowTime = remainingSeconds > 60 && remainingSeconds <= 300;
 
   return (
-    <header className="sticky top-0 z-40 w-full studio-nav transition-colors duration-200">
-      <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between gap-2 sm:gap-4">
-        {/* Left: Emblem & Exam Info */}
-        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-          <BrandMark size="sm" className="flex-shrink-0" />
+    <header className="sticky top-0 z-[var(--z-sticky)] ui-nav border-b border-[var(--border-default)]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+        {/* Left: Title & Progress */}
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="hidden sm:block">
+            <BrandMark size="sm" showLabel={false} />
+          </div>
           <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <h1 className="font-semibold text-xs sm:text-base text-[var(--text-primary)] truncate">
-                {examTitle}
-              </h1>
-              <span className="hidden sm:inline-block font-mono text-[10px] font-semibold px-2 py-0.5 rounded bg-[var(--bg-tray)] text-[var(--text-secondary)] uppercase border border-[var(--border-hairline)]">
-                {subject}
+            <h1 className="text-base sm:text-lg font-bold text-[var(--text-primary)] truncate leading-tight">
+              {examTitle}
+            </h1>
+            <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
+              <span className="font-mono font-semibold">
+                Q{currentQuestionIndex + 1}/{totalQuestions}
               </span>
-            </div>
-            <div className="flex items-center gap-1.5 font-mono text-[11px] text-[var(--text-secondary)]">
-              <User className="w-3 h-3 text-[var(--text-tertiary)] flex-shrink-0" />
-              <span className="font-medium text-[var(--text-primary)] truncate">{studentName}</span>
-              {studentId && (
-                <span className="hidden sm:inline text-[var(--text-tertiary)]">• {studentId}</span>
-              )}
+              <span aria-hidden="true">·</span>
+              <span className="inline-flex items-center gap-1">
+                {saveStatus === 'saving' ? (
+                  <>
+                    <Loader2 className="w-3 h-3 animate-spin text-[var(--accent-primary)]" aria-hidden="true" />
+                    <span>Saving...</span>
+                  </>
+                ) : saveStatus === 'error' ? (
+                  <span className="text-[var(--accent-danger)] font-semibold">Sync Warning</span>
+                ) : (
+                  <>
+                    <CheckCircle2 className="w-3 h-3 text-[var(--accent-success)]" aria-hidden="true" />
+                    <span>Saved</span>
+                  </>
+                )}
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Center: Progress & Countdown Timer */}
-        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-          <div className="hidden md:inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/25 font-mono text-xs font-semibold tabular-nums">
-            <span>Answered:</span>
-            <span>
-              {answeredCount}/{totalQuestions}
-            </span>
-          </div>
-
-          <div
-            className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 rounded-lg font-mono text-xs sm:text-sm font-bold tabular-nums border transition-all ${
-              isCriticalTime
-                ? 'bg-rose-500/15 border-rose-500/40 text-rose-600 dark:text-rose-400 animate-pulse'
-                : isWarningTime
-                ? 'bg-amber-500/15 border-amber-500/40 text-amber-600 dark:text-amber-400'
-                : 'bg-[var(--bg-tray)] border-[var(--border-hairline)] text-[var(--text-primary)]'
-            }`}
-            title="Remaining examination time"
+        {/* Right: Telemetry, Timer & Submit */}
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <Badge
+            variant={
+              focusLossCount >= focusLossThreshold
+                ? 'danger'
+                : focusLossCount > 0
+                ? 'warning'
+                : 'success'
+            }
+            icon={<ShieldAlert className="w-3.5 h-3.5" />}
+            className="hidden md:inline-flex"
           >
-            <Clock
-              className={`w-3.5 h-3.5 ${
-                isCriticalTime
-                  ? 'text-rose-500'
-                  : isWarningTime
-                  ? 'text-amber-500'
-                  : 'text-[var(--accent-signal)]'
-              }`}
-            />
-            <span>{formatTime(remainingSeconds)}</span>
-          </div>
-        </div>
+            Strikes {focusLossCount}/{focusLossThreshold}
+          </Badge>
 
-        {/* Right: Sync Status, Theme, Fullscreen & Submit */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
-          <div className="hidden lg:flex items-center gap-1.5 font-mono text-xs">
-            {saveStatus === 'saving' && (
-              <span className="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-medium">
-                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                <span>Syncing</span>
-              </span>
+          {/* Timer Display */}
+          <div
+            className={cn(
+              'min-h-[44px] px-3.5 rounded-[12px] border font-mono font-bold text-sm sm:text-base tabular-nums inline-flex items-center gap-2',
+              isCriticalTime
+                ? 'bg-rose-50 border-rose-300 text-rose-800 dark:bg-rose-950/60 dark:border-rose-700 dark:text-rose-200 animate-pulse'
+                : isLowTime
+                ? 'bg-amber-50 border-amber-300 text-amber-800 dark:bg-amber-950/60 dark:border-amber-700 dark:text-amber-200'
+                : 'bg-[var(--bg-tray)] border-[var(--border-default)] text-[var(--text-primary)]'
             )}
-            {saveStatus === 'saved' && (
-              <span className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
-                <Cloud className="w-3.5 h-3.5" />
-                <span>Saved</span>
-              </span>
-            )}
-            {saveStatus === 'error' && (
-              <span className="inline-flex items-center gap-1.5 text-rose-500 font-medium">
-                <AlertCircle className="w-3.5 h-3.5" />
-                <span>Sync Error</span>
-              </span>
-            )}
+            aria-label={`Remaining time ${formatClock(remainingSeconds)}`}
+          >
+            <Clock className="w-4 h-4 shrink-0" aria-hidden="true" />
+            <span>{formatClock(remainingSeconds)}</span>
           </div>
 
-          <ThemeToggle variant="icon-only" />
-
-          {onToggleFullscreen && (
+          {!isFullscreen && (
             <button
               type="button"
-              onClick={onToggleFullscreen}
-              className="w-9 h-9 rounded-lg border border-[var(--border-hairline)] bg-[var(--bg-surface)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all"
-              title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-              aria-label="Toggle Fullscreen"
+              onClick={onRequestFullscreen}
+              title="Enter Fullscreen Mode"
+              aria-label="Enter Fullscreen Mode"
+              className="hidden lg:inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-[12px] border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tray)] transition-colors"
             >
-              {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
+              <Maximize2 className="w-4 h-4" />
             </button>
           )}
 
           <button
             type="button"
-            onClick={onSubmitClick}
-            disabled={isSubmitting}
-            className="flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 shadow-sm disabled:opacity-50 active:scale-95 transition-all"
+            onClick={onTogglePalette}
+            aria-label="Open question navigator"
+            className="lg:hidden min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-[12px] border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] hover:bg-[var(--bg-tray)]"
           >
-            <Send className="w-3.5 h-3.5" />
-            <span>
-              Submit<span className="hidden sm:inline"> Exam</span>
-            </span>
+            <LayoutGrid className="w-4 h-4" />
           </button>
-        </div>
-      </div>
 
-      {/* Linear Completion Progress Strip */}
-      <div className="h-[2px] w-full bg-[var(--border-hairline)]">
-        <div
-          className="h-full bg-[#0891B2] dark:bg-[#22D3EE] transition-all duration-300"
-          style={{ width: `${completionPct}%` }}
-        />
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={onOpenSubmitModal}
+            leftIcon={<Send className="w-4 h-4" />}
+          >
+            Submit
+          </Button>
+        </div>
       </div>
     </header>
   );

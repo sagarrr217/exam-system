@@ -1,593 +1,456 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Sparkles,
   Send,
+  ImagePlus,
   X,
-  FileText,
-  Image as ImageIcon,
-  Plus,
-  Check,
+  PlusCircle,
+  AlertCircle,
   CheckCircle2,
-  HelpCircle,
-  FileUp,
   Bot,
-  Layers,
 } from 'lucide-react';
 import { api } from '../../api/client';
-import { useToast } from '../../context/ToastContext';
+import { QuestionType } from '../../types';
+import { Modal } from '../ui/Modal';
+import { Button } from '../ui/Button';
+import { Badge } from '../ui/Badge';
+import { cn } from '../ui/cn';
 
-export interface GeneratedOption {
+export interface GeneratedQuestionDraft {
+  type: QuestionType;
   text: string;
-  isCorrect: boolean;
-  orderIndex: number;
-}
-
-export interface GeneratedQuestion {
-  text: string;
-  type: string;
+  prompt?: string;
+  explanation?: string;
   marks: number;
-  explanation: string;
-  options: GeneratedOption[];
+  options?: { text: string; isCorrect: boolean }[];
 }
 
-export interface AIChatMessage {
+interface ChatTurn {
   id: string;
-  role: 'user' | 'model';
+  role: 'user' | 'assistant';
   text: string;
-  timestamp: string;
-  isNetworkError?: boolean;
-  fileAttachment?: {
-    filename: string;
-    mimeType: string;
-    sizeKb: number;
-  };
-  questions?: GeneratedQuestion[];
+  imagePreview?: string;
+  questions?: GeneratedQuestionDraft[];
+  isError?: boolean;
 }
-
-const OFFLINE_FALLBACK_QUESTIONS: GeneratedQuestion[] = [
-  {
-    text: 'Which algorithm guarantees shortest paths from a single source in graphs that may contain negative edge weights (without negative cycles)?',
-    type: 'MCQ',
-    marks: 10,
-    explanation: 'Bellman-Ford relaxes all edges |V|-1 times, correctly handling negative edge weights where Dijkstra fails.',
-    options: [
-      { text: 'Dijkstra’s Algorithm', isCorrect: false, orderIndex: 0 },
-      { text: 'Bellman-Ford Algorithm', isCorrect: true, orderIndex: 1 },
-      { text: 'Breadth-First Search', isCorrect: false, orderIndex: 2 },
-      { text: 'Prim’s Minimum Spanning Tree', isCorrect: false, orderIndex: 3 },
-    ],
-  },
-  {
-    text: 'Select all true statements regarding Role-Based Access Control (RBAC) with signed JWT tokens.',
-    type: 'MULTIPLE_SELECT',
-    marks: 10,
-    explanation: 'Signed JWTs carry claims verified server-side per request; endpoints must enforce role authorization independently of client UI.',
-    options: [
-      { text: 'Server middleware must verify role claims on every protected route', isCorrect: true, orderIndex: 0 },
-      { text: 'Client-side hiding of buttons alone is sufficient security', isCorrect: false, orderIndex: 1 },
-      { text: 'Answer keys must be redacted from active student attempt payloads', isCorrect: true, orderIndex: 2 },
-      { text: 'Passwords should be hashed using bcrypt before database storage', isCorrect: true, orderIndex: 3 },
-    ],
-  },
-  {
-    text: 'In relational databases, wrapping multi-step updates inside a transaction preserves atomicity if an intermediate step fails.',
-    type: 'TRUE_FALSE',
-    marks: 5,
-    explanation: 'ACID transactions roll back all partial writes if any operation within the transaction fails.',
-    options: [
-      { text: 'True', isCorrect: true, orderIndex: 0 },
-      { text: 'False', isCorrect: false, orderIndex: 1 },
-    ],
-  },
-];
 
 interface AIChatAssistantModalProps {
-  isOpen: boolean;
+  open: boolean;
   onClose: () => void;
-  examTitle: string;
-  examSubject: string;
-  existingQuestionsCount: number;
-  onAddQuestion: (question: GeneratedQuestion) => void;
-  onAddAllQuestions: (questions: GeneratedQuestion[]) => void;
+  examTitle?: string;
+  subject?: string;
+  onImportQuestions: (questions: GeneratedQuestionDraft[]) => void;
+}
+
+function cleanDisplayText(raw: string): string {
+  return raw
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\$([^$]+)\$/g, '$1')
+    .trim();
+}
+
+function buildLocalFallbackQuestions(
+  topic: string,
+  count: number,
+  qType: string
+): GeneratedQuestionDraft[] {
+  const safeTopic = topic.trim() || 'Core Systems Concepts';
+  const result: GeneratedQuestionDraft[] = [];
+
+  for (let i = 0; i < count; i++) {
+    const type: QuestionType =
+      qType === 'MIXED'
+        ? i % 3 === 0
+          ? 'MCQ'
+          : i % 3 === 1
+          ? 'TRUE_FALSE'
+          : 'NUMERICAL'
+        : (qType as QuestionType);
+
+    if (type === 'TRUE_FALSE') {
+      result.push({
+        type: 'TRUE_FALSE',
+        text: `Statement ${i + 1}: In ${safeTopic}, state isolation and integrity checks reduce systemic faults.`,
+        marks: 2,
+        explanation: `Understanding isolation principles in ${safeTopic} prevents subtle consistency bugs.`,
+        options: [
+          { text: 'True', isCorrect: true },
+          { text: 'False', isCorrect: false },
+        ],
+      });
+    } else if (type === 'NUMERICAL' || type === 'FILL_BLANK') {
+      result.push({
+        type,
+        text:
+          type === 'NUMERICAL'
+            ? `Numerical Exercise ${i + 1} (${safeTopic}): What is the minimal quorum threshold when N = 3 nodes?`
+            : `Fill in the blank (${safeTopic}): An immutable log ensures operations remain ________.`,
+        marks: 3,
+        explanation: `Derived from foundational definitions within ${safeTopic}.`,
+        options: [{ text: type === 'NUMERICAL' ? '2' : 'auditable', isCorrect: true }],
+      });
+    } else if (type === 'SHORT_ANSWER' || type === 'LONG_ANSWER') {
+      result.push({
+        type,
+        text: `Explain a key architectural tradeoff in ${safeTopic} (Prompt ${i + 1}).`,
+        marks: type === 'LONG_ANSWER' ? 10 : 4,
+        explanation: 'Evaluated based on clarity, correctness, and edge-case reasoning.',
+        options: [],
+      });
+    } else {
+      result.push({
+        type: type === 'MULTIPLE_SELECT' ? 'MULTIPLE_SELECT' : 'MCQ',
+        text: `Which principle is essential when designing reliable components in ${safeTopic}? (Item ${i + 1})`,
+        marks: 2,
+        explanation: `Strict validation and bounded invariants form the core of ${safeTopic}.`,
+        options: [
+          { text: 'Deterministic validation & clear failure boundaries', isCorrect: true },
+          { text: 'Skipping authentication checks under load', isCorrect: false },
+          { text: 'Ignoring state synchronization guarantees', isCorrect: false },
+          { text: 'Silently swallowing runtime exceptions', isCorrect: false },
+        ],
+      });
+    }
+  }
+  return result;
 }
 
 export const AIChatAssistantModal: React.FC<AIChatAssistantModalProps> = ({
-  isOpen,
+  open,
   onClose,
-  examTitle,
-  examSubject,
-  existingQuestionsCount,
-  onAddQuestion,
-  onAddAllQuestions,
+  examTitle = '',
+  subject = '',
+  onImportQuestions,
 }) => {
-  const toast = useToast();
-  const [messages, setMessages] = useState<AIChatMessage[]>([
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [prompt, setPrompt] = useState('');
+  const [questionCount, setQuestionCount] = useState(3);
+  const [questionType, setQuestionType] = useState<'MIXED' | QuestionType>('MIXED');
+  const [difficulty, setDifficulty] = useState<'EASY' | 'MEDIUM' | 'HARD'>('MEDIUM');
+  const [imageBase64, setImageBase64] = useState<string | null>(null);
+  const [generating, setGenerating] = useState(false);
+
+  const [turns, setTurns] = useState<ChatTurn[]>([
     {
       id: 'welcome',
-      role: 'model',
-      text: `Hello! I'm your Gemini Multimodal Question Studio Assistant. Ask me to generate questions on any topic, tailor difficulty, or attach a syllabus PDF / textbook diagram to extract structured exam questions automatically.`,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      role: 'assistant',
+      text: 'Describe a syllabus topic, paste lecture notes, or attach a diagram image. I will synthesize structured exam questions ready for one-click import.',
     },
   ]);
-  const [inputValue, setInputValue] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [attachedFile, setAttachedFile] = useState<{
-    file: File;
-    filename: string;
-    mimeType: string;
-    base64Data: string;
-    sizeKb: number;
-    previewUrl?: string;
-  } | null>(null);
 
-  const [addedQuestionKeys, setAddedQuestionKeys] = useState<Set<string>>(new Set());
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (isOpen) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [messages, isOpen]);
-
-  if (!isOpen) return null;
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImagePick = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    if (file.size > 15 * 1024 * 1024) {
-      toast.error('File size exceeds the 15MB limit. Please attach a smaller PDF or image.');
-      return;
-    }
-
     const reader = new FileReader();
     reader.onload = () => {
-      const result = reader.result as string;
-      setAttachedFile({
-        file,
-        filename: file.name,
-        mimeType: file.type || (file.name.endsWith('.pdf') ? 'application/pdf' : 'image/jpeg'),
-        base64Data: result,
-        sizeKb: Math.round(file.size / 1024),
-        previewUrl: file.type.startsWith('image/') ? result : undefined,
-      });
-      toast.success(`Attached: ${file.name}`);
-    };
-    reader.onerror = () => {
-      toast.error('Failed to read file. Please try another file.');
+      if (typeof reader.result === 'string') {
+        setImageBase64(reader.result);
+      }
     };
     reader.readAsDataURL(file);
-
-    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  const removeAttachedFile = () => setAttachedFile(null);
+  const handleSend = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    const trimmed = prompt.trim();
+    if (!trimmed && !imageBase64) return;
 
-  const handleSendMessage = async (promptOverride?: string) => {
-    const promptToSend = (promptOverride || inputValue).trim();
-    if (!promptToSend && !attachedFile) {
-      toast.error('Please enter an instruction or attach a document/image.');
-      return;
-    }
-
-    const userMessage: AIChatMessage = {
-      id: `user-${Date.now()}`,
+    const userTurn: ChatTurn = {
+      id: `u-${Date.now()}`,
       role: 'user',
-      text: promptToSend || `Generate questions from the attached ${attachedFile?.filename}`,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      fileAttachment: attachedFile
-        ? {
-            filename: attachedFile.filename,
-            mimeType: attachedFile.mimeType,
-            sizeKb: attachedFile.sizeKb,
-          }
-        : undefined,
+      text: trimmed || 'Generate questions based on the attached image.',
+      imagePreview: imageBase64 || undefined,
     };
 
-    setMessages((prev) => [...prev, userMessage]);
-    setInputValue('');
-    setIsLoading(true);
-
-    const filePayload = attachedFile
-      ? {
-          filename: attachedFile.filename,
-          mimeType: attachedFile.mimeType,
-          base64Data: attachedFile.base64Data,
-        }
-      : undefined;
-
-    setAttachedFile(null);
+    const nextHistory = [...turns, userTurn];
+    setTurns(nextHistory);
+    setPrompt('');
+    setGenerating(true);
 
     try {
-      const historyPayload = messages
-        .filter((m) => m.id !== 'welcome')
-        .map((m) => ({
-          role: m.role,
-          text: m.text,
+      const apiMessages = turns
+        .filter((t) => t.id !== 'welcome')
+        .map((t) => ({
+          role: t.role === 'user' ? ('user' as const) : ('model' as const),
+          text: t.text,
         }));
 
+      let filePayload: { filename: string; mimeType: string; base64Data: string } | undefined;
+      if (imageBase64) {
+        const match = imageBase64.match(/^data:([^;]+);base64,(.+)$/);
+        filePayload = {
+          filename: 'attachment.png',
+          mimeType: match ? match[1] : 'image/png',
+          base64Data: match ? match[2] : imageBase64,
+        };
+      }
+
+      const fullPrompt = `${trimmed || 'Generate questions based on attached image.'} (Target: ${questionCount} questions, Format: ${questionType}, Difficulty: ${difficulty})`;
+
       const res = await api.chatAIQuestions({
-        prompt: promptToSend,
-        history: historyPayload,
+        prompt: fullPrompt,
+        history: apiMessages,
         file: filePayload,
-        examContext: {
-          title: examTitle,
-          subject: examSubject,
-          existingQuestionCount: existingQuestionsCount,
-        },
+        examContext: { title: examTitle, subject },
       });
 
-      const aiMessage: AIChatMessage = {
-        id: `ai-${Date.now()}`,
-        role: 'model',
-        text: res.reply || 'Here are the generated questions based on your request:',
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        questions: res.questions || [],
-      };
+      setImageBase64(null);
 
-      setMessages((prev) => [...prev, aiMessage]);
-
-      if (res.questions && res.questions.length > 0) {
-        toast.success(`Generated ${res.questions.length} questions!`);
-      }
-    } catch (err: any) {
-      const rawMsg = err?.message || 'Unable to connect to Gemini AI.';
-      const isNetworkOrOutage =
-        /fetch failed|ENOTFOUND|OFFLINE|ECONNREFUSED|ETIMEDOUT|Unable to reach|503|429|404|UNAVAILABLE|high demand|not configured/i.test(
-          rawMsg
-        );
-      toast.error(rawMsg);
-      setMessages((prev) => [
+      const generated = Array.isArray(res.questions) ? res.questions : [];
+      setTurns((prev) => [
         ...prev,
         {
-          id: `err-${Date.now()}`,
-          role: 'model',
-          isNetworkError: isNetworkOrOutage,
-          text: `${rawMsg}\n\nYou can retry in a moment, or load local sample templates below to continue authoring your exam immediately.`,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          id: `a-${Date.now()}`,
+          role: 'assistant',
+          text:
+            res.reply ||
+            (generated.length > 0
+              ? `Synthesized ${generated.length} ${difficulty.toLowerCase()} question(s). Review below and click Import.`
+              : 'Response received.'),
+          questions: generated,
+        },
+      ]);
+    } catch (err: any) {
+      const fallback = buildLocalFallbackQuestions(trimmed || subject || 'Exam Topic', questionCount, questionType);
+      setImageBase64(null);
+      setTurns((prev) => [
+        ...prev,
+        {
+          id: `a-err-${Date.now()}`,
+          role: 'assistant',
+          text: `${err?.message || 'Live AI service unavailable.'} Generated ${fallback.length} structured template question(s) offline so you can continue authoring without interruption.`,
+          questions: fallback,
+          isError: true,
         },
       ]);
     } finally {
-      setIsLoading(false);
+      setGenerating(false);
     }
   };
 
-  const handleAddSingleQuestion = (question: GeneratedQuestion, msgId: string, qIdx: number) => {
-    const key = `${msgId}-${qIdx}`;
-    onAddQuestion(question);
-    setAddedQuestionKeys((prev) => new Set(prev).add(key));
-    toast.success(`Added question: "${question.text.slice(0, 30)}..."`);
-  };
-
-  const handleAddAllFromMessage = (questions: GeneratedQuestion[], msgId: string) => {
-    onAddAllQuestions(questions);
-    setAddedQuestionKeys((prev) => {
-      const next = new Set(prev);
-      questions.forEach((_, idx) => next.add(`${msgId}-${idx}`));
-      return next;
-    });
-    toast.success(`Added all ${questions.length} questions to the exam!`);
-  };
-
-  const quickPrompts = [
-    'Generate 3 conceptual MCQ questions with 4 options and explanations',
-    'Create 2 hard multiple-select questions with scenarios',
-    'Generate 2 True/False questions testing common misconceptions',
-    'Extract questions from the uploaded PDF/image file',
-  ];
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-lg animate-fade-in"
-      role="dialog"
-      aria-modal="true"
+    <Modal
+      open={open}
+      onClose={() => !generating && onClose()}
+      maxWidthClass="max-w-3xl"
+      titleId="ai-studio-modal-title"
+      headerBadge={
+        <Badge variant="brand" icon={<Sparkles className="w-3.5 h-3.5" />}>
+          Gemini Multimodal AI Studio
+        </Badge>
+      }
+      title="AI Question Synthesis Assistant"
+      subtitle={`Target Assessment: ${examTitle || 'New Exam'} (${subject || 'General'})`}
     >
-      <div className="flex flex-col w-full max-w-4xl h-[90vh] max-h-[850px] studio-card border border-[var(--border-strong)] overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-hairline)] bg-[var(--bg-tray)]/70">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[var(--accent-signal)] text-white flex items-center justify-center shadow-sm">
-              <Sparkles className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-base font-bold text-[var(--text-primary)]">
-                  AI Question Studio
-                </h2>
-                <span className="font-mono text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-[#0891B2]/10 dark:bg-[#22D3EE]/10 text-[#0891B2] dark:text-[#22D3EE] border border-[#0891B2]/25">
-                  Gemini Multimodal
-                </span>
-              </div>
-              <p className="font-mono text-[11px] text-[var(--text-secondary)]">
-                Context: {examSubject || examTitle || 'General Exam'} • {existingQuestionsCount} in draft
-              </p>
-            </div>
+      <div className="space-y-4">
+        {/* Generation Parameters */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 rounded-[12px] bg-[var(--bg-tray)] border border-[var(--border-default)]">
+          <div>
+            <label htmlFor="ai-count" className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
+              Questions
+            </label>
+            <select
+              id="ai-count"
+              value={questionCount}
+              onChange={(e) => setQuestionCount(Number(e.target.value))}
+              className="w-full min-h-[44px] px-3 rounded-[10px] border border-[var(--border-default)] bg-[var(--bg-surface)] text-sm text-[var(--text-primary)]"
+            >
+              {[1, 2, 3, 5, 8, 10].map((n) => (
+                <option key={n} value={n}>
+                  {n} questions
+                </option>
+              ))}
+            </select>
           </div>
 
-          <button
-            type="button"
-            onClick={onClose}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
-            aria-label="Close AI Studio"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div>
+            <label htmlFor="ai-type" className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
+              Question Format
+            </label>
+            <select
+              id="ai-type"
+              value={questionType}
+              onChange={(e) => setQuestionType(e.target.value as any)}
+              className="w-full min-h-[44px] px-3 rounded-[10px] border border-[var(--border-default)] bg-[var(--bg-surface)] text-sm text-[var(--text-primary)]"
+            >
+              <option value="MIXED">Mixed Formats</option>
+              <option value="MCQ">Multiple Choice (MCQ)</option>
+              <option value="MULTIPLE_SELECT">Multiple Select</option>
+              <option value="TRUE_FALSE">True / False</option>
+              <option value="FILL_BLANK">Fill in the Blank</option>
+              <option value="NUMERICAL">Numerical Value</option>
+              <option value="SHORT_ANSWER">Short Answer</option>
+              <option value="LONG_ANSWER">Long Answer</option>
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="ai-diff" className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
+              Difficulty
+            </label>
+            <select
+              id="ai-diff"
+              value={difficulty}
+              onChange={(e) => setDifficulty(e.target.value as any)}
+              className="w-full min-h-[44px] px-3 rounded-[10px] border border-[var(--border-default)] bg-[var(--bg-surface)] text-sm text-[var(--text-primary)]"
+            >
+              <option value="EASY">Easy</option>
+              <option value="MEDIUM">Medium</option>
+              <option value="HARD">Hard</option>
+            </select>
+          </div>
         </div>
 
-        {/* Chat Stream */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 bg-[var(--bg-canvas)]">
-          {messages.map((msg) => (
+        {/* Conversation Feed */}
+        <div className="space-y-3 max-h-[340px] overflow-y-auto pr-1">
+          {turns.map((turn) => (
             <div
-              key={msg.id}
-              className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} space-y-2`}
+              key={turn.id}
+              className={cn(
+                'p-4 rounded-[14px] border text-sm space-y-3',
+                turn.role === 'user'
+                  ? 'ml-6 bg-blue-50/70 border-blue-200 dark:bg-blue-950/40 dark:border-blue-800/80'
+                  : 'mr-4 bg-[var(--bg-canvas)] border-[var(--border-default)]'
+              )}
             >
-              <div className="flex items-center gap-2 font-mono text-[10px] text-[var(--text-tertiary)] px-1">
-                {msg.role === 'user' ? (
-                  <span>YOU • {msg.timestamp}</span>
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
+                {turn.role === 'assistant' ? (
+                  <>
+                    <Bot className="w-4 h-4 text-[var(--accent-primary)]" aria-hidden="true" />
+                    <span>Gemini Studio</span>
+                  </>
                 ) : (
-                  <span className="flex items-center gap-1.5">
-                    <Bot className="w-3.5 h-3.5 text-[var(--accent-signal)]" />
-                    GEMINI STUDIO • {msg.timestamp}
-                  </span>
+                  <span>You</span>
                 )}
               </div>
 
-              <div
-                className={`max-w-[90%] sm:max-w-[85%] rounded-2xl p-4 sm:p-5 text-sm ${
-                  msg.role === 'user'
-                    ? 'bg-[var(--accent-signal)] text-white'
-                    : 'bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border-hairline)]'
-                }`}
-              >
-                {msg.fileAttachment && (
-                  <div className="mb-3 p-2.5 rounded-xl bg-black/15 border border-white/20 flex items-center gap-3 text-xs">
-                    {msg.fileAttachment.mimeType === 'application/pdf' ? (
-                      <FileText className="w-5 h-5 text-amber-200 shrink-0" />
-                    ) : (
-                      <ImageIcon className="w-5 h-5 text-emerald-200 shrink-0" />
-                    )}
-                    <div className="truncate flex-1">
-                      <p className="font-medium truncate">{msg.fileAttachment.filename}</p>
-                      <p className="font-mono opacity-75 text-[10px]">{msg.fileAttachment.sizeKb} KB</p>
+              {turn.imagePreview && (
+                <img
+                  src={turn.imagePreview}
+                  alt="Uploaded syllabus attachment"
+                  className="max-h-40 rounded-[8px] border border-[var(--border-default)]"
+                />
+              )}
+
+              <p className="text-[var(--text-primary)] leading-relaxed whitespace-pre-wrap">
+                {cleanDisplayText(turn.text)}
+              </p>
+
+              {turn.isError && (
+                <div className="flex items-center gap-2 text-xs text-[var(--accent-warning)] font-semibold">
+                  <AlertCircle className="w-4 h-4 shrink-0" aria-hidden="true" />
+                  <span>Offline fallback draft used</span>
+                </div>
+              )}
+
+              {turn.questions && turn.questions.length > 0 && (
+                <div className="space-y-2.5 pt-2 border-t border-[var(--border-default)]">
+                  {turn.questions.map((q, qi) => (
+                    <div
+                      key={qi}
+                      className="p-3 rounded-[10px] bg-[var(--bg-surface)] border border-[var(--border-default)] space-y-1.5"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <Badge variant="neutral">{q.type}</Badge>
+                        <span className="text-xs font-mono font-semibold text-[var(--text-muted)]">
+                          +{q.marks} marks
+                        </span>
+                      </div>
+                      <p className="text-sm font-medium text-[var(--text-primary)]">
+                        {cleanDisplayText(q.text || q.prompt || '')}
+                      </p>
+                      {q.options && q.options.length > 0 && (
+                        <ul className="text-xs text-[var(--text-secondary)] space-y-0.5 pl-1">
+                          {q.options.map((o, oi) => (
+                            <li key={oi} className="flex items-center gap-1.5">
+                              {o.isCorrect && (
+                                <CheckCircle2 className="w-3.5 h-3.5 text-[var(--accent-success)] shrink-0" aria-hidden="true" />
+                              )}
+                              <span>{o.text}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
-                  </div>
-                )}
+                  ))}
 
-                <p className="whitespace-pre-line leading-relaxed">{msg.text}</p>
-
-                {msg.isNetworkError && (
-                  <div className="mt-3 pt-3 border-t border-[var(--border-hairline)] flex flex-wrap items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setMessages((prev) => [
-                          ...prev,
-                          {
-                            id: `offline-${Date.now()}`,
-                            role: 'model',
-                            text: 'Loaded 3 local offline sample questions (non-AI template). You can preview, customize, or add them directly to your exam:',
-                            timestamp: new Date().toLocaleTimeString([], {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            }),
-                            questions: OFFLINE_FALLBACK_QUESTIONS,
-                          },
-                        ]);
-                      }}
-                      className="btn-ghost-surface px-3 py-1.5 text-xs inline-flex items-center gap-1.5"
-                    >
-                      <Layers className="w-3.5 h-3.5 text-[var(--accent-signal)]" />
-                      <span>Load Offline Sample Templates (3 Qs)</span>
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {msg.questions && msg.questions.length > 0 && (
-                <div className="w-full max-w-[95%] sm:max-w-[90%] space-y-3 pt-2">
-                  <div className="flex items-center justify-between px-1">
-                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] flex items-center gap-1.5">
-                      <Layers className="w-3.5 h-3.5 text-[var(--accent-signal)]" />
-                      <span>{msg.questions.length} Generated Question(s)</span>
-                    </span>
-
-                    <button
-                      type="button"
-                      onClick={() => handleAddAllFromMessage(msg.questions!, msg.id)}
-                      className="btn-signal px-3.5 py-1.5 text-xs flex items-center gap-1"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                      <span>Add All to Exam</span>
-                    </button>
-                  </div>
-
-                  <div className="space-y-3">
-                    {msg.questions.map((q, qIdx) => {
-                      const isAdded = addedQuestionKeys.has(`${msg.id}-${qIdx}`);
-                      return (
-                        <div
-                          key={qIdx}
-                          className="p-4 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-hairline)] shadow-sm"
-                        >
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex-1 space-y-2">
-                              <div className="flex flex-wrap items-center gap-2 font-mono">
-                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#0891B2]/10 text-[#0891B2] dark:text-[#22D3EE]">
-                                  {q.type}
-                                </span>
-                                <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[var(--bg-tray)] text-[var(--text-secondary)]">
-                                  {q.marks} Marks
-                                </span>
-                              </div>
-
-                              <p className="text-sm font-semibold text-[var(--text-primary)]">
-                                {qIdx + 1}. {q.text}
-                              </p>
-
-                              {q.options && q.options.length > 0 && (
-                                <div className="space-y-1.5 pt-1">
-                                  {q.options.map((opt, oIdx) => (
-                                    <div
-                                      key={oIdx}
-                                      className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs border ${
-                                        opt.isCorrect
-                                          ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300 font-semibold'
-                                          : 'bg-[var(--bg-tray)]/50 border-[var(--border-hairline)] text-[var(--text-secondary)]'
-                                      }`}
-                                    >
-                                      {opt.isCorrect ? (
-                                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                                      ) : (
-                                        <div className="w-3.5 h-3.5 rounded-full border border-[var(--border-strong)] shrink-0" />
-                                      )}
-                                      <span className="truncate">{opt.text}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-
-                              {q.explanation && (
-                                <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/25 text-[11px] text-amber-800 dark:text-amber-300 flex items-start gap-2">
-                                  <HelpCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-                                  <span>{q.explanation}</span>
-                                </div>
-                              )}
-                            </div>
-
-                            <button
-                              type="button"
-                              onClick={() => handleAddSingleQuestion(q, msg.id, qIdx)}
-                              disabled={isAdded}
-                              className={`shrink-0 px-3 py-1.5 text-xs font-semibold rounded-lg flex items-center gap-1.5 transition-all ${
-                                isAdded
-                                  ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 cursor-default'
-                                  : 'btn-ghost-surface hover:border-[var(--accent-signal)]'
-                              }`}
-                            >
-                              {isAdded ? (
-                                <>
-                                  <Check className="w-3.5 h-3.5" />
-                                  <span>Added</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Plus className="w-3.5 h-3.5" />
-                                  <span>Add</span>
-                                </>
-                              )}
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
+                  <Button
+                    variant="teal"
+                    size="sm"
+                    fullWidth
+                    onClick={() => {
+                      onImportQuestions(turn.questions!);
+                      onClose();
+                    }}
+                    leftIcon={<PlusCircle className="w-4 h-4" />}
+                  >
+                    Import {turn.questions.length} Question{turn.questions.length > 1 ? 's' : ''} into Exam
+                  </Button>
                 </div>
               )}
             </div>
           ))}
-
-          {isLoading && (
-            <div className="flex items-center gap-3 p-4 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-hairline)] max-w-sm animate-pulse">
-              <Sparkles className="w-4 h-4 text-[var(--accent-signal)] animate-spin" />
-              <div className="font-mono text-xs text-[var(--text-secondary)]">
-                Gemini is analyzing prompt & documents...
-              </div>
-            </div>
-          )}
-
-          <div ref={messagesEndRef} />
         </div>
 
-        {/* Quick Prompts */}
-        <div className="px-4 py-2 border-t border-[var(--border-hairline)] bg-[var(--bg-tray)]/50 overflow-x-auto flex items-center gap-2 no-scrollbar">
-          <span className="font-mono text-[10px] uppercase font-bold text-[var(--text-tertiary)] shrink-0">
-            Prompts:
-          </span>
-          {quickPrompts.map((p, idx) => (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => handleSendMessage(p)}
-              disabled={isLoading}
-              className="shrink-0 px-2.5 py-1 text-xs rounded-lg bg-[var(--bg-surface)] border border-[var(--border-hairline)] hover:border-[var(--accent-signal)]/50 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-            >
-              {p}
-            </button>
-          ))}
-        </div>
-
-        {/* Attached File */}
-        {attachedFile && (
-          <div className="px-4 py-2 bg-[#0891B2]/10 border-t border-[#0891B2]/25 flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs text-[#0891B2] dark:text-[#22D3EE] truncate">
-              {attachedFile.mimeType === 'application/pdf' ? (
-                <FileText className="w-4 h-4 shrink-0" />
-              ) : (
-                <ImageIcon className="w-4 h-4 shrink-0" />
-              )}
-              <span className="font-medium truncate">{attachedFile.filename}</span>
-              <span className="font-mono opacity-75 text-[10px]">({attachedFile.sizeKb} KB)</span>
-            </div>
+        {/* Attached Image Preview */}
+        {imageBase64 && (
+          <div className="flex items-center gap-3 p-2.5 rounded-[10px] bg-[var(--bg-tray)] border border-[var(--border-default)]">
+            <img src={imageBase64} alt="Attachment preview" className="w-12 h-12 rounded object-cover" />
+            <span className="text-xs font-medium text-[var(--text-secondary)] flex-1">
+              Image attached for multimodal analysis
+            </span>
             <button
               type="button"
-              onClick={removeAttachedFile}
-              className="p-1 rounded-lg hover:bg-black/10 dark:hover:bg-white/10"
+              onClick={() => setImageBase64(null)}
+              aria-label="Remove attached image"
+              className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-[10px] text-[var(--text-secondary)] hover:text-[var(--accent-danger)]"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
         )}
 
-        {/* Input Bar */}
-        <div className="p-3 sm:p-4 border-t border-[var(--border-hairline)] bg-[var(--bg-surface)]">
-          <div className="flex items-end gap-2">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".pdf,image/png,image/jpeg,image/webp,image/jpg"
-              onChange={handleFileChange}
-              className="hidden"
-            />
-
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isLoading}
-              className="h-10 w-10 rounded-xl flex items-center justify-center border border-[var(--border-hairline)] bg-[var(--bg-tray)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors shrink-0"
-              title="Attach PDF or Image (up to 15MB)"
-            >
-              <FileUp className="w-5 h-5" />
-            </button>
-
-            <div className="flex-1 rounded-xl bg-[var(--bg-tray)] border border-[var(--border-hairline)] focus-within:ring-2 focus-within:ring-[var(--accent-signal)] transition-all">
-              <textarea
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSendMessage();
-                  }
-                }}
-                placeholder="Ask AI to generate questions or parse attached syllabus PDF/diagram..."
-                rows={1}
-                disabled={isLoading}
-                className="w-full px-3.5 py-2.5 text-sm bg-transparent resize-none text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none max-h-32"
-              />
-            </div>
-
-            <button
-              type="button"
-              onClick={() => handleSendMessage()}
-              disabled={isLoading || (!inputValue.trim() && !attachedFile)}
-              className="h-10 w-10 rounded-xl btn-signal flex items-center justify-center shrink-0 disabled:opacity-40"
-            >
-              <Send className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
+        {/* Composer Form */}
+        <form onSubmit={handleSend} className="flex flex-col sm:flex-row gap-2.5">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleImagePick}
+            className="hidden"
+          />
+          <Button
+            type="button"
+            variant="secondary"
+            size="md"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={generating}
+            leftIcon={<ImagePlus className="w-4 h-4" />}
+            aria-label="Attach diagram or question image"
+          >
+            Image
+          </Button>
+          <input
+            type="text"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder="e.g. Create 3 OS scheduling questions covering round-robin and deadlocks"
+            aria-label="AI question generation prompt"
+            className="flex-1 min-h-[44px] px-4 rounded-[12px] border border-[var(--border-default)] bg-[var(--bg-canvas)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent-primary)] focus:outline-none"
+          />
+          <Button
+            type="submit"
+            variant="primary"
+            size="md"
+            loading={generating}
+            disabled={!prompt.trim() && !imageBase64}
+            leftIcon={<Send className="w-4 h-4" />}
+          >
+            Generate
+          </Button>
+        </form>
       </div>
-    </div>
+    </Modal>
   );
 };

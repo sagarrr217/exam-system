@@ -1,400 +1,443 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { useTheme } from '../context/ThemeContext';
+import { ShieldCheck, GraduationCap, ShieldAlert, RotateCcw } from 'lucide-react';
+import { Badge } from './ui/Badge';
+import { cn } from './ui/cn';
 
-export type ProctorSceneMode = 'sentinel' | 'ai' | 'lockdown';
-
-interface ProctorVault3DProps {
-  mode: ProctorSceneMode;
+export interface ProctorVault3DProps {
+  mode?: 'landing' | 'student' | 'admin';
+  onModeChange?: (mode: 'landing' | 'student' | 'admin') => void;
+  onSelectRole?: (role: 'STUDENT' | 'ADMIN') => void;
   className?: string;
 }
 
-const MODE_COLORS: Record<ProctorSceneMode, { primary: string; secondary: string; ringSpeed: number }> = {
-  sentinel: { primary: '#22D3EE', secondary: '#FF5A36', ringSpeed: 1.0 },
-  ai: { primary: '#FF5A36', secondary: '#F59E0B', ringSpeed: 1.45 },
-  lockdown: { primary: '#10B981', secondary: '#22D3EE', ringSpeed: 0.65 },
-};
-
-export const ProctorVault3D: React.FC<ProctorVault3DProps> = ({ mode, className = '' }) => {
+export const ProctorVault3D: React.FC<ProctorVault3DProps> = ({
+  mode = 'landing',
+  onModeChange,
+  onSelectRole,
+  className = '',
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const modeRef = useRef<ProctorSceneMode>(mode);
-  const { resolvedTheme } = useTheme();
-  const themeRef = useRef(resolvedTheme);
+  const modeRef = useRef(mode);
+  modeRef.current = mode;
 
-  const [webglAvailable, setWebglAvailable] = useState(true);
-  const [contextLost, setContextLost] = useState(false);
-  const [isReady, setIsReady] = useState(false);
-
-  useEffect(() => {
-    modeRef.current = mode;
-  }, [mode]);
-
-  useEffect(() => {
-    themeRef.current = resolvedTheme;
-  }, [resolvedTheme]);
+  const [webglReady, setWebglReady] = useState(true);
+  const [fpsReady, setFpsReady] = useState(false);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    // Detect WebGL support upfront
-    let testCanvas: HTMLCanvasElement | null = document.createElement('canvas');
-    const gl = testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl');
-    if (!gl) {
-      setWebglAvailable(false);
-      testCanvas = null;
-      return;
-    }
-    testCanvas = null;
-
-    const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
-    const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1 : 1.75);
-
-    let renderer: THREE.WebGLRenderer;
+    let renderer: THREE.WebGLRenderer | null = null;
     try {
       renderer = new THREE.WebGLRenderer({
-        antialias: !isMobile,
+        antialias: true,
         alpha: true,
         powerPreference: 'high-performance',
       });
     } catch {
-      setWebglAvailable(false);
+      setWebglReady(false);
       return;
     }
 
-    renderer.setPixelRatio(dpr);
-    renderer.setSize(container.clientWidth || 480, container.clientHeight || 480);
-    renderer.domElement.style.width = '100%';
-    renderer.domElement.style.height = '100%';
-    renderer.domElement.style.display = 'block';
-    renderer.domElement.style.touchAction = 'pan-y';
+    const width = Math.max(container.clientWidth, 320);
+    const height = Math.max(container.clientHeight, 300);
+
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(width, height);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.15;
 
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      40,
-      (container.clientWidth || 480) / (container.clientHeight || 480),
-      0.1,
-      100
-    );
-    camera.position.set(0, 0.25, 6.2);
+    const camera = new THREE.PerspectiveCamera(44, width / height, 0.1, 100);
+    camera.position.set(0, 0.2, 6.1);
 
-    // Master Pivot Group for Look-At IK & Scroll Physics
-    const masterGroup = new THREE.Group();
-    scene.add(masterGroup);
+    // Royal Cobalt + Teal + Ice White lighting rig
+    const ambient = new THREE.AmbientLight(0xdbeafe, 0.9);
+    scene.add(ambient);
 
-    // 1. Custom GLSL Fresnel + Interference Lattice Core Shader (mediump safe)
-    const shaderUniforms = {
-      uTime: { value: 0 },
-      uPrimary: { value: new THREE.Color(MODE_COLORS[modeRef.current].primary) },
-      uSecondary: { value: new THREE.Color(MODE_COLORS[modeRef.current].secondary) },
-      uDarkBg: { value: themeRef.current === 'dark' ? 1.0 : 0.0 },
-    };
+    const keyLight = new THREE.DirectionalLight(0xffffff, 2.2);
+    keyLight.position.set(4.5, 5.5, 6);
+    scene.add(keyLight);
 
-    const coreGeometry = new THREE.IcosahedronGeometry(1.18, 2);
-    const coreShaderMaterial = new THREE.ShaderMaterial({
-      uniforms: shaderUniforms,
+    const cobaltLight = new THREE.PointLight(0x3b82f6, 5.0, 18);
+    cobaltLight.position.set(-3.2, -2.0, 4.0);
+    scene.add(cobaltLight);
+
+    const tealLight = new THREE.PointLight(0x14b8a6, 4.5, 16);
+    tealLight.position.set(3.4, 2.4, -2.0);
+    scene.add(tealLight);
+
+    const vaultGroup = new THREE.Group();
+    scene.add(vaultGroup);
+
+    // 1. Central Crystalline Core (Icosahedron)
+    const coreGeom = new THREE.IcosahedronGeometry(1.12, 1);
+    const coreMat = new THREE.MeshPhysicalMaterial({
+      color: new THREE.Color('#2563EB'),
+      emissive: new THREE.Color('#1D4ED8'),
+      emissiveIntensity: 0.45,
+      roughness: 0.16,
+      metalness: 0.25,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.1,
       transparent: true,
+      opacity: 0.94,
+    });
+    const coreMesh = new THREE.Mesh(coreGeom, coreMat);
+    vaultGroup.add(coreMesh);
+
+    // 2. Precision Lattice Cage around the core
+    const wireGeom = new THREE.IcosahedronGeometry(1.42, 1);
+    const wireMat = new THREE.MeshBasicMaterial({
+      color: new THREE.Color('#93C5FD'),
+      wireframe: true,
+      transparent: true,
+      opacity: 0.34,
+    });
+    const wireMesh = new THREE.Mesh(wireGeom, wireMat);
+    vaultGroup.add(wireMesh);
+
+    // 3. Inner Shader Halo (matched precision mediump float in both shaders!)
+    const haloGeom = new THREE.SphereGeometry(1.66, 40, 40);
+    const haloMat = new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+        uColor: { value: new THREE.Color('#3B82F6') },
+      },
       vertexShader: `
         precision mediump float;
         varying vec3 vNormal;
-        varying vec3 vViewPosition;
-        varying vec3 vLocalPos;
-        uniform float uTime;
-
+        varying vec3 vPosition;
         void main() {
-          vLocalPos = position;
-          float wave = sin(position.y * 4.2 + uTime * 1.6) * cos(position.x * 3.8 - uTime * 1.1) * 0.038;
-          vec3 displaced = position + normal * wave;
-          vec4 mvPosition = modelViewMatrix * vec4(displaced, 1.0);
           vNormal = normalize(normalMatrix * normal);
-          vViewPosition = -mvPosition.xyz;
-          gl_Position = projectionMatrix * mvPosition;
+          vPosition = position;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
       `,
       fragmentShader: `
         precision mediump float;
-        varying vec3 vNormal;
-        varying vec3 vViewPosition;
-        varying vec3 vLocalPos;
         uniform float uTime;
-        uniform vec3 uPrimary;
-        uniform vec3 uSecondary;
-        uniform float uDarkBg;
-
+        uniform vec3 uColor;
+        varying vec3 vNormal;
+        varying vec3 vPosition;
         void main() {
-          vec3 normal = normalize(vNormal);
-          vec3 viewDir = normalize(vViewPosition);
-          float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), 2.35);
-
-          float scan = sin(vLocalPos.y * 16.0 - uTime * 3.0) * 0.5 + 0.5;
-          float grid = smoothstep(0.88, 0.98, scan);
-
-          vec3 baseDark = mix(vec3(0.05, 0.07, 0.11), uPrimary, 0.18);
-          vec3 baseLight = mix(vec3(0.12, 0.13, 0.16), uPrimary, 0.22);
-          vec3 baseColor = mix(baseLight, baseDark, uDarkBg);
-
-          vec3 rimColor = mix(uPrimary, uSecondary, sin(uTime * 0.8 + vLocalPos.x * 2.0) * 0.5 + 0.5);
-          vec3 finalColor = baseColor + rimColor * fresnel * 1.25 + uPrimary * grid * 0.22;
-
-          float alpha = mix(0.76, 0.96, fresnel);
-          gl_FragColor = vec4(finalColor, alpha);
+          float rim = pow(1.0 - abs(vNormal.z), 2.8);
+          float pulse = 0.72 + 0.28 * sin(uTime * 1.9 + vPosition.y * 2.5);
+          gl_FragColor = vec4(uColor, rim * 0.42 * pulse);
         }
       `,
-    });
-
-    const coreMesh = new THREE.Mesh(coreGeometry, coreShaderMaterial);
-    masterGroup.add(coreMesh);
-
-    // 2. Precision Geodesic Cage Wireframe
-    const cageGeo = new THREE.IcosahedronGeometry(1.48, 1);
-    const cageEdges = new THREE.EdgesGeometry(cageGeo);
-    const cageMat = new THREE.LineBasicMaterial({
-      color: new THREE.Color(MODE_COLORS[modeRef.current].primary),
       transparent: true,
-      opacity: 0.42,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      side: THREE.BackSide,
     });
-    const cageLines = new THREE.LineSegments(cageEdges, cageMat);
-    masterGroup.add(cageLines);
+    const haloMesh = new THREE.Mesh(haloGeom, haloMat);
+    vaultGroup.add(haloMesh);
 
-    // 3. Three Gyroscopic Telemetry Rings
-    const ring1Geo = new THREE.TorusGeometry(1.92, 0.016, 12, 96);
-    const ring1Mat = new THREE.MeshBasicMaterial({
-      color: new THREE.Color(MODE_COLORS[modeRef.current].primary),
+    // 4. Orbital Integrity Rings
+    const ring1Geom = new THREE.TorusGeometry(2.05, 0.026, 16, 110);
+    const ring1Mat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color('#14B8A6'),
+      emissive: new THREE.Color('#0F766E'),
+      emissiveIntensity: 0.55,
+      metalness: 0.65,
+      roughness: 0.25,
+    });
+    const ring1 = new THREE.Mesh(ring1Geom, ring1Mat);
+    ring1.rotation.x = Math.PI * 0.36;
+    ring1.rotation.y = Math.PI * 0.14;
+    vaultGroup.add(ring1);
+
+    const ring2Geom = new THREE.TorusGeometry(2.42, 0.018, 16, 120);
+    const ring2Mat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color('#60A5FA'),
+      emissive: new THREE.Color('#2563EB'),
+      emissiveIntensity: 0.4,
+      metalness: 0.6,
+      roughness: 0.3,
+    });
+    const ring2 = new THREE.Mesh(ring2Geom, ring2Mat);
+    ring2.rotation.x = -Math.PI * 0.28;
+    ring2.rotation.z = Math.PI * 0.24;
+    vaultGroup.add(ring2);
+
+    // 5. Verified Telemetry Nodes (Student / Proctoring satellites)
+    const nodeGeom = new THREE.OctahedronGeometry(0.14, 0);
+    const nodeMat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color('#10B981'),
+      emissive: new THREE.Color('#059669'),
+      emissiveIntensity: 0.7,
+      roughness: 0.2,
+      metalness: 0.5,
+    });
+    const satellites: THREE.Mesh[] = [];
+    for (let i = 0; i < 6; i++) {
+      const mesh = new THREE.Mesh(nodeGeom, nodeMat);
+      satellites.push(mesh);
+      vaultGroup.add(mesh);
+    }
+
+    // 6. Subtle Particle Constellation
+    const particleCount = 110;
+    const positions = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i++) {
+      const r = 2.6 + Math.random() * 2.2;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+      positions[i * 3 + 2] = r * Math.cos(phi);
+    }
+    const pGeom = new THREE.BufferGeometry();
+    pGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const pMat = new THREE.PointsMaterial({
+      color: 0x93c5fd,
+      size: 0.045,
       transparent: true,
-      opacity: 0.72,
+      opacity: 0.55,
     });
-    const ring1 = new THREE.Mesh(ring1Geo, ring1Mat);
-    ring1.rotation.x = Math.PI / 3;
-    masterGroup.add(ring1);
+    const particles = new THREE.Points(pGeom, pMat);
+    scene.add(particles);
 
-    const ring2Geo = new THREE.TorusGeometry(2.24, 0.013, 12, 96);
-    const ring2Mat = new THREE.MeshBasicMaterial({
-      color: new THREE.Color(MODE_COLORS[modeRef.current].secondary),
-      transparent: true,
-      opacity: 0.58,
-    });
-    const ring2 = new THREE.Mesh(ring2Geo, ring2Mat);
-    ring2.rotation.y = Math.PI / 4;
-    ring2.rotation.x = -Math.PI / 5;
-    masterGroup.add(ring2);
+    // Interactive pointer rotation
+    let dragging = false;
+    let prevX = 0;
+    let prevY = 0;
+    let targetRotX = 0.14;
+    let targetRotY = 0;
 
-    const ring3Geo = new THREE.TorusGeometry(2.55, 0.01, 10, 96);
-    const ring3Mat = new THREE.MeshBasicMaterial({
-      color: new THREE.Color('#8E93A0'),
-      transparent: true,
-      opacity: 0.35,
-    });
-    const ring3 = new THREE.Mesh(ring3Geo, ring3Mat);
-    ring3.rotation.x = Math.PI / 2.2;
-    masterGroup.add(ring3);
+    const canvas = renderer.domElement;
+    canvas.style.touchAction = 'pan-y';
+    canvas.style.cursor = 'grab';
 
-    // 4. Instanced Orbital Telemetry Nodes (1 Draw Call)
-    const nodeCount = 32;
-    const nodeGeo = new THREE.OctahedronGeometry(0.052, 0);
-    const nodeMat = new THREE.MeshBasicMaterial({
-      color: new THREE.Color(MODE_COLORS[modeRef.current].secondary),
-      transparent: true,
-      opacity: 0.88,
-    });
-    const instancedNodes = new THREE.InstancedMesh(nodeGeo, nodeMat, nodeCount);
-    const dummy = new THREE.Object3D();
-    const orbitData = Array.from({ length: nodeCount }, (_, i) => {
-      const angle = (i / nodeCount) * Math.PI * 2;
-      const radius = 2.0 + (i % 3) * 0.28;
-      const yOffset = ((i % 5) - 2) * 0.16;
-      const speed = 0.22 + (i % 4) * 0.08;
-      return { angle, radius, yOffset, speed };
-    });
-    masterGroup.add(instancedNodes);
-
-    // Pointer Look-At IK & Scroll Targets
-    let targetPointerX = 0;
-    let targetPointerY = 0;
-    let currentPointerX = 0;
-    let currentPointerY = 0;
-    let currentRingSpeed = MODE_COLORS[modeRef.current].ringSpeed;
-
-    const handlePointerMove = (e: PointerEvent) => {
-      const rect = container.getBoundingClientRect();
-      if (!rect.width || !rect.height) return;
-      const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-      const ny = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
-      targetPointerX = THREE.MathUtils.clamp(nx, -1.2, 1.2);
-      targetPointerY = THREE.MathUtils.clamp(ny, -1.2, 1.2);
+    const onPointerDown = (e: PointerEvent) => {
+      dragging = true;
+      prevX = e.clientX;
+      prevY = e.clientY;
+      canvas.style.cursor = 'grabbing';
     };
 
-    const handlePointerLeave = () => {
-      targetPointerX = 0;
-      targetPointerY = 0;
+    const onPointerMove = (e: PointerEvent) => {
+      if (!dragging) return;
+      const dx = e.clientX - prevX;
+      const dy = e.clientY - prevY;
+      targetRotY += dx * 0.008;
+      targetRotX = Math.max(-0.9, Math.min(0.9, targetRotX + dy * 0.008));
+      prevX = e.clientX;
+      prevY = e.clientY;
     };
 
-    window.addEventListener('pointermove', handlePointerMove, { passive: true });
-    container.addEventListener('pointerleave', handlePointerLeave);
-
-    // ResizeObserver for crisp layout scaling
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const w = Math.max(1, entry.contentRect.width);
-        const h = Math.max(1, entry.contentRect.height);
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-        renderer.setSize(w, h);
-      }
-    });
-    resizeObserver.observe(container);
-
-    // WebGL Context Loss Safeguards
-    const domCanvas = renderer.domElement;
-    const onContextLost = (event: Event) => {
-      event.preventDefault();
-      setContextLost(true);
+    const onPointerUp = () => {
+      dragging = false;
+      canvas.style.cursor = 'grab';
     };
-    const onContextRestored = () => {
-      setContextLost(false);
-    };
-    domCanvas.addEventListener('webglcontextlost', onContextLost);
-    domCanvas.addEventListener('webglcontextrestored', onContextRestored);
 
-    // Animation Loop with Damped Blending
+    canvas.addEventListener('pointerdown', onPointerDown);
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', onPointerUp);
+
+    // ResizeObserver for clean container resizing
+    const handleResize = () => {
+      if (!container || !renderer) return;
+      const w = Math.max(container.clientWidth, 280);
+      const h = Math.max(container.clientHeight, 260);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    };
+    const ro = new ResizeObserver(handleResize);
+    ro.observe(container);
+
+    const prefersReduced =
+      window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     const clock = new THREE.Clock();
-    let rafId = 0;
-    let firstFrameDone = false;
-
-    const targetPrimary = new THREE.Color();
-    const targetSecondary = new THREE.Color();
+    let frameId = 0;
 
     const animate = () => {
-      rafId = requestAnimationFrame(animate);
-      const dt = Math.min(clock.getDelta(), 0.05);
-      const elapsed = clock.getElapsedTime();
+      frameId = requestAnimationFrame(animate);
+      const t = clock.getElapsedTime();
+      const currentMode = modeRef.current;
 
-      const activeSpec = MODE_COLORS[modeRef.current];
-      targetPrimary.set(activeSpec.primary);
-      targetSecondary.set(activeSpec.secondary);
-
-      // Smooth color & speed state transitions
-      shaderUniforms.uTime.value = elapsed;
-      shaderUniforms.uPrimary.value.lerp(targetPrimary, dt * 4.0);
-      shaderUniforms.uSecondary.value.lerp(targetSecondary, dt * 4.0);
-      shaderUniforms.uDarkBg.value = THREE.MathUtils.lerp(
-        shaderUniforms.uDarkBg.value,
-        themeRef.current === 'dark' ? 1.0 : 0.0,
-        dt * 6.0
-      );
-
-      cageMat.color.lerp(targetPrimary, dt * 4.0);
-      ring1Mat.color.lerp(targetPrimary, dt * 4.0);
-      ring2Mat.color.lerp(targetSecondary, dt * 4.0);
-      nodeMat.color.lerp(targetSecondary, dt * 4.0);
-
-      currentRingSpeed = THREE.MathUtils.lerp(currentRingSpeed, activeSpec.ringSpeed, dt * 3.5);
-
-      // Damped pointer look-at IK
-      currentPointerX = THREE.MathUtils.lerp(currentPointerX, targetPointerX, dt * 4.5);
-      currentPointerY = THREE.MathUtils.lerp(currentPointerY, targetPointerY, dt * 4.5);
-
-      const scrollFactor = Math.min(window.scrollY / 900, 1);
-
-      masterGroup.rotation.y = currentPointerX * 0.38 + elapsed * 0.12;
-      masterGroup.rotation.x = -currentPointerY * 0.25 + scrollFactor * 0.35;
-
-      coreMesh.rotation.y += dt * 0.24 * currentRingSpeed;
-      coreMesh.rotation.z += dt * 0.1 * currentRingSpeed;
-
-      cageLines.rotation.y -= dt * 0.16 * currentRingSpeed;
-      cageLines.rotation.x += dt * 0.08 * currentRingSpeed;
-
-      ring1.rotation.z += dt * 0.42 * currentRingSpeed;
-      ring1.rotation.y += dt * 0.15 * currentRingSpeed;
-
-      ring2.rotation.z -= dt * 0.35 * currentRingSpeed;
-      ring2.rotation.x += dt * 0.12 * currentRingSpeed;
-
-      ring3.rotation.z += dt * 0.18 * currentRingSpeed;
-
-      // Update instanced orbital nodes
-      for (let i = 0; i < nodeCount; i++) {
-        const o = orbitData[i];
-        const theta = o.angle + elapsed * o.speed * currentRingSpeed;
-        dummy.position.set(
-          Math.cos(theta) * o.radius,
-          o.yOffset + Math.sin(theta * 2.0 + i) * 0.18,
-          Math.sin(theta) * o.radius
-        );
-        const s = 0.75 + 0.35 * Math.sin(elapsed * 2.5 + i);
-        dummy.scale.setScalar(s);
-        dummy.rotation.y = theta;
-        dummy.updateMatrix();
-        instancedNodes.setMatrixAt(i, dummy.matrix);
+      // Adapt palette smoothly to selected mode
+      if (currentMode === 'student') {
+        coreMat.color.lerp(new THREE.Color('#0F766E'), 0.05);
+        coreMat.emissive.lerp(new THREE.Color('#14B8A6'), 0.05);
+        haloMat.uniforms.uColor.value.lerp(new THREE.Color('#14B8A6'), 0.05);
+      } else if (currentMode === 'admin') {
+        coreMat.color.lerp(new THREE.Color('#1D4ED8'), 0.05);
+        coreMat.emissive.lerp(new THREE.Color('#3B82F6'), 0.05);
+        haloMat.uniforms.uColor.value.lerp(new THREE.Color('#3B82F6'), 0.05);
+      } else {
+        coreMat.color.lerp(new THREE.Color('#2563EB'), 0.05);
+        coreMat.emissive.lerp(new THREE.Color('#1D4ED8'), 0.05);
+        haloMat.uniforms.uColor.value.lerp(new THREE.Color('#3B82F6'), 0.05);
       }
-      instancedNodes.instanceMatrix.needsUpdate = true;
 
-      renderer.render(scene, camera);
+      haloMat.uniforms.uTime.value = prefersReduced ? 0 : t;
 
-      if (!firstFrameDone) {
-        firstFrameDone = true;
-        setIsReady(true);
+      if (!prefersReduced) {
+        if (!dragging) {
+          targetRotY += 0.0032;
+        }
+        coreMesh.rotation.y = t * 0.25;
+        coreMesh.rotation.x = Math.sin(t * 0.4) * 0.12;
+        wireMesh.rotation.y = -t * 0.16;
+        ring1.rotation.z = t * 0.28;
+        ring2.rotation.y = -t * 0.22;
+        particles.rotation.y = t * 0.05;
+
+        satellites.forEach((sat, idx) => {
+          const angle = t * 0.55 + (idx * Math.PI * 2) / satellites.length;
+          const radius = 2.05;
+          sat.position.set(
+            Math.cos(angle) * radius,
+            Math.sin(angle * 1.5) * 0.55,
+            Math.sin(angle) * radius
+          );
+          sat.rotation.y = t * 0.9 + idx;
+        });
       }
+
+      vaultGroup.rotation.y += (targetRotY - vaultGroup.rotation.y) * 0.08;
+      vaultGroup.rotation.x += (targetRotX - vaultGroup.rotation.x) * 0.08;
+
+      renderer?.render(scene, camera);
     };
 
     animate();
+    setFpsReady(true);
 
     return () => {
-      cancelAnimationFrame(rafId);
-      resizeObserver.disconnect();
-      window.removeEventListener('pointermove', handlePointerMove);
-      container.removeEventListener('pointerleave', handlePointerLeave);
-      domCanvas.removeEventListener('webglcontextlost', onContextLost);
-      domCanvas.removeEventListener('webglcontextrestored', onContextRestored);
+      cancelAnimationFrame(frameId);
+      ro.disconnect();
+      canvas.removeEventListener('pointerdown', onPointerDown);
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
 
-      // Strict Three.js resource disposal
-      coreGeometry.dispose();
-      coreShaderMaterial.dispose();
-      cageGeo.dispose();
-      cageEdges.dispose();
-      cageMat.dispose();
-      ring1Geo.dispose();
+      coreGeom.dispose();
+      coreMat.dispose();
+      wireGeom.dispose();
+      wireMat.dispose();
+      haloGeom.dispose();
+      haloMat.dispose();
+      ring1Geom.dispose();
       ring1Mat.dispose();
-      ring2Geo.dispose();
+      ring2Geom.dispose();
       ring2Mat.dispose();
-      ring3Geo.dispose();
-      ring3Mat.dispose();
-      nodeGeo.dispose();
+      nodeGeom.dispose();
       nodeMat.dispose();
-      renderer.dispose();
+      pGeom.dispose();
+      pMat.dispose();
+      renderer?.dispose();
     };
   }, []);
 
-  if (!webglAvailable || contextLost) {
-    return (
-      <div
-        className={`relative flex items-center justify-center rounded-2xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] ${className}`}
-      >
-        <svg viewBox="0 0 320 320" className="w-72 h-72 opacity-90" aria-label="3D Proctor Architecture Schematic">
-          <circle cx="160" cy="160" r="118" stroke="currentColor" className="text-[var(--border-strong)]" strokeDasharray="4 6" fill="none" />
-          <circle cx="160" cy="160" r="88" stroke="#FF5A36" strokeWidth="1.5" fill="none" opacity="0.65" />
-          <polygon points="160,62 245,111 245,209 160,258 75,209 75,111" stroke="#22D3EE" strokeWidth="1.5" fill="rgba(34,211,238,0.06)" />
-          <circle cx="160" cy="160" r="24" fill="#FF5A36" opacity="0.22" />
-          <circle cx="160" cy="160" r="8" fill="#22D3EE" />
-        </svg>
-      </div>
-    );
-  }
+  const modeLabel =
+    mode === 'student'
+      ? 'Student Isolation Shield Active'
+      : mode === 'admin'
+      ? 'Admin Telemetry & AI Authoring Core'
+      : 'Cryptographic Integrity Vault';
 
   return (
-    <div className={`relative w-full h-full ${className}`}>
-      {!isReady && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 z-10 pointer-events-none">
-          <div className="w-8 h-8 rounded-full border-2 border-[var(--accent-signal)] border-t-transparent animate-spin" />
-          <span className="font-mono text-[11px] uppercase tracking-widest text-[var(--text-secondary)]">
-            Initializing 3D Core...
+    <div
+      className={cn(
+        'ui-card overflow-hidden bg-[#0B1222] text-slate-100 border-slate-800 flex flex-col justify-between',
+        className
+      )}
+    >
+      {/* Top Status Strip — clean flexbox bar, never overlaps canvas */}
+      <div className="px-5 py-3.5 border-b border-slate-800/90 flex items-center justify-between gap-3 bg-slate-900/70">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shrink-0" aria-hidden="true" />
+          <span className="text-xs font-mono font-semibold text-slate-200 truncate">
+            {modeLabel}
           </span>
         </div>
-      )}
-      <div ref={containerRef} className="w-full h-full" />
+        <span className="text-xs font-mono text-slate-300 shrink-0 hidden sm:inline">
+          Drag to inspect
+        </span>
+      </div>
+
+      {/* 3D WebGL Viewport */}
+      <div className="relative h-[300px] sm:h-[340px] w-full bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.18)_0%,rgba(11,18,34,0.98)_72%)]">
+        {webglReady ? (
+          <div ref={containerRef} className="w-full h-full" aria-label="Interactive 3D security vault" />
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center">
+            <ShieldCheck className="w-16 h-16 text-blue-400 mb-3" />
+            <p className="text-base font-semibold text-white">ExamSecure Integrity Core</p>
+            <p className="text-sm text-slate-300 mt-1 max-w-xs">
+              Real-time focus telemetry, strict RBAC, and instant auto-grading active.
+            </p>
+          </div>
+        )}
+
+        {!fpsReady && webglReady && (
+          <div className="sr-only">Initializing 3D proctoring core</div>
+        )}
+      </div>
+
+      {/* Bottom Interactive Mode & Role Switcher Bar */}
+      <div className="px-4 py-3 border-t border-slate-800/90 bg-slate-900/90 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => onModeChange?.('landing')}
+            className={cn(
+              'min-h-[44px] px-3 rounded-[10px] text-xs font-semibold inline-flex items-center gap-1.5 transition-colors focus-visible:outline-2 focus-visible:outline-blue-400',
+              mode === 'landing'
+                ? 'bg-blue-600 text-white hover:bg-blue-500'
+                : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white'
+            )}
+          >
+            <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />
+            Core
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              onModeChange?.('student');
+              onSelectRole?.('STUDENT');
+            }}
+            className={cn(
+              'min-h-[44px] px-3 rounded-[10px] text-xs font-semibold inline-flex items-center gap-1.5 transition-colors focus-visible:outline-2 focus-visible:outline-teal-400',
+              mode === 'student'
+                ? 'bg-teal-600 text-white hover:bg-teal-500'
+                : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white'
+            )}
+          >
+            <GraduationCap className="w-3.5 h-3.5" aria-hidden="true" />
+            Student
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              onModeChange?.('admin');
+              onSelectRole?.('ADMIN');
+            }}
+            className={cn(
+              'min-h-[44px] px-3 rounded-[10px] text-xs font-semibold inline-flex items-center gap-1.5 transition-colors focus-visible:outline-2 focus-visible:outline-blue-400',
+              mode === 'admin'
+                ? 'bg-blue-600 text-white hover:bg-blue-500'
+                : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white'
+            )}
+          >
+            <ShieldAlert className="w-3.5 h-3.5" aria-hidden="true" />
+            Admin
+          </button>
+        </div>
+
+        <Badge variant="success" className="border-emerald-700/60 bg-emerald-950/80 text-emerald-300">
+          TLS + RBAC Verified
+        </Badge>
+      </div>
     </div>
   );
 };

@@ -1,80 +1,57 @@
 import React from 'react';
-import { AlertTriangle, Trash2 } from 'lucide-react';
+import { Trash2, AlertTriangle } from 'lucide-react';
+import { Modal } from '../ui/Modal';
+import { Button } from '../ui/Button';
+import { Badge } from '../ui/Badge';
 
 interface ExamDeleteModalProps {
-  exam: { id: string; title: string } | null;
-  isOpen: boolean;
-  isDeleting: boolean;
+  open: boolean;
+  examTitle: string;
+  deleting: boolean;
   onConfirm: () => void;
   onCancel: () => void;
 }
 
 export const ExamDeleteModal: React.FC<ExamDeleteModalProps> = ({
-  exam,
-  isOpen,
-  isDeleting,
+  open,
+  examTitle,
+  deleting,
   onConfirm,
   onCancel,
 }) => {
-  if (!isOpen || !exam) return null;
-
   return (
-    <div
-      className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-lg flex items-center justify-center p-4 animate-fade-in"
-      role="alertdialog"
-      aria-modal="true"
-    >
-      <div
-        className="studio-card max-w-sm sm:max-w-md w-full p-6 text-center animate-apple-spring border border-[var(--border-strong)]"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="w-12 h-12 rounded-xl bg-rose-500/15 text-rose-500 flex items-center justify-center mx-auto mb-3.5">
-          <AlertTriangle className="w-6 h-6" />
-        </div>
-
-        <h3 className="text-base font-bold text-[var(--text-primary)] mb-1.5">
-          Delete Examination?
-        </h3>
-        <p className="text-xs text-[var(--text-secondary)] mb-4 leading-relaxed">
-          Are you sure you want to permanently delete{' '}
-          <strong className="text-[var(--text-primary)]">&ldquo;{exam.title}&rdquo;</strong>? All
-          questions and associated student attempts will be removed.
-        </p>
-
-        <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/25 text-[11px] text-amber-700 dark:text-amber-300 mb-5 text-left flex items-start gap-2">
-          <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
-          <span>This action cannot be undone. All completed score records will be deleted.</span>
-        </div>
-
-        <div className="flex items-center justify-end gap-2.5">
-          <button
-            type="button"
-            onClick={onCancel}
-            disabled={isDeleting}
-            className="btn-ghost-surface px-4 py-2 text-xs"
-          >
+    <Modal
+      open={open}
+      onClose={() => !deleting && onCancel()}
+      dismissible={!deleting}
+      titleId="delete-exam-modal-title"
+      headerBadge={
+        <Badge variant="danger" icon={<AlertTriangle className="w-3.5 h-3.5" />}>
+          Destructive Action
+        </Badge>
+      }
+      title="Delete Examination?"
+      subtitle="This action permanently removes the exam, all authored questions, student attempts, and associated proctoring logs."
+      footer={
+        <>
+          <Button variant="secondary" size="md" disabled={deleting} onClick={onCancel}>
             Cancel
-          </button>
-          <button
-            type="button"
+          </Button>
+          <Button
+            variant="danger"
+            size="md"
+            loading={deleting}
             onClick={onConfirm}
-            disabled={isDeleting}
-            className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold flex items-center gap-1.5 disabled:opacity-50 transition-colors"
+            leftIcon={<Trash2 className="w-4 h-4" />}
           >
-            {isDeleting ? (
-              <>
-                <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                <span>Deleting...</span>
-              </>
-            ) : (
-              <>
-                <Trash2 className="w-3.5 h-3.5" />
-                <span>Delete Exam</span>
-              </>
-            )}
-          </button>
-        </div>
+            Delete Permanently
+          </Button>
+        </>
+      }
+    >
+      <div className="p-4 rounded-[12px] bg-rose-50 border border-rose-200 text-rose-900 dark:bg-rose-950/50 dark:border-rose-800 dark:text-rose-100 text-sm">
+        Target assessment: <span className="font-bold">{examTitle}</span>
       </div>
-    </div>
+    </Modal>
   );
 };

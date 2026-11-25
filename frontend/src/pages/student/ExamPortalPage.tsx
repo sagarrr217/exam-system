@@ -1,544 +1,499 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Send,
+  AlertTriangle,
+  CheckCircle2,
+  Bookmark,
+} from 'lucide-react';
 import { api } from '../../api/client';
-import { ExamAttemptData, StudentAnswer } from '../../types';
-import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { ExamAttemptData, Question } from '../../types';
 import { PersistentExamHeader } from '../../components/PersistentExamHeader';
 import { QuestionCard } from '../../components/QuestionCard';
 import { QuestionPalette } from '../../components/QuestionPalette';
 import { FocusLossModal } from '../../components/FocusLossModal';
-import { AlertTriangle, Bookmark, Send, Loader2, X } from 'lucide-react';
+import { Modal } from '../../components/ui/Modal';
+import { Button } from '../../components/ui/Button';
+import { Badge } from '../../components/ui/Badge';
+import { Skeleton } from '../../components/ui/Skeleton';
+
+interface AnswerDraft {
+  selectedOptionId?: string;
+  textAnswer?: string;
+  isMarkedForReview: boolean;
+}
 
 export const ExamPortalPage: React.FC = () => {
   const { attemptId } = useParams<{ attemptId: string }>();
-  const { user } = useAuth();
-  const { success, error: showError, warning } = useToast();
   const navigate = useNavigate();
+  const toast = useToast();
 
-  const [loading, setLoading] = useState(true);
   const [attemptData, setAttemptData] = useState<ExamAttemptData | null>(null);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-
-  const [answers, setAnswers] = useState<Record<string, StudentAnswer>>({});
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [answers, setAnswers] = useState<Record<string, AnswerDraft>>({});
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [remainingSeconds, setRemainingSeconds] = useState<number>(0);
+  const [focusLossCount, setFocusLossCount] = useState(0);
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'error'>('saved');
 
-  const [remainingSeconds, setRemainingSeconds] = useState(0);
-  const [isLocked, setIsLocked] = useState(false);
-  const isAutoSubmittingRef = useRef(false);
+  const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState('');
 
-  const [focusLossCount, setFocusLossCount] = useState(0);
-  const [threshold, setThreshold] = useState(3);
-  const [warningLimitExceeded, setWarningLimitExceeded] = useState(false);
-  const [showFocusModal, setShowFocusModal] = useState(false);
-  const lastFocusLossTimestampRef = useRef<number>(0);
-
-  const [showSubmitModal, setShowSubmitModal] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [mobilePaletteOpen, setMobilePaletteOpen] = useState(false);
+  const [focusModalOpen, setFocusModalOpen] = useState(false);
+  const [focusEventDetails, setFocusEventDetails] = useState('');
+  const [submitModalOpen, setSubmitModalOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    if (!attemptId) {
-      showError('Invalid examination session.');
-      navigate('/student', { replace: true });
-      return;
-    }
+  const saveTimersRef = useRef<Record<string, number>>({});
+  const lastFocusLogRef = useRef<number>(0);
+  const submittedRef = useRef(false);
 
-    const loadAttempt = async () => {
+  const handleFinalizeSubmit = useCallback(
+    async (reason?: string) => {
+      if (!attemptId || submittedRef.current) return;
+      submittedRef.current = true;
+      setSubmitting(true);
       try {
-        setLoading(true);
-        const data = await api.getAttemptData(attemptId);
+        await api.submitExam(attemptId);
+        if (document.fullscreenElement) {
+          document.exitFullscreen().catch(() => {});
+        }
+        toast.success(reason || 'Examination submitted successfully.');
+        navigate(`/student/results/${attemptId}`, { replace: true });
+      } catch (err: any) {
+        submittedRef.current = false;
+        setSubmitting(false);
+        toast.error(err?.message || 'Unable to submit examination. Please retry.');
+      }
+    },
+    [attemptId, navigate, toast]
+  );
 
-        if (data.status === 'SUBMITTED') {
-          success('This examination attempt has already been submitted.');
+  // Load Exam Attempt Data
+  useEffect(() => {
+    if (!attemptId) return;
+    let active = true;
+
+    const load = async () => {
+      setLoading(true);
+      setErrorMsg('');
+      try {
+        const data = await api.getAttemptData(attemptId);
+        if (!active) return;
+
+        if ((data as any).expired || (data.status && data.status !== 'IN_PROGRESS')) {
+          toast.info((data as any).message || 'Examination session finalized. Opening results...');
           navigate(`/student/results/${attemptId}`, { replace: true });
           return;
         }
 
-        setAttemptData(data);
-        setRemainingSeconds(data.remainingSeconds || 0);
-        setFocusLossCount(data.focusLossCount || 0);
-        setThreshold(data.exam.focusLossThreshold || 3);
-        setWarningLimitExceeded((data.focusLossCount || 0) >= (data.exam.focusLossThreshold || 3));
+        const qs = [...(data.questions || [])].sort(
+          (a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0)
+        );
+        const rawSaved = (data as any).savedAnswers || (data as any).answers || [];
+        const hydrated: Record<string, AnswerDraft> = {};
 
-        const answersMap: Record<string, StudentAnswer> = {};
-        const restored = data.savedAnswers || data.answers || [];
-        restored.forEach((ans: any) => {
-          answersMap[ans.questionId] = ans;
+        rawSaved.forEach((sa: any) => {
+          hydrated[sa.questionId] = {
+            selectedOptionId: sa.selectedOptionId || undefined,
+            textAnswer: sa.textAnswer || '',
+            isMarkedForReview: Boolean(sa.isMarkedForReview),
+          };
         });
-        setAnswers(answersMap);
+
+        setAttemptData(data);
+        setQuestions(qs);
+        setAnswers(hydrated);
+        setFocusLossCount(data.focusLossCount || 0);
+
+        if (typeof data.remainingSeconds === 'number') {
+          setRemainingSeconds(Math.max(0, data.remainingSeconds));
+        } else {
+          const duration = (data.exam?.durationMinutes || 60) * 60;
+          const startedMs = data.startTime ? new Date(data.startTime).getTime() : Date.now();
+          const elapsed = Math.floor((Date.now() - startedMs) / 1000);
+          setRemainingSeconds(Math.max(0, duration - elapsed));
+        }
       } catch (err: any) {
-        showError(err.message || 'Failed to initialize exam environment.');
-        navigate('/student', { replace: true });
+        if (!active) return;
+        setErrorMsg(err?.message || 'Unable to load examination session.');
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     };
 
-    loadAttempt();
+    load();
+    return () => {
+      active = false;
+    };
   }, [attemptId, navigate]);
 
-  const handleTimeExpired = useCallback(async () => {
-    if (isAutoSubmittingRef.current || isLocked) return;
-    isAutoSubmittingRef.current = true;
-    setIsLocked(true);
-
-    warning('Time has expired! Automatically submitting your examination responses now...');
-
-    try {
-      if (attemptId) {
-        await api.submitExam(attemptId);
-        success('Exam submitted successfully.');
-        navigate(`/student/results/${attemptId}`, { replace: true });
-      }
-    } catch (err: any) {
-      showError('Automatic submission failed: ' + (err.message || 'Unknown error'));
-      navigate('/student', { replace: true });
-    }
-  }, [attemptId, isLocked, navigate, success, showError, warning]);
-
+  // Timer Tick
   useEffect(() => {
-    if (loading || isLocked || remainingSeconds <= 0) return;
+    if (loading || !attemptData || submittedRef.current) return;
+    if (remainingSeconds <= 0) {
+      handleFinalizeSubmit('Time expired — examination auto-submitted.');
+      return;
+    }
 
-    const interval = setInterval(() => {
+    const interval = window.setInterval(() => {
       setRemainingSeconds((prev) => {
         if (prev <= 1) {
-          clearInterval(interval);
-          handleTimeExpired();
+          window.clearInterval(interval);
+          handleFinalizeSubmit('Time expired — examination auto-submitted.');
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
 
-    return () => clearInterval(interval);
-  }, [loading, isLocked, remainingSeconds, handleTimeExpired]);
+    return () => window.clearInterval(interval);
+  }, [loading, attemptData, remainingSeconds, handleFinalizeSubmit]);
 
-  const recordFocusLoss = useCallback(
-    async (reason: 'BLUR' | 'VISIBILITY_CHANGE' | 'WINDOW_SWITCH') => {
-      if (isLocked || !attemptId) return;
+  // Request Fullscreen Helper
+  const enterFullscreen = useCallback(() => {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    }
+  }, []);
 
+  // Track Fullscreen & Focus Proctoring Guards
+  useEffect(() => {
+    if (loading || !attemptData || submittedRef.current) return;
+
+    const threshold = attemptData.exam?.focusLossThreshold ?? 3;
+    const focusGuardEnabled = true;
+    const shortcutBlockEnabled = true;
+
+    const recordViolation = async (eventType: string, details: string) => {
+      if (!attemptId || submittedRef.current || !focusGuardEnabled) return;
       const now = Date.now();
-      if (now - lastFocusLossTimestampRef.current < 2000) {
-        return;
-      }
-      lastFocusLossTimestampRef.current = now;
+      if (now - lastFocusLogRef.current < 1500) return;
+      lastFocusLogRef.current = now;
+
+      setFocusEventDetails(details);
+      setFocusModalOpen(true);
 
       try {
-        const eventType =
-          reason === 'BLUR'
-            ? 'WINDOW_BLUR'
-            : reason === 'VISIBILITY_CHANGE'
-            ? 'VISIBILITY_HIDDEN'
-            : 'WINDOW_RESIZE';
-        const res = await api.logFocusLoss(attemptId, {
-          eventType,
-          details: 'Focus lost from exam environment',
-        });
-
+        const res = await api.logFocusLoss(attemptId, { eventType, details });
         setFocusLossCount(res.focusLossCount);
-        setWarningLimitExceeded(res.warningLimitExceeded);
-        setShowFocusModal(true);
+        if (res.warningLimitExceeded || res.focusLossCount >= threshold) {
+          handleFinalizeSubmit('Focus violation limit exceeded — examination auto-submitted.');
+        }
       } catch {
-        // Silently ignore telemetry network blips
+        // Non-blocking fallback increment
+        setFocusLossCount((c) => c + 1);
       }
-    },
-    [attemptId, isLocked]
-  );
-
-  useEffect(() => {
-    const handleWindowBlur = () => recordFocusLoss('BLUR');
-    const handleVisibilityChange = () => {
-      if (document.hidden) recordFocusLoss('VISIBILITY_CHANGE');
     };
 
-    window.addEventListener('blur', handleWindowBlur);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    return () => {
-      window.removeEventListener('blur', handleWindowBlur);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    const onVisibility = () => {
+      if (document.hidden) {
+        recordViolation('TAB_SWITCH', 'Switched away from browser tab');
+      }
     };
-  }, [recordFocusLoss]);
 
-  const handleSaveAnswer = async (
-    questionId: string,
-    optionId?: string | null,
-    textAnswer?: string | null,
-    isMarkedForReview?: boolean
-  ) => {
-    if (isLocked || !attemptId) return;
+    const onBlur = () => {
+      recordViolation('WINDOW_BLUR', 'Browser window lost focus');
+    };
 
-    setSaveStatus('saving');
-
-    try {
-      await api.saveAnswer(attemptId, {
-        questionId,
-        selectedOptionId: optionId !== undefined ? optionId : answers[questionId]?.selectedOptionId,
-        textAnswer: textAnswer !== undefined ? textAnswer : answers[questionId]?.textAnswer,
-        isMarkedForReview:
-          isMarkedForReview !== undefined
-            ? isMarkedForReview
-            : answers[questionId]?.isMarkedForReview,
-      });
-
-      setAnswers((prev) => ({
-        ...prev,
-        [questionId]: {
-          questionId,
-          selectedOptionId:
-            optionId !== undefined ? optionId : prev[questionId]?.selectedOptionId,
-          textAnswer: textAnswer !== undefined ? textAnswer : prev[questionId]?.textAnswer,
-          isMarkedForReview:
-            isMarkedForReview !== undefined
-              ? isMarkedForReview
-              : prev[questionId]?.isMarkedForReview || false,
-        },
-      }));
-      setSaveStatus('saved');
-    } catch {
-      setSaveStatus('error');
-    }
-  };
-
-  const handleOptionSelect = (optionId: string) => {
-    if (!attemptData) return;
-    const currentQuestion = attemptData.questions[currentQuestionIndex];
-    handleSaveAnswer(currentQuestion.id, optionId, null);
-  };
-
-  const handleTextAnswerChange = (text: string) => {
-    if (!attemptData) return;
-    const currentQuestion = attemptData.questions[currentQuestionIndex];
-    handleSaveAnswer(currentQuestion.id, null, text);
-  };
-
-  const handleToggleReview = useCallback(() => {
-    if (!attemptData) return;
-    const currentQuestion = attemptData.questions[currentQuestionIndex];
-    const currentAnswer = answers[currentQuestion.id];
-    const newReviewState = !currentAnswer?.isMarkedForReview;
-    handleSaveAnswer(currentQuestion.id, undefined, undefined, newReviewState);
-  }, [attemptData, currentQuestionIndex, answers]);
-
-  const handleClearAnswer = () => {
-    if (!attemptData) return;
-    const currentQuestion = attemptData.questions[currentQuestionIndex];
-    handleSaveAnswer(currentQuestion.id, null, null, false);
-  };
-
-  // Keyboard shortcuts (ArrowLeft / ArrowRight / M) outside text fields
-  useEffect(() => {
-    if (!attemptData || showSubmitModal || showFocusModal) return;
+    const onFullscreenChange = () => {
+      const fs = Boolean(document.fullscreenElement);
+      setIsFullscreen(fs);
+    };
 
     const onKeyDown = (e: KeyboardEvent) => {
-      const target = e.target as HTMLElement | null;
-      const tag = target?.tagName?.toLowerCase();
-      if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+      if (shortcutBlockEnabled) {
+        if (
+          e.key === 'F12' ||
+          ((e.ctrlKey || e.metaKey) && ['u', 'U', 'i', 'I'].includes(e.key) && e.shiftKey) ||
+          ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'u')
+        ) {
+          e.preventDefault();
+        }
+      }
 
-      if (e.key === 'ArrowLeft') {
-        setCurrentQuestionIndex((prev) => Math.max(0, prev - 1));
-      } else if (e.key === 'ArrowRight') {
-        setCurrentQuestionIndex((prev) => Math.min(attemptData.questions.length - 1, prev + 1));
-      } else if (e.key === 'm' || e.key === 'M') {
-        handleToggleReview();
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag !== 'INPUT' && tag !== 'TEXTAREA') {
+        if (e.key === 'ArrowRight') {
+          setCurrentIndex((i) => Math.min(questions.length - 1, i + 1));
+        } else if (e.key === 'ArrowLeft') {
+          setCurrentIndex((i) => Math.max(0, i - 1));
+        }
       }
     };
 
+    const onContext = (e: MouseEvent) => {
+      if (shortcutBlockEnabled) e.preventDefault();
+    };
+
+    document.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('blur', onBlur);
+    document.addEventListener('fullscreenchange', onFullscreenChange);
     window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [attemptData, showSubmitModal, showFocusModal, handleToggleReview]);
+    document.addEventListener('contextmenu', onContext);
 
-  const handleFinalSubmit = async () => {
-    if (!attemptId || submitting) return;
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('blur', onBlur);
+      document.removeEventListener('fullscreenchange', onFullscreenChange);
+      window.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('contextmenu', onContext);
+    };
+  }, [loading, attemptData, attemptId, questions.length, handleFinalizeSubmit]);
 
-    setSubmitting(true);
-    try {
-      await api.submitExam(attemptId);
-      success('Examination successfully submitted and graded!');
-      navigate(`/student/results/${attemptId}`, { replace: true });
-    } catch (err: any) {
-      showError(err.message || 'Failed to submit examination.');
-      setSubmitting(false);
-      setShowSubmitModal(false);
+  // Save Answer Handler
+  const handleAnswerChange = (questionId: string, patch: Partial<AnswerDraft>) => {
+    const prevDraft = answers[questionId] || { isMarkedForReview: false };
+    const nextDraft: AnswerDraft = { ...prevDraft, ...patch };
+
+    setAnswers((prev) => ({
+      ...prev,
+      [questionId]: nextDraft,
+    }));
+
+    if (!attemptId) return;
+    setSaveStatus('saving');
+
+    const isTextEdit = patch.textAnswer !== undefined && patch.selectedOptionId === undefined;
+    const delay = isTextEdit ? 500 : 50;
+
+    if (saveTimersRef.current[questionId]) {
+      window.clearTimeout(saveTimersRef.current[questionId]);
     }
+
+    saveTimersRef.current[questionId] = window.setTimeout(async () => {
+      try {
+        await api.saveAnswer(attemptId, {
+          questionId,
+          selectedOptionId: nextDraft.selectedOptionId,
+          textAnswer: nextDraft.textAnswer,
+          isMarkedForReview: nextDraft.isMarkedForReview,
+        });
+        setSaveStatus('saved');
+      } catch {
+        setSaveStatus('error');
+      }
+    }, delay);
   };
 
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
-      setIsFullscreen(true);
-    } else if (document.exitFullscreen) {
-      document.exitFullscreen().catch(() => {});
-      setIsFullscreen(false);
-    }
-  };
-
-  const stats = React.useMemo(() => {
-    if (!attemptData) return { answered: 0, unanswered: 0, review: 0 };
-
-    let answered = 0;
-    let review = 0;
-
-    attemptData.questions.forEach((q) => {
+  const statusMap = useMemo(() => {
+    const map: Record<string, { hasAnswer: boolean; isMarkedForReview: boolean }> = {};
+    questions.forEach((q) => {
       const a = answers[q.id];
-      const hasAnswer =
-        a &&
-        (a.selectedOptionId != null ||
-          (a.textAnswer && a.textAnswer.trim().length > 0 && a.textAnswer.trim() !== '[]'));
-      if (hasAnswer) answered++;
-      if (a?.isMarkedForReview) review++;
+      const hasOption = Boolean(a?.selectedOptionId);
+      let hasText = Boolean((a?.textAnswer || '').trim());
+      if (q.type === 'MULTIPLE_SELECT' && a?.textAnswer) {
+        try {
+          const parsed = JSON.parse(a.textAnswer);
+          hasText = Array.isArray(parsed) && parsed.length > 0;
+        } catch {
+          hasText = a.textAnswer.trim().length > 0;
+        }
+      }
+      map[q.id] = {
+        hasAnswer: hasOption || hasText,
+        isMarkedForReview: Boolean(a?.isMarkedForReview),
+      };
     });
+    return map;
+  }, [questions, answers]);
 
-    const unanswered = attemptData.questions.length - answered;
-    return { answered, unanswered, review };
-  }, [attemptData, answers]);
+  const answeredTotal = questions.filter((q) => statusMap[q.id]?.hasAnswer).length;
+  const markedTotal = questions.filter((q) => statusMap[q.id]?.isMarkedForReview).length;
 
-  if (loading || !attemptData) {
+  if (loading) {
     return (
-      <div className="min-h-screen bg-[var(--bg-canvas)] flex flex-col items-center justify-center">
-        <Loader2 className="w-10 h-10 animate-spin text-[var(--accent-signal)] mb-4" />
-        <h2 className="text-base font-bold text-[var(--text-primary)]">
-          Initializing Isolated Exam Environment
-        </h2>
-        <p className="font-mono text-xs text-[var(--text-secondary)] mt-1">
-          Configuring proctoring sentinel...
-        </p>
+      <div className="min-h-screen bg-[var(--bg-canvas)] p-6 sm:p-10">
+        <div className="max-w-5xl mx-auto space-y-6">
+          <Skeleton className="h-16 w-full rounded-[16px]" />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <Skeleton className="lg:col-span-8 h-96 rounded-[16px]" />
+            <Skeleton className="lg:col-span-4 h-72 rounded-[16px]" />
+          </div>
+        </div>
       </div>
     );
   }
 
-  const currentQuestion = attemptData.questions[currentQuestionIndex];
+  if (errorMsg || !attemptData || questions.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6">
+        <div className="ui-card p-8 max-w-md w-full text-center space-y-4">
+          <AlertTriangle className="w-10 h-10 text-[var(--accent-danger)] mx-auto" />
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Session Unavailable</h1>
+          <p className="text-sm text-[var(--text-secondary)]">
+            {errorMsg || 'No questions were found for this examination attempt.'}
+          </p>
+          <Button variant="primary" size="md" onClick={() => navigate('/student')}>
+            Return to Student Portal
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  const currentQuestion = questions[currentIndex];
+  const currentDraft = answers[currentQuestion.id] || { isMarkedForReview: false };
 
   return (
-    <div className="min-h-screen bg-[var(--bg-canvas)] flex flex-col select-none transition-colors duration-200">
+    <div className="min-h-screen bg-[var(--bg-canvas)] flex flex-col">
       <PersistentExamHeader
-        examTitle={attemptData.exam.title}
-        subject={attemptData.exam.subject}
-        studentName={user?.name || 'Student Candidate'}
-        studentId={user?.studentId}
+        examTitle={attemptData.exam?.title || 'Proctored Assessment'}
+        currentQuestionIndex={currentIndex}
+        totalQuestions={questions.length}
         remainingSeconds={remainingSeconds}
-        totalQuestions={attemptData.questions.length}
-        answeredCount={stats.answered}
+        focusLossCount={focusLossCount}
+        focusLossThreshold={attemptData.exam?.focusLossThreshold ?? 3}
         saveStatus={saveStatus}
-        onSubmitClick={() => setShowSubmitModal(true)}
-        isSubmitting={submitting}
         isFullscreen={isFullscreen}
-        onToggleFullscreen={toggleFullscreen}
+        onRequestFullscreen={enterFullscreen}
+        onTogglePalette={() => setMobilePaletteOpen(true)}
+        onOpenSubmitModal={() => setSubmitModalOpen(true)}
       />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full flex flex-col">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 flex-1">
-          <div className="lg:col-span-3 flex flex-col">
-            {/* Mobile Quick Jump */}
-            <div className="lg:hidden mb-4 p-3 studio-card">
-              <div className="flex items-center justify-between font-mono text-xs font-semibold text-[var(--text-secondary)] mb-2">
-                <span>Quick Jump</span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-bold">
-                  {stats.answered} / {attemptData.questions.length} Answered
-                </span>
-              </div>
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
-                {attemptData.questions.map((q, idx) => {
-                  const ans = answers[q.id];
-                  const isAns =
-                    ans &&
-                    (ans.selectedOptionId != null ||
-                      (ans.textAnswer &&
-                        ans.textAnswer.trim().length > 0 &&
-                        ans.textAnswer.trim() !== '[]'));
-                  const isRev = ans?.isMarkedForReview;
-                  const isCur = idx === currentQuestionIndex;
-
-                  let bg = 'bg-[var(--bg-tray)] text-[var(--text-primary)]';
-                  if (isRev) bg = 'bg-amber-500 text-white';
-                  else if (isAns) bg = 'bg-emerald-600 text-white';
-
-                  return (
-                    <button
-                      key={q.id}
-                      type="button"
-                      onClick={() => setCurrentQuestionIndex(idx)}
-                      className={`w-8 h-8 flex-shrink-0 rounded-lg font-mono text-xs font-bold flex items-center justify-center transition-all ${bg} ${
-                        isCur
-                          ? 'ring-2 ring-[var(--accent-signal)] ring-offset-2 ring-offset-[var(--bg-canvas)] scale-105'
-                          : ''
-                      }`}
-                    >
-                      {idx + 1}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Active Question Panel */}
+          <div className="lg:col-span-8 space-y-6">
             <QuestionCard
               question={currentQuestion}
-              questionIndex={currentQuestionIndex}
-              totalQuestions={attemptData.questions.length}
-              answer={answers[currentQuestion.id]}
-              onOptionSelect={handleOptionSelect}
-              onTextAnswerChange={handleTextAnswerChange}
-              onToggleReview={handleToggleReview}
-              onClearAnswer={handleClearAnswer}
-              onPrev={() => setCurrentQuestionIndex((prev) => Math.max(0, prev - 1))}
-              onNext={() =>
-                setCurrentQuestionIndex((prev) =>
-                  Math.min(attemptData.questions.length - 1, prev + 1)
-                )
-              }
-              hasPrev={currentQuestionIndex > 0}
-              hasNext={currentQuestionIndex < attemptData.questions.length - 1}
-              disabled={isLocked}
+              index={currentIndex}
+              totalQuestions={questions.length}
+              answer={currentDraft}
+              onAnswerChange={(patch) => handleAnswerChange(currentQuestion.id, patch)}
             />
-          </div>
 
-          <div className="lg:col-span-1">
-            <div className="sticky top-20">
-              <QuestionPalette
-                questions={attemptData.questions}
-                currentQuestionIndex={currentQuestionIndex}
-                onSelectQuestion={(idx) => setCurrentQuestionIndex(idx)}
-                answers={answers}
-              />
+            {/* Bottom Step Controls */}
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <Button
+                variant="secondary"
+                size="md"
+                disabled={currentIndex === 0}
+                onClick={() => setCurrentIndex((i) => Math.max(0, i - 1))}
+                leftIcon={<ChevronLeft className="w-4 h-4" />}
+              >
+                Previous
+              </Button>
+
+              {currentIndex < questions.length - 1 ? (
+                <Button
+                  variant="primary"
+                  size="md"
+                  onClick={() => setCurrentIndex((i) => Math.min(questions.length - 1, i + 1))}
+                  rightIcon={<ChevronRight className="w-4 h-4" />}
+                >
+                  Save &amp; Next
+                </Button>
+              ) : (
+                <Button
+                  variant="teal"
+                  size="md"
+                  onClick={() => setSubmitModalOpen(true)}
+                  leftIcon={<Send className="w-4 h-4" />}
+                >
+                  Review &amp; Submit Exam
+                </Button>
+              )}
             </div>
           </div>
+
+          {/* Desktop Question Navigator */}
+          <aside className="hidden lg:block lg:col-span-4 sticky top-24">
+            <QuestionPalette
+              questions={questions}
+              currentIndex={currentIndex}
+              statusMap={statusMap}
+              onSelectQuestion={(idx) => setCurrentIndex(idx)}
+            />
+          </aside>
         </div>
       </main>
 
+      {/* Mobile Question Palette Drawer Modal */}
+      <Modal
+        open={mobilePaletteOpen}
+        onClose={() => setMobilePaletteOpen(false)}
+        title="Question Navigator"
+      >
+        <QuestionPalette
+          questions={questions}
+          currentIndex={currentIndex}
+          statusMap={statusMap}
+          onSelectQuestion={(idx) => {
+            setCurrentIndex(idx);
+            setMobilePaletteOpen(false);
+          }}
+        />
+      </Modal>
+
+      {/* Focus Loss Alert Modal */}
       <FocusLossModal
-        isOpen={showFocusModal}
+        open={focusModalOpen}
         focusLossCount={focusLossCount}
-        threshold={threshold}
-        warningLimitExceeded={warningLimitExceeded}
-        onAcknowledge={() => setShowFocusModal(false)}
+        threshold={attemptData.exam?.focusLossThreshold ?? 3}
+        eventDetails={focusEventDetails}
+        onAcknowledge={() => {
+          setFocusModalOpen(false);
+          enterFullscreen();
+        }}
       />
 
-      {/* Submission Confirmation Modal */}
-      {showSubmitModal && (
-        <div
-          className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-lg flex items-center justify-center p-4 animate-fade-in"
-          role="dialog"
-          aria-modal="true"
-        >
-          <div className="studio-card max-w-md w-full overflow-hidden animate-apple-spring border border-[var(--border-strong)]">
-            <div className="p-6 border-b border-[var(--border-hairline)] flex items-center justify-between bg-[var(--bg-tray)]/50">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-500 flex items-center justify-center">
-                  <Send className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-[var(--text-primary)]">
-                    Submit Examination?
-                  </h3>
-                  <p className="text-xs text-[var(--text-secondary)]">
-                    Review progress before final evaluation
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowSubmitModal(false)}
-                className="p-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-3 text-center">
-                <div className="p-3 bg-emerald-500/10 border border-emerald-500/25 rounded-xl">
-                  <div className="font-mono text-2xl font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
-                    {stats.answered}
-                  </div>
-                  <div className="font-mono text-[10px] uppercase font-bold text-emerald-700 dark:text-emerald-300">
-                    Answered
-                  </div>
-                </div>
-
-                <div
-                  className={`p-3 rounded-xl border ${
-                    stats.unanswered > 0
-                      ? 'bg-rose-500/10 border-rose-500/25'
-                      : 'bg-[var(--bg-tray)] border-[var(--border-hairline)]'
-                  }`}
-                >
-                  <div
-                    className={`font-mono text-2xl font-bold tabular-nums ${
-                      stats.unanswered > 0
-                        ? 'text-rose-600 dark:text-rose-400'
-                        : 'text-[var(--text-primary)]'
-                    }`}
-                  >
-                    {stats.unanswered}
-                  </div>
-                  <div
-                    className={`font-mono text-[10px] uppercase font-bold ${
-                      stats.unanswered > 0
-                        ? 'text-rose-700 dark:text-rose-300'
-                        : 'text-[var(--text-secondary)]'
-                    }`}
-                  >
-                    Unanswered
-                  </div>
-                </div>
-              </div>
-
-              {stats.review > 0 && (
-                <div className="flex items-center gap-2 p-3 bg-amber-500/10 border border-amber-500/25 rounded-xl text-xs text-amber-700 dark:text-amber-300">
-                  <Bookmark className="w-3.5 h-3.5 flex-shrink-0 fill-current text-amber-500" />
-                  <span>
-                    <strong>{stats.review}</strong> questions still flagged for review.
-                  </span>
-                </div>
-              )}
-
-              {stats.unanswered > 0 && (
-                <div className="flex items-start gap-2 p-3 bg-rose-500/10 border border-rose-500/25 rounded-xl text-xs text-rose-600 dark:text-rose-400">
-                  <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <strong>Attention:</strong> You have {stats.unanswered} unanswered questions.
-                  </div>
-                </div>
-              )}
-
-              <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-                Confirming will immediately finalize your responses and compute your score. The session will be permanently locked.
-              </p>
-            </div>
-
-            <div className="p-4 border-t border-[var(--border-hairline)] bg-[var(--bg-tray)]/40 flex items-center justify-end gap-2.5">
-              <button
-                type="button"
-                disabled={submitting}
-                onClick={() => setShowSubmitModal(false)}
-                className="btn-ghost-surface px-4 py-2 text-xs"
-              >
-                Continue Answering
-              </button>
-
-              <button
-                type="button"
-                disabled={submitting}
-                onClick={handleFinalSubmit}
-                className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center gap-1.5 disabled:opacity-50"
-              >
-                {submitting ? (
-                  <>
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    <span>Grading...</span>
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-3.5 h-3.5" />
-                    <span>Submit Exam</span>
-                  </>
-                )}
-              </button>
-            </div>
+      {/* Submit Confirmation Modal */}
+      <Modal
+        open={submitModalOpen}
+        onClose={() => !submitting && setSubmitModalOpen(false)}
+        titleId="submit-exam-modal-title"
+        dismissible={!submitting}
+        headerBadge={<Badge variant="brand">Final Confirmation</Badge>}
+        title="Submit Examination?"
+        subtitle="Once finalized, answers cannot be edited and grading begins immediately."
+        footer={
+          <>
+            <Button
+              variant="secondary"
+              size="md"
+              disabled={submitting}
+              onClick={() => setSubmitModalOpen(false)}
+            >
+              Continue Reviewing
+            </Button>
+            <Button
+              variant="primary"
+              size="md"
+              loading={submitting}
+              onClick={() => handleFinalizeSubmit()}
+              leftIcon={<Send className="w-4 h-4" />}
+            >
+              Confirm Final Submission
+            </Button>
+          </>
+        }
+      >
+        <div className="grid grid-cols-3 gap-3 text-center">
+          <div className="p-4 rounded-[12px] bg-emerald-50 border border-emerald-200 dark:bg-emerald-950/50 dark:border-emerald-800">
+            <CheckCircle2 className="w-5 h-5 text-[var(--accent-success)] mx-auto mb-1" />
+            <p className="text-xl font-mono font-bold text-[var(--text-primary)]">{answeredTotal}</p>
+            <p className="text-xs text-[var(--text-secondary)]">Answered</p>
+          </div>
+          <div className="p-4 rounded-[12px] bg-amber-50 border border-amber-200 dark:bg-amber-950/50 dark:border-amber-800">
+            <Bookmark className="w-5 h-5 text-[var(--accent-warning)] mx-auto mb-1" />
+            <p className="text-xl font-mono font-bold text-[var(--text-primary)]">{markedTotal}</p>
+            <p className="text-xs text-[var(--text-secondary)]">Marked</p>
+          </div>
+          <div className="p-4 rounded-[12px] bg-[var(--bg-tray)] border border-[var(--border-default)]">
+            <AlertTriangle className="w-5 h-5 text-[var(--text-muted)] mx-auto mb-1" />
+            <p className="text-xl font-mono font-bold text-[var(--text-primary)]">
+              {questions.length - answeredTotal}
+            </p>
+            <p className="text-xs text-[var(--text-secondary)]">Unanswered</p>
           </div>
         </div>
-      )}
+      </Modal>
     </div>
   );
 };

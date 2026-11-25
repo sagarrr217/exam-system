@@ -1,284 +1,252 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation, Link, useSearchParams } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { useToast } from '../context/ToastContext';
-import { useRoleGateway } from '../context/RoleGatewayContext';
-import { BrandMark } from '../components/BrandMark';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
-  Lock,
   Mail,
-  ArrowRight,
-  Loader2,
-  KeyRound,
+  Lock,
   Eye,
   EyeOff,
-  ArrowLeft,
-  ShieldCheck,
   GraduationCap,
+  ShieldCheck,
+  AlertCircle,
+  ArrowRight,
+  CheckCircle2,
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
+import { Button } from '../components/ui/Button';
+import { Badge } from '../components/ui/Badge';
+import { cn } from '../components/ui/cn';
 
 export const LoginPage: React.FC = () => {
-  const { login } = useAuth();
-  const { success, error: showError } = useToast();
-  const { openGateway } = useRoleGateway();
+  const { user, loading: authLoading, login } = useAuth();
+  const toast = useToast();
   const navigate = useNavigate();
-  const location = useLocation();
   const [searchParams] = useSearchParams();
 
-  const preselectedRole = searchParams.get('role');
-
+  const initialRole = searchParams.get('role') === 'ADMIN' ? 'ADMIN' : 'STUDENT';
+  const [role, setRole] = useState<'STUDENT' | 'ADMIN'>(initialRole);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (preselectedRole === 'ADMIN') {
-      setEmail('admin@exam.com');
-      setPassword('admin123');
-    } else if (preselectedRole === 'STUDENT') {
-      setEmail('student@exam.com');
-      setPassword('student123');
+    if (!authLoading && user && !submitting) {
+      navigate(user.role === 'ADMIN' ? '/admin' : '/student', { replace: true });
     }
-  }, [preselectedRole]);
-
-  const from = (location.state as any)?.from?.pathname;
+  }, [authLoading, user, submitting, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (loading) return;
-    if (!email || !password) {
-      setErrorMsg('Please enter both email and password.');
+    setErrorMsg('');
+
+    if (!email.trim() || !password) {
+      setErrorMsg('Please enter both your email address and password.');
       return;
     }
 
-    setLoading(true);
-    setErrorMsg(null);
-
+    setSubmitting(true);
     try {
-      const user = await login({ email, password });
-      success(`Welcome back, ${user.name}!`);
-
-      if (from) {
-        navigate(from, { replace: true });
-      } else if (user.role === 'ADMIN') {
-        navigate('/admin', { replace: true });
-      } else {
-        navigate('/student', { replace: true });
-      }
+      const signedIn = await login({ email: email.trim(), password, role });
+      toast.success(`Welcome back, ${signedIn.name}`);
+      navigate(signedIn.role === 'ADMIN' ? '/admin' : '/student', { replace: true });
     } catch (err: any) {
-      const message = err.message || 'Login failed. Please check your credentials.';
-      setErrorMsg(message);
-      showError(message);
+      setErrorMsg(err?.message || 'Invalid email, password, or role selection.');
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
-  const handleQuickFill = (demoEmail: string, demoPass: string) => {
-    setEmail(demoEmail);
-    setPassword(demoPass);
-    setErrorMsg(null);
+  const applyDemo = (demoRole: 'STUDENT' | 'ADMIN') => {
+    setRole(demoRole);
+    setErrorMsg('');
+    if (demoRole === 'STUDENT') {
+      setEmail('student@exam.com');
+      setPassword('student123');
+    } else {
+      setEmail('admin@exam.com');
+      setPassword('admin123');
+    }
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-[var(--bg-canvas)] grid grid-cols-1 lg:grid-cols-12">
-      {/* Left Architectural Context Panel */}
-      <div className="hidden lg:flex lg:col-span-5 bg-[#141413] dark:bg-[#0E1016] text-[#F4F3EF] p-12 flex-col justify-between border-r border-white/10 relative overflow-hidden">
-        <div className="relative z-10 space-y-6">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 font-mono text-xs text-[#9297A5] hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Showcase</span>
-          </Link>
-
-          <div className="pt-8 space-y-4">
-            <BrandMark size="lg" />
-            <div className="font-mono text-xs uppercase tracking-widest text-[#FF5A36]">
-              Authenticated Access
-            </div>
-            <h1 className="font-display text-4xl font-bold leading-tight tracking-tight">
-              One gateway.{' '}
-              <span className="font-serif italic font-normal text-[#22D3EE]">
-                Two strictly isolated
-              </span>{' '}
-              workspaces.
+    <div className="min-h-[calc(100vh-4rem)] py-10 sm:py-16 px-4 sm:px-6 lg:px-8 flex items-center justify-center bg-subtle-grid">
+      <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        {/* Left Informational Context Panel */}
+        <div className="lg:col-span-5 ui-card p-8 flex flex-col justify-between bg-[var(--bg-surface)]">
+          <div className="space-y-5">
+            <Badge variant="brand" icon={<ShieldCheck className="w-3.5 h-3.5" />}>
+              Role-Enforced Sign In
+            </Badge>
+            <h1 className="text-3xl font-extrabold text-[var(--text-primary)] leading-tight">
+              Sign in to <span className="font-serif italic text-[var(--accent-primary)]">ExamSecure.</span>
             </h1>
-            <p className="text-sm text-[#9297A5] leading-relaxed max-w-md">
-              Role-Based Access Control (RBAC) issues signed JWT tokens locked to your Student or Faculty Administrator privileges.
+            <p className="text-base text-[var(--text-secondary)] leading-relaxed">
+              Authenticate directly into your isolated Student exam portal or Administrator authoring workspace.
             </p>
-          </div>
-        </div>
 
-        <div className="relative z-10 space-y-3 pt-8 border-t border-white/10">
-          <div className="font-mono text-[11px] uppercase tracking-wider text-[#9297A5]">
-            Want instant 1-click access?
+            <ul className="space-y-3 pt-2 text-sm text-[var(--text-secondary)]">
+              <li className="flex items-start gap-2.5">
+                <CheckCircle2 className="w-4 h-4 text-[var(--accent-success)] shrink-0 mt-0.5" aria-hidden="true" />
+                <span>Role selection verified server-side against your institutional profile.</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <CheckCircle2 className="w-4 h-4 text-[var(--accent-success)] shrink-0 mt-0.5" aria-hidden="true" />
+                <span>Exam progress auto-saved across network disconnects and refreshes.</span>
+              </li>
+            </ul>
           </div>
-          <button
-            type="button"
-            onClick={openGateway}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-xs font-semibold text-white transition-colors"
-          >
-            <span>Open &ldquo;Who are you?&rdquo; Role Selector</span>
-            <ArrowRight className="w-3.5 h-3.5 text-[#FF5A36]" />
-          </button>
-        </div>
-      </div>
 
-      {/* Right Sign-In Form */}
-      <div className="lg:col-span-7 flex flex-col justify-center py-10 px-4 sm:px-8 lg:px-16">
-        <div className="w-full max-w-md mx-auto">
-          <div className="mb-7">
-            <div className="lg:hidden mb-4">
-              <Link
-                to="/"
-                className="inline-flex items-center gap-1.5 font-mono text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+          {/* Demo Credential Quick-Fill */}
+          <div className="mt-8 pt-6 border-t border-[var(--border-default)] space-y-3">
+            <p className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
+              Quick-Fill Demo Accounts
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2.5">
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                fullWidth
+                onClick={() => applyDemo('STUDENT')}
+                leftIcon={<GraduationCap className="w-4 h-4 text-[var(--accent-secondary)]" />}
               >
-                <ArrowLeft className="w-3.5 h-3.5" />
-                <span>Back to Landing</span>
-              </Link>
+                Fill Student Demo (student@exam.com)
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                fullWidth
+                onClick={() => applyDemo('ADMIN')}
+                leftIcon={<ShieldCheck className="w-4 h-4 text-[var(--accent-primary)]" />}
+              >
+                Fill Admin Demo (admin@exam.com)
+              </Button>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--text-primary)]">
-              Sign in to ExamSecure
-            </h2>
-            <p className="mt-1.5 text-sm text-[var(--text-secondary)]">
-              Enter your institutional email or select a quick-fill demo profile below.
-            </p>
           </div>
+        </div>
 
-          <div className="studio-card p-6 sm:p-8 space-y-6">
-            {/* Quick-Fill Profiles */}
-            <div className="p-3.5 rounded-xl bg-[var(--bg-tray)] border border-[var(--border-hairline)] space-y-2.5">
-              <div className="flex items-center justify-between font-mono text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
-                <span>Demo Credentials Quick-Fill</span>
-                <KeyRound className="w-3.5 h-3.5" />
-              </div>
-              <div className="grid grid-cols-2 gap-2.5">
-                <button
-                  type="button"
-                  onClick={() => handleQuickFill('student@exam.com', 'student123')}
-                  className="text-left p-3 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-hairline)] hover:border-[#22D3EE]/60 transition-all group"
-                >
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-[var(--text-primary)] group-hover:text-[#0891B2] dark:group-hover:text-[#22D3EE]">
-                    <GraduationCap className="w-3.5 h-3.5" />
-                    <span>Student</span>
-                  </div>
-                  <div className="font-mono text-[11px] text-[var(--text-secondary)] truncate mt-0.5">
-                    student@exam.com
-                  </div>
-                </button>
+        {/* Right Form Panel */}
+        <div className="lg:col-span-7 ui-card p-6 sm:p-10 bg-[var(--bg-surface)]">
+          <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+            <div>
+              <h2 className="text-2xl font-bold text-[var(--text-primary)]">Account Credentials</h2>
+              <p className="text-sm text-[var(--text-secondary)] mt-1">
+                Select your role and enter your email and password.
+              </p>
+            </div>
 
-                <button
-                  type="button"
-                  onClick={() => handleQuickFill('admin@exam.com', 'admin123')}
-                  className="text-left p-3 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-hairline)] hover:border-[var(--accent-signal)]/60 transition-all group"
-                >
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-[var(--text-primary)] group-hover:text-[var(--accent-signal)]">
-                    <ShieldCheck className="w-3.5 h-3.5" />
-                    <span>Admin</span>
-                  </div>
-                  <div className="font-mono text-[11px] text-[var(--text-secondary)] truncate mt-0.5">
-                    admin@exam.com
-                  </div>
-                </button>
-              </div>
+            {/* Role Toggle */}
+            <div className="grid grid-cols-2 gap-3 p-1.5 rounded-[14px] bg-[var(--bg-tray)] border border-[var(--border-default)]">
+              <button
+                type="button"
+                onClick={() => setRole('STUDENT')}
+                className={cn(
+                  'min-h-[44px] px-4 rounded-[10px] text-sm font-semibold inline-flex items-center justify-center gap-2 transition-colors focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)]',
+                  role === 'STUDENT'
+                    ? 'bg-[var(--bg-surface)] text-[var(--accent-secondary)] shadow-sm'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                )}
+              >
+                <GraduationCap className="w-4 h-4" aria-hidden="true" />
+                Student
+              </button>
+              <button
+                type="button"
+                onClick={() => setRole('ADMIN')}
+                className={cn(
+                  'min-h-[44px] px-4 rounded-[10px] text-sm font-semibold inline-flex items-center justify-center gap-2 transition-colors focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)]',
+                  role === 'ADMIN'
+                    ? 'bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                )}
+              >
+                <ShieldCheck className="w-4 h-4" aria-hidden="true" />
+                Administrator
+              </button>
             </div>
 
             {errorMsg && (
               <div
                 role="alert"
-                className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/25 text-xs sm:text-sm text-rose-600 dark:text-rose-400"
+                className="p-4 rounded-[12px] bg-rose-50 border border-rose-200 text-rose-900 dark:bg-rose-950/60 dark:border-rose-800 dark:text-rose-100 flex items-start gap-3 text-sm"
               >
-                {errorMsg}
+                <AlertCircle className="w-5 h-5 text-[var(--accent-danger)] shrink-0 mt-0.5" aria-hidden="true" />
+                <span>{errorMsg}</span>
               </div>
             )}
 
-            <form className="space-y-4" onSubmit={handleSubmit}>
-              <div>
-                <label
-                  htmlFor="login-email"
-                  className="block text-xs font-semibold text-[var(--text-primary)] mb-1.5"
-                >
-                  Email Address
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[var(--text-tertiary)]">
-                    <Mail className="h-4 w-4" />
-                  </div>
-                  <input
-                    id="login-email"
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="name@university.edu"
-                    className="block w-full pl-10 pr-3.5 py-2.5 bg-[var(--bg-tray)] focus:bg-[var(--bg-surface)] border border-[var(--border-hairline)] rounded-xl text-sm text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-signal)] transition-all"
-                  />
-                </div>
+            {/* Email Input */}
+            <div className="space-y-2">
+              <label htmlFor="login-email" className="block text-sm font-semibold text-[var(--text-primary)]">
+                Email Address
+              </label>
+              <div className="relative">
+                <Mail className="w-4 h-4 text-[var(--text-muted)] absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true" />
+                <input
+                  id="login-email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="student@exam.com"
+                  className="w-full min-h-[48px] pl-11 pr-4 rounded-[12px] border border-[var(--border-default)] bg-[var(--bg-canvas)] text-base text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent-primary)] focus:outline-none"
+                />
               </div>
+            </div>
 
-              <div>
-                <label
-                  htmlFor="login-password"
-                  className="block text-xs font-semibold text-[var(--text-primary)] mb-1.5"
-                >
-                  Password
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[var(--text-tertiary)]">
-                    <Lock className="h-4 w-4" />
-                  </div>
-                  <input
-                    id="login-password"
-                    type={showPassword ? 'text' : 'password'}
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="block w-full pl-10 pr-10 py-2.5 bg-[var(--bg-tray)] focus:bg-[var(--bg-surface)] border border-[var(--border-hairline)] rounded-xl text-sm text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-signal)] transition-all"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
-              </div>
-
-              <div className="pt-2">
+            {/* Password Input */}
+            <div className="space-y-2">
+              <label htmlFor="login-password" className="block text-sm font-semibold text-[var(--text-primary)]">
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="w-4 h-4 text-[var(--text-muted)] absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true" />
+                <input
+                  id="login-password"
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="current-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  className="w-full min-h-[48px] pl-11 pr-12 rounded-[12px] border border-[var(--border-default)] bg-[var(--bg-canvas)] text-base text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent-primary)] focus:outline-none"
+                />
                 <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full btn-signal py-3 flex items-center justify-center gap-2 text-sm disabled:opacity-50"
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  className="min-h-[44px] min-w-[44px] absolute right-1 top-1/2 -translate-y-1/2 inline-flex items-center justify-center rounded-[10px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tray)] transition-colors"
                 >
-                  {loading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Signing in...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>Sign In</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </>
-                  )}
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-            </form>
+            </div>
 
-            <div className="pt-2 border-t border-[var(--border-hairline)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
-              <span>New candidate or faculty?</span>
-              <Link to="/register" className="font-semibold text-[var(--accent-signal)] hover:underline">
+            <Button
+              type="submit"
+              variant={role === 'ADMIN' ? 'primary' : 'teal'}
+              size="lg"
+              fullWidth
+              loading={submitting}
+              rightIcon={<ArrowRight className="w-4 h-4" />}
+            >
+              Sign In as {role === 'ADMIN' ? 'Administrator' : 'Student'}
+            </Button>
+
+            <p className="text-sm text-center text-[var(--text-secondary)]">
+              Don&apos;t have an account yet?{' '}
+              <Link
+                to={`/register?role=${role}`}
+                className="font-semibold text-[var(--accent-primary)] hover:underline"
+              >
                 Create an account
               </Link>
-            </div>
-          </div>
+            </p>
+          </form>
         </div>
       </div>
     </div>

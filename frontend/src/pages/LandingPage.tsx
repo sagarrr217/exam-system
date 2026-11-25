@@ -1,915 +1,721 @@
-import React, { useState, useEffect, Suspense, lazy } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import {
   ArrowRight,
   ShieldCheck,
   Sparkles,
-  Clock,
-  Bookmark,
-  EyeOff,
-  CheckCircle2,
-  AlertTriangle,
-  FileText,
-  GraduationCap,
-  Cpu,
-  Lock,
-  Download,
-  Terminal,
   Layers,
-  Check,
-  Activity,
+  BarChart3,
+  CheckCircle2,
+  XCircle,
+  AlertTriangle,
+  GraduationCap,
+  Lock,
+  Clock,
+  FileSpreadsheet,
+  Sliders,
+  EyeOff,
+  RotateCcw,
 } from 'lucide-react';
-import type { ProctorSceneMode } from '../components/ProctorVault3D';
 import { useRoleGateway } from '../context/RoleGatewayContext';
-import { useAuth } from '../context/AuthContext';
+import { ProctorVault3D } from '../components/ProctorVault3D';
+import { BrandMark } from '../components/BrandMark';
+import { Button } from '../components/ui/Button';
+import { Badge } from '../components/ui/Badge';
+import { cn } from '../components/ui/cn';
 
-const ProctorVault3D = lazy(() =>
-  import('../components/ProctorVault3D').then((m) => ({ default: m.ProctorVault3D }))
-);
-
-interface LandingPageProps {
-  openGatewayOnMount?: boolean;
+interface SandboxQuestion {
+  id: number;
+  type: 'MCQ' | 'NUMERICAL' | 'TRUE_FALSE';
+  label: string;
+  prompt: string;
+  options?: { id: string; text: string }[];
+  correctValue: string;
+  explanation: string;
 }
 
-const SANDBOX_QUESTIONS = [
+const SANDBOX_QUESTIONS: SandboxQuestion[] = [
   {
-    id: 'sb-1',
+    id: 1,
     type: 'MCQ',
-    marks: 10,
-    prompt: 'Which graph algorithm finds single-source shortest paths even when edges carry negative weights?',
+    label: 'Multiple Choice',
+    prompt:
+      'Which HTTP status code should an API return when a bearer token fails verification against an active user record?',
     options: [
-      { id: 'a', label: 'A', text: 'Dijkstra’s Greedy Relaxation' },
-      { id: 'b', label: 'B', text: 'Bellman-Ford Dynamic Relaxation' },
-      { id: 'c', label: 'C', text: 'Breadth-First Queue Traversal' },
-      { id: 'd', label: 'D', text: 'Kruskal’s Disjoint Union' },
+      { id: 'a', text: '401 Unauthorized' },
+      { id: 'b', text: '204 No Content' },
+      { id: 'c', text: '302 Found' },
+      { id: 'd', text: '500 Internal Server Error' },
     ],
-    correctId: 'b',
+    correctValue: 'a',
+    explanation: '401 Unauthorized signals invalid or expired authentication credentials before controller execution.',
   },
   {
-    id: 'sb-2',
+    id: 2,
     type: 'NUMERICAL',
-    marks: 5,
-    prompt: 'Compute the worst-case comparison depth of a balanced binary tree with 1,024 leaf nodes (log₂ 1024).',
-    expected: '10',
+    label: 'Numerical Value',
+    prompt:
+      'In IEEE 754 single-precision (32-bit) floating-point representation, how many bits are allocated to the exponent field?',
+    correctValue: '8',
+    explanation: 'IEEE 754 float32 allocates 1 sign bit, 8 exponent bits, and 23 significand bits.',
   },
   {
-    id: 'sb-3',
+    id: 3,
     type: 'TRUE_FALSE',
-    marks: 5,
-    prompt: 'Student attempt endpoints strip option correctness flags (`isCorrect`) from payloads until submission locks.',
+    label: 'True / False',
+    prompt:
+      'ExamSecure proctoring telemetry captures both window blur and document visibility changes into an immutable audit log.',
     options: [
-      { id: 'true', label: 'T', text: 'True — Strictly Redacted' },
-      { id: 'false', label: 'F', text: 'False — Sent to Client' },
+      { id: 'true', text: 'True' },
+      { id: 'false', text: 'False' },
     ],
-    correctId: 'true',
+    correctValue: 'true',
+    explanation: 'Both visibilitychange and blur events increment the violation ledger and warn at configured thresholds.',
   },
 ];
 
-const QUESTION_FORMATS = [
-  { code: '01', name: 'Single-Choice MCQ', spec: 'Radio cards • Exact option ID' },
-  { code: '02', name: 'Multi-Select Matrix', spec: 'Set-equality grading' },
-  { code: '03', name: 'True / False Binary', spec: 'Affirmative / Negative cards' },
-  { code: '04', name: 'Fill in the Blank', spec: 'Case-insensitive multi-match' },
-  { code: '05', name: 'Numerical Precision', spec: 'Floating tolerance ±0.001' },
-  { code: '06', name: 'Short Response', spec: 'Word count & autosave' },
-  { code: '07', name: '5-Marker Essay', spec: 'Expanded architectural prose' },
-];
-
-export const LandingPage: React.FC<LandingPageProps> = ({ openGatewayOnMount = false }) => {
+export const LandingPage: React.FC = () => {
   const { openGateway } = useRoleGateway();
-  const { user } = useAuth();
-
-  // 3D WebGL State Machine Mode
-  const [sceneMode, setSceneMode] = useState<ProctorSceneMode>('sentinel');
+  const [vaultMode, setVaultMode] = useState<'landing' | 'student' | 'admin'>('landing');
 
   // Interactive Sandbox State
-  const [sandboxIdx, setSandboxIdx] = useState(0);
-  const [selectedChoice, setSelectedChoice] = useState<Record<string, string>>({ 'sb-1': 'b' });
-  const [numericalVal, setNumericalVal] = useState('10');
-  const [markedSet, setMarkedSet] = useState<Record<string, boolean>>({});
-  const [simViolations, setSimViolations] = useState(0);
-  const [simTimer, setSimTimer] = useState(2684); // 44:44
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [sandboxAnswers, setSandboxAnswers] = useState<Record<number, string>>({});
+  const [sandboxChecked, setSandboxChecked] = useState(false);
+  const [simulatedStrikes, setSimulatedStrikes] = useState(0);
 
-  // Dual Interface Preview Tab
-  const [interfaceTab, setInterfaceTab] = useState<'STUDENT' | 'ADMIN'>('STUDENT');
+  // Dual Interface Switcher State
+  const [workspaceTab, setWorkspaceTab] = useState<'student' | 'admin'>('student');
 
-  useEffect(() => {
-    if (openGatewayOnMount) {
-      openGateway();
-    }
-  }, [openGatewayOnMount, openGateway]);
+  const activeQuestion = SANDBOX_QUESTIONS[activeIdx];
+  const currentAnswer = sandboxAnswers[activeQuestion.id] || '';
+  const sandboxScore = SANDBOX_QUESTIONS.reduce((acc, q) => {
+    const val = (sandboxAnswers[q.id] || '').trim().toLowerCase();
+    return val === q.correctValue.toLowerCase() ? acc + 1 : acc;
+  }, 0);
 
-  useEffect(() => {
-    const t = setInterval(() => {
-      setSimTimer((prev) => (prev > 60 ? prev - 1 : 2684));
-    }, 1000);
-    return () => clearInterval(t);
-  }, []);
-
-  const formatTimer = (sec: number) => {
-    const m = Math.floor(sec / 60).toString().padStart(2, '0');
-    const s = (sec % 60).toString().padStart(2, '0');
-    return `${m}:${s}`;
-  };
-
-  const activeSandboxQ = SANDBOX_QUESTIONS[sandboxIdx];
-
-  const modeDescriptions: Record<ProctorSceneMode, { tag: string; metric: string; detail: string }> = {
-    sentinel: {
-      tag: 'PROCTOR SENTINEL // ACTIVE',
-      metric: '0.4ms Event Hook',
-      detail: 'Tracks window blur, tab visibility & resize telemetry with debounced audit logging.',
-    },
-    ai: {
-      tag: 'GEMINI MULTIMODAL // 1M CTX',
-      metric: 'PDF + Vision Parse',
-      detail: 'Converts raw syllabi, diagrams & textbook pages into structured 7-type exams.',
-    },
-    lockdown: {
-      tag: 'RBAC + KEY REDACTION // SEALED',
-      metric: 'HTTP 403 Enforced',
-      detail: 'Strips answer keys from student payloads & locks attempts post-submission.',
-    },
+  const resetSandbox = () => {
+    setSandboxAnswers({});
+    setSandboxChecked(false);
+    setSimulatedStrikes(0);
+    setActiveIdx(0);
   };
 
   return (
-    <div className="relative bg-[var(--bg-canvas)] text-[var(--text-primary)] overflow-x-hidden">
-      {/* SECTION 1: ASYMMETRIC 3D WEBGL HERO */}
-      <section className="relative border-b border-[var(--border-hairline)] bg-arch-grid">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16 lg:pt-14 lg:pb-24">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
-            {/* Left Editorial Column (7 cols) */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-              className="lg:col-span-7 space-y-6"
-            >
-              {/* Precision Telemetry Eyebrow */}
-              <div className="inline-flex flex-wrap items-center gap-2.5 px-3 py-1.5 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-hairline)] shadow-sm">
-                <span className="flex items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-wider text-[var(--accent-signal)]">
-                  <span className="w-2 h-2 rounded-full bg-[var(--accent-signal)] animate-pulse" />
-                  Dual-Interface Architecture
-                </span>
-                <span className="text-[var(--border-strong)]">|</span>
-                <span className="font-mono text-[11px] text-[var(--text-secondary)]">
-                  Student Room + Faculty AI Console
-                </span>
+    <div className="bg-[var(--bg-canvas)] text-[var(--text-primary)] overflow-x-hidden">
+      {/* 1. HERO SECTION — 60-30-10 Nordic Academic / Obsidian Slate Split */}
+      <section className="relative bg-subtle-grid border-b border-[var(--border-default)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+            {/* Hero Copy (Left 6 columns) */}
+            <div className="lg:col-span-6 space-y-6">
+              <div className="inline-flex items-center gap-2">
+                <Badge variant="brand" icon={<ShieldCheck className="w-3.5 h-3.5" />}>
+                  Institutional Assessment &amp; Proctoring Architecture
+                </Badge>
               </div>
 
-              {/* Asymmetric Typographic Display Title */}
-              <h1 className="font-display text-4xl sm:text-5xl lg:text-[3.85rem] font-extrabold tracking-[-0.035em] leading-[1.03] text-[var(--text-primary)]">
-                High-stakes exams,{' '}
-                <span className="font-serif italic font-normal text-[var(--accent-signal)] tracking-[-0.01em]">
-                  architected
-                </span>{' '}
-                for zero ambiguity.
+              <h1 className="text-4xl sm:text-5xl font-extrabold text-[var(--text-primary)] tracking-tight leading-[1.08]">
+                High-stakes exams engineered for{' '}
+                <span className="font-serif italic font-semibold text-[var(--accent-primary)]">
+                  academic precision.
+                </span>
               </h1>
 
-              {/* Punchy, Content-First Copy (under 65 words) */}
-              <p className="text-base sm:text-lg text-[var(--text-secondary)] max-w-xl leading-relaxed">
-                An institutional examination engine pairing an isolated, keystroke-autosaved student room with a faculty studio powered by Gemini Multimodal synthesis and real-time focus-loss auditing.
+              <p className="text-base sm:text-lg text-[var(--text-secondary)] leading-relaxed max-w-xl">
+                Author multi-format assessments with Gemini AI, isolate candidate browser sessions with real-time focus telemetry, and generate instant analytical gradebooks.
               </p>
 
-              {/* Primary CTA Row */}
-              <div className="flex flex-wrap items-center gap-3.5 pt-2">
-                <button
-                  type="button"
+              {/* Action Buttons */}
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <Button
+                  variant="primary"
+                  size="lg"
                   onClick={openGateway}
-                  className="btn-signal px-7 py-3.5 text-sm sm:text-base inline-flex items-center gap-2.5 group"
+                  rightIcon={<ArrowRight className="w-5 h-5" />}
                 >
-                  <span>Get Started</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </button>
-
+                  Get Started
+                </Button>
                 <a
                   href="#sandbox"
-                  className="btn-ghost-surface px-5 py-3.5 text-sm inline-flex items-center gap-2"
+                  className="min-h-[48px] px-5 inline-flex items-center justify-center rounded-[12px] border border-[var(--border-default)] bg-[var(--bg-surface)] text-base font-semibold text-[var(--text-primary)] hover:border-[var(--border-strong)] hover:bg-[var(--bg-tray)] transition-colors focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)]"
                 >
-                  <Terminal className="w-4 h-4 text-[#0891B2] dark:text-[#22D3EE]" />
-                  <span>Test Live Sandbox</span>
+                  Try Live Sandbox
                 </a>
-
-                {!user && (
-                  <Link
-                    to="/login"
-                    className="px-3 py-2 text-xs sm:text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] underline-offset-4 hover:underline transition-colors"
-                  >
-                    Custom Sign In
-                  </Link>
-                )}
+                <Link
+                  to="/login"
+                  className="min-h-[48px] px-4 inline-flex items-center justify-center rounded-[12px] text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tray)] transition-colors"
+                >
+                  Sign In
+                </Link>
               </div>
 
-              {/* Factual Telemetry Specification Strip */}
-              <div className="pt-6 border-t border-[var(--border-hairline)] grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {/* Trust Metric Bar */}
+              <div className="pt-6 border-t border-[var(--border-default)] grid grid-cols-3 gap-4 sm:gap-6">
                 <div>
-                  <div className="font-mono text-xl sm:text-2xl font-bold text-[var(--text-primary)] tabular-nums">
-                    07
-                  </div>
-                  <div className="text-[11px] font-medium text-[var(--text-secondary)]">
-                    Native Question Formats
-                  </div>
+                  <p className="text-2xl font-extrabold font-mono tabular-nums text-[var(--text-primary)]">
+                    7
+                  </p>
+                  <p className="text-xs font-medium text-[var(--text-secondary)] mt-0.5">
+                    Question Modalities
+                  </p>
                 </div>
                 <div>
-                  <div className="font-mono text-xl sm:text-2xl font-bold text-[var(--text-primary)] tabular-nums">
-                    ±0.001
-                  </div>
-                  <div className="text-[11px] font-medium text-[var(--text-secondary)]">
-                    Numeric Auto-Tolerance
-                  </div>
+                  <p className="text-2xl font-extrabold font-mono tabular-nums text-[var(--accent-primary)]">
+                    &lt; 2s
+                  </p>
+                  <p className="text-xs font-medium text-[var(--text-secondary)] mt-0.5">
+                    Auto-Save Latency
+                  </p>
                 </div>
                 <div>
-                  <div className="font-mono text-xl sm:text-2xl font-bold text-[#0891B2] dark:text-[#22D3EE] tabular-nums">
+                  <p className="text-2xl font-extrabold font-mono tabular-nums text-[var(--accent-secondary)]">
                     100%
-                  </div>
-                  <div className="text-[11px] font-medium text-[var(--text-secondary)]">
-                    Answer Key Redacted
-                  </div>
-                </div>
-                <div>
-                  <div className="font-mono text-xl sm:text-2xl font-bold text-[var(--accent-signal)] tabular-nums">
-                    1M CTX
-                  </div>
-                  <div className="text-[11px] font-medium text-[var(--text-secondary)]">
-                    Gemini PDF Ingestion
-                  </div>
+                  </p>
+                  <p className="text-xs font-medium text-[var(--text-secondary)] mt-0.5">
+                    Audited Events
+                  </p>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
-            {/* Right Interactive 3D WebGL Telemetry Core (5 cols) */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.55, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="lg:col-span-5"
+            {/* Hero 3D Interactive Vault (Right 6 columns) */}
+            <div className="lg:col-span-6">
+              <ProctorVault3D
+                mode={vaultMode}
+                onModeChange={setVaultMode}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 2. INTERACTIVE LIVE EXAM SANDBOX */}
+      <section id="sandbox" className="py-16 sm:py-20 border-b border-[var(--border-default)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+            <div className="max-w-2xl">
+              <Badge variant="teal" icon={<Layers className="w-3.5 h-3.5" />}>
+                Zero-Signup Preview
+              </Badge>
+              <h2 className="mt-3 text-3xl sm:text-4xl font-bold text-[var(--text-primary)]">
+                Interactive Exam Sandbox
+              </h2>
+              <p className="mt-2 text-base text-[var(--text-secondary)]">
+                Test multiple question formats, immediate validation feedback, and live focus-loss proctoring directly below.
+              </p>
+            </div>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={resetSandbox}
+              leftIcon={<RotateCcw className="w-4 h-4" />}
             >
-              <div className="relative rounded-2xl border border-[var(--border-strong)] bg-[var(--bg-surface)] shadow-2xl overflow-hidden">
-                {/* 3D Viewport Top Bar */}
-                <div className="px-4 py-3 border-b border-[var(--border-hairline)] flex items-center justify-between bg-[var(--bg-tray)]/60">
-                  <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-[var(--text-secondary)]">
-                    <span className="w-2 h-2 rounded-full bg-[#10B981]" />
-                    <span>{modeDescriptions[sceneMode].tag}</span>
+              Reset Sandbox
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* Main Interactive Question Surface */}
+            <div className="lg:col-span-8 ui-card p-6 sm:p-8 space-y-6">
+              {/* Top Question Stepper */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-[var(--border-default)]">
+                <div className="flex items-center gap-2">
+                  {SANDBOX_QUESTIONS.map((q, idx) => {
+                    const answered = Boolean((sandboxAnswers[q.id] || '').trim());
+                    return (
+                      <button
+                        key={q.id}
+                        type="button"
+                        onClick={() => setActiveIdx(idx)}
+                        className={cn(
+                          'min-h-[44px] px-4 rounded-[10px] text-sm font-semibold border transition-colors focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)]',
+                          activeIdx === idx
+                            ? 'bg-[var(--accent-primary)] text-white border-transparent'
+                            : answered
+                            ? 'bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-200 dark:border-emerald-800'
+                            : 'bg-[var(--bg-tray)] text-[var(--text-secondary)] border-[var(--border-default)] hover:text-[var(--text-primary)]'
+                        )}
+                      >
+                        Q{idx + 1} · {q.label}
+                      </button>
+                    );
+                  })}
+                </div>
+                <Badge variant="neutral">Question {activeIdx + 1} of 3</Badge>
+              </div>
+
+              {/* Prompt */}
+              <div>
+                <p className="text-lg font-semibold text-[var(--text-primary)] leading-relaxed">
+                  {activeQuestion.prompt}
+                </p>
+              </div>
+
+              {/* Input Controls */}
+              {activeQuestion.type === 'NUMERICAL' ? (
+                <div className="max-w-xs space-y-2">
+                  <label
+                    htmlFor="sandbox-numerical-input"
+                    className="block text-sm font-semibold text-[var(--text-secondary)]"
+                  >
+                    Enter numeric answer
+                  </label>
+                  <input
+                    id="sandbox-numerical-input"
+                    type="text"
+                    inputMode="numeric"
+                    value={currentAnswer}
+                    onChange={(e) =>
+                      setSandboxAnswers((prev) => ({ ...prev, [activeQuestion.id]: e.target.value }))
+                    }
+                    placeholder="e.g. 8"
+                    className="w-full min-h-[44px] px-4 rounded-[12px] border border-[var(--border-default)] bg-[var(--bg-canvas)] text-[var(--text-primary)] font-mono text-base focus:border-[var(--accent-primary)] focus:outline-none"
+                  />
+                </div>
+              ) : (
+                <div className="space-y-3" role="radiogroup" aria-label={`Options for question ${activeQuestion.id}`}>
+                  {activeQuestion.options?.map((opt) => {
+                    const selected = currentAnswer === opt.id;
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        role="radio"
+                        aria-checked={selected}
+                        onClick={() =>
+                          setSandboxAnswers((prev) => ({ ...prev, [activeQuestion.id]: opt.id }))
+                        }
+                        className={cn(
+                          'w-full min-h-[48px] px-4 py-3 rounded-[12px] border text-left flex items-center justify-between gap-3 transition-colors focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)]',
+                          selected
+                            ? 'border-[var(--accent-primary)] bg-blue-50/70 dark:bg-blue-950/50 text-[var(--text-primary)] font-semibold'
+                            : 'border-[var(--border-default)] bg-[var(--bg-canvas)] text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]'
+                        )}
+                      >
+                        <span className="text-base">{opt.text}</span>
+                        <span
+                          className={cn(
+                            'w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0',
+                            selected
+                              ? 'border-[var(--accent-primary)] bg-[var(--accent-primary)]'
+                              : 'border-[var(--border-strong)]'
+                          )}
+                          aria-hidden="true"
+                        >
+                          {selected && <span className="w-2 h-2 rounded-full bg-white" />}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Evaluation Result Banner */}
+              {sandboxChecked && (
+                <div
+                  className={cn(
+                    'p-4 rounded-[12px] border flex items-start gap-3',
+                    currentAnswer.trim().toLowerCase() === activeQuestion.correctValue.toLowerCase()
+                      ? 'bg-emerald-50 border-emerald-200 text-emerald-900 dark:bg-emerald-950/50 dark:border-emerald-800 dark:text-emerald-100'
+                      : 'bg-rose-50 border-rose-200 text-rose-900 dark:bg-rose-950/50 dark:border-rose-800 dark:text-rose-100'
+                  )}
+                >
+                  {currentAnswer.trim().toLowerCase() === activeQuestion.correctValue.toLowerCase() ? (
+                    <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5" aria-hidden="true" />
+                  ) : (
+                    <XCircle className="w-5 h-5 shrink-0 mt-0.5" aria-hidden="true" />
+                  )}
+                  <div className="space-y-1 text-sm">
+                    <p className="font-bold">
+                      {currentAnswer.trim().toLowerCase() === activeQuestion.correctValue.toLowerCase()
+                        ? 'Correct Answer'
+                        : `Expected Answer: ${activeQuestion.correctValue.toUpperCase()}`}
+                    </p>
+                    <p>{activeQuestion.explanation}</p>
                   </div>
-                  <span className="font-mono text-[10px] text-[var(--text-tertiary)]">
-                    WEBGL // 60FPS
+                </div>
+              )}
+
+              {/* Action Row */}
+              <div className="pt-2 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    disabled={activeIdx === 0}
+                    onClick={() => setActiveIdx((i) => Math.max(0, i - 1))}
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    disabled={activeIdx === SANDBOX_QUESTIONS.length - 1}
+                    onClick={() => setActiveIdx((i) => Math.min(SANDBOX_QUESTIONS.length - 1, i + 1))}
+                  >
+                    Next Question
+                  </Button>
+                </div>
+
+                <Button
+                  variant="primary"
+                  size="md"
+                  onClick={() => setSandboxChecked(true)}
+                  leftIcon={<CheckCircle2 className="w-4 h-4" />}
+                >
+                  Grade Sandbox ({sandboxScore}/3)
+                </Button>
+              </div>
+            </div>
+
+            {/* Live Proctoring Telemetry Sidebar */}
+            <div className="lg:col-span-4 space-y-4">
+              <div className="ui-card p-6 space-y-4">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-sm font-bold text-[var(--text-primary)]">
+                    Focus Guard Telemetry
+                  </span>
+                  <Badge variant={simulatedStrikes >= 3 ? 'danger' : simulatedStrikes > 0 ? 'warning' : 'success'}>
+                    {simulatedStrikes >= 3 ? 'Auto-Submit Triggered' : simulatedStrikes > 0 ? 'Warning Logged' : 'Compliant'}
+                  </Badge>
+                </div>
+
+                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                  During an active exam, leaving fullscreen or switching tabs increments a cryptographic strike counter synced to the faculty audit log.
+                </p>
+
+                <div className="p-4 rounded-[12px] bg-[var(--bg-tray)] border border-[var(--border-default)] flex items-center justify-between">
+                  <span className="text-sm font-medium text-[var(--text-secondary)]">Recorded Strikes</span>
+                  <span className="text-2xl font-mono font-bold tabular-nums text-[var(--text-primary)]">
+                    {simulatedStrikes} / 3
                   </span>
                 </div>
 
-                {/* 3D Canvas Stage */}
-                <div className="relative h-[340px] sm:h-[400px] w-full bg-gradient-to-b from-transparent via-black/[0.02] to-black/[0.06] dark:via-white/[0.01] dark:to-black/40">
-                  <Suspense
-                    fallback={
-                      <div className="w-full h-full flex flex-col items-center justify-center gap-2">
-                        <div className="w-8 h-8 rounded-full border-2 border-[var(--accent-signal)] border-t-transparent animate-spin" />
-                        <span className="font-mono text-[11px] uppercase tracking-widest text-[var(--text-secondary)]">
-                          Loading 3D Engine...
-                        </span>
-                      </div>
-                    }
-                  >
-                    <ProctorVault3D mode={sceneMode} className="w-full h-full" />
-                  </Suspense>
-
-                  {/* Corner Coordinate Reticle */}
-                  <div className="pointer-events-none absolute top-3 left-4 font-mono text-[10px] text-[var(--text-tertiary)] space-y-0.5">
-                    <div>AXIS_IK: POINTER_TRACK</div>
-                    <div>CORE_SPEC: {modeDescriptions[sceneMode].metric}</div>
-                  </div>
-                </div>
-
-                {/* State Machine Interactive Mode Switcher */}
-                <div className="p-4 border-t border-[var(--border-hairline)] bg-[var(--bg-surface)] space-y-3">
-                  <div className="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-[var(--bg-tray)] border border-[var(--border-hairline)]">
-                    {(
-                      [
-                        { id: 'sentinel', label: 'Sentinel' },
-                        { id: 'ai', label: 'AI Studio' },
-                        { id: 'lockdown', label: 'RBAC Seal' },
-                      ] as const
-                    ).map((item) => {
-                      const active = sceneMode === item.id;
-                      return (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => setSceneMode(item.id)}
-                          className={`py-1.5 px-2 rounded-lg font-mono text-[11px] font-semibold transition-all ${
-                            active
-                              ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border-hairline)] shadow-sm'
-                              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-transparent'
-                          }`}
-                        >
-                          {item.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-                    {modeDescriptions[sceneMode].detail}
-                  </p>
-                </div>
+                <Button
+                  variant={simulatedStrikes >= 2 ? 'danger' : 'secondary'}
+                  size="md"
+                  fullWidth
+                  onClick={() => setSimulatedStrikes((s) => Math.min(3, s + 1))}
+                  leftIcon={<AlertTriangle className="w-4 h-4" />}
+                >
+                  Simulate Tab Switch (+1 Strike)
+                </Button>
               </div>
-            </motion.div>
+
+              <div className="ui-card p-6 bg-[var(--bg-tray)]/60 space-y-3">
+                <p className="text-sm font-semibold text-[var(--text-primary)]">
+                  Ready for the full environment?
+                </p>
+                <p className="text-sm text-[var(--text-secondary)]">
+                  Open the Role Selector to test Student exam-taking or Admin authoring right now.
+                </p>
+                <Button variant="primary" size="md" fullWidth onClick={openGateway} rightIcon={<ArrowRight className="w-4 h-4" />}>
+                  Open Role Gateway
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* SECTION 2: INTERACTIVE LIVE SANDBOX (Judges can test the real UX immediately) */}
-      <section id="sandbox" className="py-16 sm:py-24 border-b border-[var(--border-hairline)]">
+      {/* 3. ASYMMETRIC BENTO CAPABILITIES */}
+      <section id="capabilities" className="py-16 sm:py-20 border-b border-[var(--border-default)] bg-[var(--bg-tray)]/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
-            <div className="max-w-2xl">
-              <div className="font-mono text-xs uppercase tracking-widest text-[var(--accent-signal)] font-semibold mb-2">
-                [ 01 / INTERACTIVE ENGINE PREVIEW ]
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--text-primary)]">
-                Experience the exam portal before signing in.
-              </h2>
-            </div>
-            <p className="text-sm text-[var(--text-secondary)] max-w-md">
-              Select answers, flag questions for review, or trigger a simulated focus-loss violation to watch the live telemetry sentinel respond.
-            </p>
-          </div>
-
-          <div className="studio-card overflow-hidden border border-[var(--border-strong)]">
-            {/* Simulated Exam Header */}
-            <div className="px-5 py-3.5 bg-[var(--bg-tray)] border-b border-[var(--border-hairline)] flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <span className="font-mono text-xs font-bold px-2.5 py-1 rounded bg-[var(--bg-surface)] border border-[var(--border-hairline)]">
-                  CS401 // SANDBOX
-                </span>
-                <span className="text-xs sm:text-sm font-semibold text-[var(--text-primary)]">
-                  Algorithms & Distributed Integrity
-                </span>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-2.5">
-                <button
-                  type="button"
-                  onClick={() => setSimViolations((v) => v + 1)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30 hover:bg-amber-500/25 transition-colors"
-                >
-                  <EyeOff className="w-3.5 h-3.5" />
-                  <span>Simulate Tab Switch</span>
-                </button>
-
-                <div
-                  className={`font-mono text-xs font-semibold px-3 py-1.5 rounded-lg border tabular-nums flex items-center gap-1.5 ${
-                    simViolations >= 3
-                      ? 'bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-500/35'
-                      : 'bg-[var(--bg-surface)] text-[var(--text-primary)] border-[var(--border-hairline)]'
-                  }`}
-                >
-                  <Activity className="w-3.5 h-3.5 text-[#22D3EE]" />
-                  <span>Incidents: {simViolations}/3</span>
-                </div>
-
-                <div className="font-mono text-xs font-bold px-3 py-1.5 rounded-lg bg-[#141413] text-white dark:bg-white/10 tabular-nums flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5 text-[var(--accent-signal)]" />
-                  <span>{formatTimer(simTimer)}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Sandbox Split Body */}
-            <div className="grid grid-cols-1 lg:grid-cols-12">
-              {/* Question Stage */}
-              <div className="lg:col-span-8 p-6 sm:p-8 border-b lg:border-b-0 lg:border-r border-[var(--border-hairline)] space-y-6">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs font-bold px-2.5 py-1 rounded bg-[var(--accent-signal)]/10 text-[var(--accent-signal)] border border-[var(--accent-signal)]/20">
-                      Q0{sandboxIdx + 1} / 03
-                    </span>
-                    <span className="font-mono text-xs text-[var(--text-secondary)]">
-                      {activeSandboxQ.type} • {activeSandboxQ.marks} MARKS
-                    </span>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setMarkedSet((prev) => ({
-                        ...prev,
-                        [activeSandboxQ.id]: !prev[activeSandboxQ.id],
-                      }))
-                    }
-                    className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold border transition-colors ${
-                      markedSet[activeSandboxQ.id]
-                        ? 'bg-amber-500/15 text-amber-600 dark:text-amber-300 border-amber-500/35'
-                        : 'bg-[var(--bg-tray)] text-[var(--text-secondary)] border-[var(--border-hairline)]'
-                    }`}
-                  >
-                    <Bookmark className="w-3.5 h-3.5" />
-                    <span>{markedSet[activeSandboxQ.id] ? 'Flagged' : 'Mark Review'}</span>
-                  </button>
-                </div>
-
-                <h3 className="text-lg sm:text-xl font-semibold text-[var(--text-primary)] leading-snug">
-                  {activeSandboxQ.prompt}
-                </h3>
-
-                {/* Options / Numerical Input */}
-                {activeSandboxQ.options ? (
-                  <div className="space-y-2.5">
-                    {activeSandboxQ.options.map((opt) => {
-                      const isChosen = selectedChoice[activeSandboxQ.id] === opt.id;
-                      return (
-                        <button
-                          key={opt.id}
-                          type="button"
-                          onClick={() =>
-                            setSelectedChoice((prev) => ({ ...prev, [activeSandboxQ.id]: opt.id }))
-                          }
-                          className={`w-full text-left p-3.5 rounded-xl border transition-all flex items-center gap-3.5 ${
-                            isChosen
-                              ? 'border-[var(--accent-signal)] bg-[var(--accent-signal)]/10'
-                              : 'border-[var(--border-hairline)] bg-[var(--bg-tray)]/40 hover:border-[var(--border-strong)]'
-                          }`}
-                        >
-                          <span
-                            className={`w-7 h-7 rounded-lg font-mono text-xs font-bold flex items-center justify-center flex-shrink-0 ${
-                              isChosen
-                                ? 'bg-[var(--accent-signal)] text-white'
-                                : 'bg-[var(--bg-surface)] text-[var(--text-secondary)] border border-[var(--border-hairline)]'
-                            }`}
-                          >
-                            {opt.label}
-                          </span>
-                          <span className="text-sm font-medium text-[var(--text-primary)]">
-                            {opt.text}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <div className="space-y-2 max-w-sm">
-                    <label
-                      htmlFor="sandbox-numerical"
-                      className="block font-mono text-xs uppercase text-[var(--text-secondary)]"
-                    >
-                      Exact Value (Tolerance ±0.001)
-                    </label>
-                    <input
-                      id="sandbox-numerical"
-                      type="number"
-                      value={numericalVal}
-                      onChange={(e) => setNumericalVal(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl font-mono text-lg font-bold bg-[var(--bg-tray)] border border-[var(--border-strong)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-signal)]"
-                    />
-                  </div>
-                )}
-
-                {simViolations > 0 && (
-                  <div
-                    className={`p-3.5 rounded-xl border text-xs flex items-center justify-between gap-3 ${
-                      simViolations >= 3
-                        ? 'bg-rose-500/10 border-rose-500/30 text-rose-600 dark:text-rose-400'
-                        : 'bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-300'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2 font-medium">
-                      <AlertTriangle className="w-4 h-4 flex-shrink-0" />
-                      <span>
-                        {simViolations >= 3
-                          ? `Threshold reached (${simViolations}/3): Attempt flagged in Admin Proctoring Console.`
-                          : `Focus-loss event #${simViolations} logged non-destructively — answers preserved.`}
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setSimViolations(0)}
-                      className="font-mono text-[11px] underline flex-shrink-0"
-                    >
-                      Reset
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* Palette & Launch Sidebar */}
-              <div className="lg:col-span-4 p-6 sm:p-8 bg-[var(--bg-tray)]/35 flex flex-col justify-between gap-6">
-                <div>
-                  <div className="font-mono text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-3">
-                    Live Question Palette
-                  </div>
-                  <div className="grid grid-cols-3 gap-2.5">
-                    {SANDBOX_QUESTIONS.map((q, idx) => {
-                      const isCurrent = idx === sandboxIdx;
-                      const isFlagged = markedSet[q.id];
-                      const isDone = q.options ? Boolean(selectedChoice[q.id]) : numericalVal.trim().length > 0;
-                      return (
-                        <button
-                          key={q.id}
-                          type="button"
-                          onClick={() => setSandboxIdx(idx)}
-                          className={`h-11 rounded-xl font-mono text-sm font-bold border transition-all ${
-                            isFlagged
-                              ? 'bg-amber-500 text-white border-amber-600'
-                              : isDone
-                              ? 'bg-[#15803D] dark:bg-[#10B981] text-white dark:text-[#0A0B0E] border-transparent'
-                              : 'bg-[var(--bg-surface)] text-[var(--text-primary)] border-[var(--border-hairline)]'
-                          } ${isCurrent ? 'ring-2 ring-[var(--accent-signal)] ring-offset-2 ring-offset-[var(--bg-canvas)]' : ''}`}
-                        >
-                          0{idx + 1}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <p className="mt-4 text-xs text-[var(--text-secondary)] leading-relaxed">
-                    In production, every click or field blur syncs asynchronously via <code className="font-mono text-[var(--text-primary)]">POST /save-answer</code> with instant state indicators.
-                  </p>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={openGateway}
-                  className="btn-signal w-full py-3 px-4 text-xs sm:text-sm flex items-center justify-center gap-2"
-                >
-                  <span>Enter Real Workspace</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* SECTION 3: ASYMMETRIC BENTO ARCHITECTURE */}
-      <section id="architecture" className="py-16 sm:py-24 border-b border-[var(--border-hairline)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="max-w-2xl">
-            <div className="font-mono text-xs uppercase tracking-widest text-[var(--accent-signal)] font-semibold mb-2">
-              [ 02 / SYSTEM CAPABILITIES ]
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--text-primary)]">
-              Built like laboratory instrumentation, not a quiz template.
+          <div className="max-w-2xl mb-10">
+            <Badge variant="brand" icon={<Sparkles className="w-3.5 h-3.5" />}>
+              Core Architecture
+            </Badge>
+            <h2 className="mt-3 text-3xl sm:text-4xl font-bold text-[var(--text-primary)]">
+              Built for integrity from authoring to transcript.
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-            {/* Wide 8-Col Bento: Gemini Multimodal AI Studio */}
-            <div className="lg:col-span-8 studio-card p-6 sm:p-8 flex flex-col justify-between gap-6">
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div className="space-y-2 max-w-xl">
-                  <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded bg-[var(--accent-signal)]/10 text-[var(--accent-signal)]">
-                    <Sparkles className="w-3.5 h-3.5" />
-                    Gemini Multimodal Studio
-                  </span>
-                  <h3 className="text-2xl font-bold text-[var(--text-primary)]">
-                    Drop a raw syllabus PDF or circuit diagram. Get exam-ready items in seconds.
-                  </h3>
-                  <p className="text-sm text-[var(--text-secondary)]">
-                    Faculty upload multi-page PDFs or reference images up to 15MB. Gemini synthesizes structured questions with options, rationales, and marks for 1-click injection into any exam draft.
-                  </p>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+            {/* Bento 1: Gemini AI Studio (7 cols) */}
+            <div className="md:col-span-7 ui-card ui-card-hover p-6 sm:p-8 flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="w-11 h-11 rounded-[12px] bg-blue-50 dark:bg-blue-950/60 text-[var(--accent-primary)] flex items-center justify-center border border-blue-200 dark:border-blue-800">
+                  <Sparkles className="w-5 h-5" aria-hidden="true" />
                 </div>
+                <h3 className="text-2xl font-bold text-[var(--text-primary)]">
+                  Gemini Multimodal AI Question Studio
+                </h3>
+                <p className="text-base text-[var(--text-secondary)] leading-relaxed">
+                  Generate balanced exams directly from course syllabi, pasted notes, or uploaded diagram images. Every generated item maps cleanly into structured JSON ready for inline review and instant publishing.
+                </p>
               </div>
-
-              {/* Architectural Flow Visualization */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-                <div className="p-4 rounded-xl bg-[var(--bg-tray)] border border-[var(--border-hairline)] space-y-1.5">
-                  <div className="font-mono text-[10px] text-[var(--text-tertiary)] uppercase">Input Payload</div>
-                  <div className="flex items-center gap-2 font-semibold text-sm text-[var(--text-primary)]">
-                    <FileText className="w-4 h-4 text-[var(--accent-signal)]" />
-                    <span>Syllabus_CS401.pdf</span>
-                  </div>
-                  <div className="font-mono text-[11px] text-[var(--text-secondary)]">Multimodal Vision + Text</div>
+              <div className="mt-6 p-4 rounded-[12px] bg-[var(--bg-tray)] border border-[var(--border-default)] flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-2 text-sm font-medium text-[var(--text-primary)]">
+                  <CheckCircle2 className="w-4 h-4 text-[var(--accent-success)]" aria-hidden="true" />
+                  <span>Resilient Offline Synthesis Fallback Included</span>
                 </div>
-
-                <div className="p-4 rounded-xl bg-[var(--bg-tray)] border border-[var(--border-hairline)] space-y-1.5">
-                  <div className="font-mono text-[10px] text-[var(--text-tertiary)] uppercase">Synthesis Engine</div>
-                  <div className="flex items-center gap-2 font-semibold text-sm text-[var(--text-primary)]">
-                    <Cpu className="w-4 h-4 text-[#0891B2] dark:text-[#22D3EE]" />
-                    <span>Structured JSON</span>
-                  </div>
-                  <div className="font-mono text-[11px] text-[var(--text-secondary)]">Options + Rationales</div>
-                </div>
-
-                <div className="p-4 rounded-xl bg-[var(--bg-tray)] border border-[var(--border-hairline)] space-y-1.5">
-                  <div className="font-mono text-[10px] text-[var(--text-tertiary)] uppercase">Builder Commit</div>
-                  <div className="flex items-center gap-2 font-semibold text-sm text-[#15803D] dark:text-[#10B981]">
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span>Batch Imported</span>
-                  </div>
-                  <div className="font-mono text-[11px] text-[var(--text-secondary)]">Ready for live publish</div>
-                </div>
+                <Badge variant="brand">AI Powered</Badge>
               </div>
             </div>
 
-            {/* Tall 4-Col Bento: 7 Question Modalities */}
-            <div className="lg:col-span-4 studio-card p-6 sm:p-8 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <span className="font-mono text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
-                    7 Grading Modalities
-                  </span>
-                  <Layers className="w-4 h-4 text-[#0891B2] dark:text-[#22D3EE]" />
+            {/* Bento 2: Zero-Leak Isolation (5 cols) */}
+            <div className="md:col-span-5 ui-card ui-card-hover p-6 sm:p-8 flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="w-11 h-11 rounded-[12px] bg-teal-50 dark:bg-teal-950/60 text-[var(--accent-secondary)] flex items-center justify-center border border-teal-200 dark:border-teal-800">
+                  <EyeOff className="w-5 h-5" aria-hidden="true" />
                 </div>
-
-                <div className="divide-y divide-[var(--border-hairline)]">
-                  {QUESTION_FORMATS.map((fmt) => (
-                    <div key={fmt.code} className="py-2.5 flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-2.5">
-                        <span className="font-mono text-[10px] text-[var(--text-tertiary)]">
-                          {fmt.code}
-                        </span>
-                        <span className="text-xs sm:text-sm font-semibold text-[var(--text-primary)]">
-                          {fmt.name}
-                        </span>
-                      </div>
-                      <span className="font-mono text-[10px] text-[var(--text-secondary)] text-right">
-                        {fmt.spec}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+                <h3 className="text-2xl font-bold text-[var(--text-primary)]">
+                  Focus &amp; Browser Guard
+                </h3>
+                <p className="text-base text-[var(--text-secondary)] leading-relaxed">
+                  Captures fullscreen exits, tab switches, window blurs, and restricted clipboard shortcuts with configurable auto-submission thresholds.
+                </p>
+              </div>
+              <div className="mt-6 flex items-center gap-2 text-xs font-mono text-[var(--text-muted)]">
+                <Lock className="w-4 h-4 text-[var(--accent-secondary)]" aria-hidden="true" />
+                <span>JWT Verified · Server-enforced timing</span>
               </div>
             </div>
 
-            {/* 6-Col Bento: Cryptographic & RBAC Guardrails */}
-            <div className="lg:col-span-6 studio-card p-6 sm:p-8 space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-wider text-[#15803D] dark:text-[#10B981]">
-                  <Lock className="w-3.5 h-3.5" />
-                  Zero-Leak Security Model
+            {/* Bento 3: 7 Modalities (5 cols) */}
+            <div className="md:col-span-5 ui-card ui-card-hover p-6 sm:p-8 flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="w-11 h-11 rounded-[12px] bg-blue-50 dark:bg-blue-950/60 text-[var(--accent-primary)] flex items-center justify-center border border-blue-200 dark:border-blue-800">
+                  <Sliders className="w-5 h-5" aria-hidden="true" />
+                </div>
+                <h3 className="text-2xl font-bold text-[var(--text-primary)]">
+                  7 Question Formats
+                </h3>
+                <p className="text-base text-[var(--text-secondary)] leading-relaxed">
+                  MCQ, Multiple Select, True/False, Fill in the Blank, Exact Numerical, Short Answer, and Long Essay with per-question negative marking.
+                </p>
+              </div>
+              <div className="mt-6 flex flex-wrap gap-2">
+                <Badge variant="neutral">MCQ</Badge>
+                <Badge variant="neutral">Numerical</Badge>
+                <Badge variant="neutral">Fill Blank</Badge>
+                <Badge variant="neutral">Long Answer</Badge>
+              </div>
+            </div>
+
+            {/* Bento 4: Gradebook & CSV (7 cols) */}
+            <div className="md:col-span-7 ui-card ui-card-hover p-6 sm:p-8 flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="w-11 h-11 rounded-[12px] bg-emerald-50 dark:bg-emerald-950/60 text-[var(--accent-success)] flex items-center justify-center border border-emerald-200 dark:border-emerald-800">
+                  <BarChart3 className="w-5 h-5" aria-hidden="true" />
+                </div>
+                <h3 className="text-2xl font-bold text-[var(--text-primary)]">
+                  Instant Grading &amp; Telemetry Correlation
+                </h3>
+                <p className="text-base text-[var(--text-secondary)] leading-relaxed">
+                  Inspect answer-by-answer candidate breakdowns alongside focus-loss event counts, cohort score distributions, and one-click CSV gradebook exports.
+                </p>
+              </div>
+              <div className="mt-6 p-4 rounded-[12px] bg-[var(--bg-tray)] border border-[var(--border-default)] flex items-center justify-between gap-3">
+                <span className="text-sm font-medium text-[var(--text-primary)] flex items-center gap-2">
+                  <FileSpreadsheet className="w-4 h-4 text-[var(--accent-success)]" aria-hidden="true" />
+                  Print-ready candidate transcripts &amp; CSV exports
                 </span>
-                <span className="font-mono text-[11px] text-[var(--text-tertiary)]">RBAC + JWT</span>
-              </div>
-              <h3 className="text-xl font-bold text-[var(--text-primary)]">
-                DevTools-proof answer key redaction & strict role isolation.
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                {[
-                  'isCorrect & explanations stripped from student attempt APIs',
-                  'Student tokens strictly rejected (HTTP 403) on admin endpoints',
-                  'Submitted & expired attempts permanently immutable',
-                  'Timestamped blur & visibilitychange audit logs',
-                ].map((line, i) => (
-                  <div
-                    key={i}
-                    className="p-3 rounded-xl bg-[var(--bg-tray)]/70 border border-[var(--border-hairline)] flex items-start gap-2 text-xs text-[var(--text-secondary)]"
-                  >
-                    <Check className="w-3.5 h-3.5 text-[#15803D] dark:text-[#10B981] mt-0.5 flex-shrink-0" />
-                    <span>{line}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* 6-Col Bento: Instant Score Telemetry & RFC 4180 Export */}
-            <div className="lg:col-span-6 studio-card p-6 sm:p-8 flex flex-col justify-between gap-4">
-              <div className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-wider text-[#0891B2] dark:text-[#22D3EE]">
-                  <Download className="w-3.5 h-3.5" />
-                  Automated Grading & Export
-                </span>
-                <span className="font-mono text-[11px] text-[var(--text-tertiary)]">RFC 4180 CSV</span>
-              </div>
-              <h3 className="text-xl font-bold text-[var(--text-primary)]">
-                Immediate itemized performance rings and 1-click institutional CSV gradebooks.
-              </h3>
-              <div className="p-3.5 rounded-xl bg-[var(--bg-tray)] border border-[var(--border-hairline)] font-mono text-[11px] text-[var(--text-secondary)] overflow-x-auto">
-                <div className="text-[var(--text-tertiary)] mb-1"># Exported Roster Output</div>
-                <div>STU-2026-001, "Alex Johnson", 46/50, 92.0%, PASSED, 0_INCIDENTS</div>
-                <div>STU-2026-002, "Jane Doe", 41/50, 82.0%, PASSED, 1_INCIDENT</div>
+                <Badge variant="success">Instant</Badge>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* SECTION 4: DUAL-INTERFACE ROLE EXPLORER */}
-      <section id="interfaces" className="py-16 sm:py-24 border-b border-[var(--border-hairline)]">
+      {/* 4. DUAL INTERFACE PREVIEW */}
+      <section className="py-16 sm:py-20 border-b border-[var(--border-default)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
             <div>
-              <div className="font-mono text-xs uppercase tracking-widest text-[var(--accent-signal)] font-semibold mb-2">
-                [ 03 / TWO DEDICATED INTERFACES ]
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--text-primary)]">
-                Switch between candidate & faculty perspectives.
+              <h2 className="text-3xl sm:text-4xl font-bold text-[var(--text-primary)]">
+                Two dedicated interfaces, one unified system.
               </h2>
+              <p className="mt-2 text-base text-[var(--text-secondary)]">
+                Every workflow is isolated strictly by Role-Based Access Control.
+              </p>
             </div>
-
-            <div className="inline-flex p-1 rounded-xl bg-[var(--bg-tray)] border border-[var(--border-hairline)] self-start">
+            <div className="inline-flex p-1.5 rounded-[14px] bg-[var(--bg-tray)] border border-[var(--border-default)] self-start">
               <button
                 type="button"
-                onClick={() => setInterfaceTab('STUDENT')}
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
-                  interfaceTab === 'STUDENT'
-                    ? 'bg-[var(--bg-surface)] text-[#0891B2] dark:text-[#22D3EE] border border-[var(--border-hairline)] shadow-sm'
+                onClick={() => setWorkspaceTab('student')}
+                className={cn(
+                  'min-h-[44px] px-4 rounded-[10px] text-sm font-semibold transition-colors inline-flex items-center gap-2 focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)]',
+                  workspaceTab === 'student'
+                    ? 'bg-[var(--bg-surface)] text-[var(--accent-secondary)] shadow-sm'
                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                }`}
+                )}
               >
-                <GraduationCap className="w-4 h-4" />
-                <span>Student Workspace</span>
+                <GraduationCap className="w-4 h-4" aria-hidden="true" />
+                Student Portal
               </button>
               <button
                 type="button"
-                onClick={() => setInterfaceTab('ADMIN')}
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
-                  interfaceTab === 'ADMIN'
-                    ? 'bg-[var(--bg-surface)] text-[var(--accent-signal)] border border-[var(--border-hairline)] shadow-sm'
+                onClick={() => setWorkspaceTab('admin')}
+                className={cn(
+                  'min-h-[44px] px-4 rounded-[10px] text-sm font-semibold transition-colors inline-flex items-center gap-2 focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)]',
+                  workspaceTab === 'admin'
+                    ? 'bg-[var(--bg-surface)] text-[var(--accent-primary)] shadow-sm'
                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                }`}
+                )}
               >
-                <ShieldCheck className="w-4 h-4" />
-                <span>Admin Console</span>
+                <ShieldCheck className="w-4 h-4" aria-hidden="true" />
+                Faculty / Admin Suite
               </button>
             </div>
           </div>
 
-          <div className="studio-card p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {interfaceTab === 'STUDENT' ? (
-              <>
-                <div className="lg:col-span-6 space-y-4">
-                  <span className="font-mono text-xs font-semibold text-[#0891B2] dark:text-[#22D3EE] uppercase tracking-wider">
-                    Candidate Experience
-                  </span>
-                  <h3 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
-                    Calm, zero-clutter exam focus from launch to graded transcript.
-                  </h3>
-                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                    Candidates track Available, In-Progress, and Completed exams in one unified hub, review explicit proctoring rules before entering an isolated window, and navigate questions with keyboard shortcuts and real-time autosave.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={openGateway}
-                    className="btn-signal px-5 py-2.5 text-xs sm:text-sm inline-flex items-center gap-2"
-                  >
-                    <span>Launch as Student</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
+          <div className="ui-card p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="lg:col-span-6 space-y-5">
+              <Badge variant={workspaceTab === 'student' ? 'teal' : 'brand'}>
+                {workspaceTab === 'student' ? 'Candidate Experience' : 'Faculty Command Center'}
+              </Badge>
+              <h3 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
+                {workspaceTab === 'student'
+                  ? 'Calm, distraction-free exam execution.'
+                  : 'Complete exam authoring and cohort oversight.'}
+              </h3>
+              <p className="text-base text-[var(--text-secondary)] leading-relaxed">
+                {workspaceTab === 'student'
+                  ? 'Candidates verify hardware & proctoring guidelines before starting, track question progress with a visual status palette, and receive instant printable transcripts.'
+                  : 'Administrators compose rich question banks, collaborate with Gemini AI Studio, filter submissions by exam or status, and review timestamped proctoring alerts.'}
+              </p>
+              <div className="flex flex-wrap gap-3 pt-2">
+                <Button variant={workspaceTab === 'student' ? 'teal' : 'primary'} size="md" onClick={openGateway} rightIcon={<ArrowRight className="w-4 h-4" />}>
+                  {workspaceTab === 'student' ? 'Launch Student Demo' : 'Launch Admin Demo'}
+                </Button>
+              </div>
+            </div>
 
-                <div className="lg:col-span-6 p-5 rounded-xl bg-[var(--bg-tray)] border border-[var(--border-hairline)] space-y-3">
-                  <div className="flex items-center justify-between font-mono text-xs text-[var(--text-secondary)]">
-                    <span>STUDENT_HUB // ROSTER</span>
-                    <span className="text-[#15803D] dark:text-[#10B981]">LIVE SYNC</span>
+            <div className="lg:col-span-6 p-6 rounded-[14px] bg-[var(--bg-tray)] border border-[var(--border-default)] space-y-4">
+              {workspaceTab === 'student' ? (
+                <>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-bold text-[var(--text-primary)]">Midterm Operating Systems</span>
+                    <Badge variant="success">Ready to Start</Badge>
                   </div>
-                  {[
-                    { title: 'CS401: Data Structures & Algorithms', status: 'AVAILABLE', meta: '45m • 50 Marks' },
-                    { title: 'MATH302: Linear Algebra & Matrices', status: 'COMPLETED', meta: 'Score: 92.0% • PASSED' },
-                  ].map((row, idx) => (
-                    <div
-                      key={idx}
-                      className="p-3.5 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-hairline)] flex items-center justify-between gap-3"
-                    >
-                      <div>
-                        <div className="text-sm font-semibold text-[var(--text-primary)]">{row.title}</div>
-                        <div className="font-mono text-[11px] text-[var(--text-secondary)] mt-0.5">{row.meta}</div>
-                      </div>
-                      <span
-                        className={`font-mono text-[10px] font-bold px-2.5 py-1 rounded ${
-                          row.status === 'AVAILABLE'
-                            ? 'bg-[#0891B2]/15 text-[#0891B2] dark:text-[#22D3EE]'
-                            : 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300'
-                        }`}
-                      >
-                        {row.status}
-                      </span>
+                  <div className="grid grid-cols-3 gap-3 text-center">
+                    <div className="p-3 rounded-[10px] bg-[var(--bg-surface)] border border-[var(--border-default)]">
+                      <p className="text-lg font-bold font-mono text-[var(--text-primary)]">60m</p>
+                      <p className="text-xs text-[var(--text-muted)]">Duration</p>
                     </div>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="lg:col-span-6 space-y-4">
-                  <span className="font-mono text-xs font-semibold text-[var(--accent-signal)] uppercase tracking-wider">
-                    Faculty & Proctoring Command
-                  </span>
-                  <h3 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
-                    Author exams with AI, audit every focus incident, export cohorts.
-                  </h3>
-                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                    Administrators monitor live cohort pass rates, spot flagged high-risk attempts immediately, generate questions from PDFs via Gemini Multimodal, reorder & publish exams, and inspect full question-by-question candidate logs.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={openGateway}
-                    className="btn-signal px-5 py-2.5 text-xs sm:text-sm inline-flex items-center gap-2"
-                  >
-                    <span>Launch as Admin</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
-
-                <div className="lg:col-span-6 p-5 rounded-xl bg-[var(--bg-tray)] border border-[var(--border-hairline)] space-y-3">
-                  <div className="flex items-center justify-between font-mono text-xs text-[var(--text-secondary)]">
-                    <span>ADMIN_CONSOLE // TELEMETRY</span>
-                    <span className="text-[var(--accent-signal)]">RBAC PROTECTED</span>
+                    <div className="p-3 rounded-[10px] bg-[var(--bg-surface)] border border-[var(--border-default)]">
+                      <p className="text-lg font-bold font-mono text-[var(--text-primary)]">30</p>
+                      <p className="text-xs text-[var(--text-muted)]">Questions</p>
+                    </div>
+                    <div className="p-3 rounded-[10px] bg-[var(--bg-surface)] border border-[var(--border-default)]">
+                      <p className="text-lg font-bold font-mono text-[var(--accent-secondary)]">0/3</p>
+                      <p className="text-xs text-[var(--text-muted)]">Focus Strikes</p>
+                    </div>
                   </div>
-                  <div className="grid grid-cols-3 gap-2.5">
-                    {[
-                      { label: 'Pass Rate', val: '88.4%' },
-                      { label: 'Published', val: '04 Live' },
-                      { label: 'Risk Flags', val: '01 Alert' },
-                    ].map((stat, idx) => (
-                      <div
-                        key={idx}
-                        className="p-3 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-hairline)]"
-                      >
-                        <div className="font-mono text-[10px] text-[var(--text-tertiary)] uppercase">{stat.label}</div>
-                        <div className="font-mono text-base font-bold text-[var(--text-primary)] mt-1">{stat.val}</div>
-                      </div>
-                    ))}
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-bold text-[var(--text-primary)]">Question Builder · CS-301</span>
+                    <Badge variant="brand">AI Studio Ready</Badge>
                   </div>
-                  <div className="p-3 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-hairline)] flex items-center justify-between text-xs">
-                    <span className="font-medium text-[var(--text-primary)]">Gemini PDF Studio Ready</span>
-                    <span className="font-mono text-[11px] text-[#15803D] dark:text-[#10B981]">1-Click Import</span>
+                  <div className="grid grid-cols-3 gap-3 text-center">
+                    <div className="p-3 rounded-[10px] bg-[var(--bg-surface)] border border-[var(--border-default)]">
+                      <p className="text-lg font-bold font-mono text-[var(--text-primary)]">94.2%</p>
+                      <p className="text-xs text-[var(--text-muted)]">Clean Rate</p>
+                    </div>
+                    <div className="p-3 rounded-[10px] bg-[var(--bg-surface)] border border-[var(--border-default)]">
+                      <p className="text-lg font-bold font-mono text-[var(--accent-primary)]">7</p>
+                      <p className="text-xs text-[var(--text-muted)]">Item Types</p>
+                    </div>
+                    <div className="p-3 rounded-[10px] bg-[var(--bg-surface)] border border-[var(--border-default)]">
+                      <p className="text-lg font-bold font-mono text-[var(--accent-success)]">CSV</p>
+                      <p className="text-xs text-[var(--text-muted)]">One-Click</p>
+                    </div>
                   </div>
-                </div>
-              </>
-            )}
+                </>
+              )}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* SECTION 5: WORKFLOW PIPELINE & FINAL CTA */}
-      <section id="workflow" className="py-16 sm:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+      {/* 5. THREE-STEP WORKFLOW */}
+      <section id="workflow" className="py-16 sm:py-20 border-b border-[var(--border-default)] bg-[var(--bg-tray)]/40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl mb-10">
+            <Badge variant="neutral" icon={<Clock className="w-3.5 h-3.5" />}>
+              Deployment Lifecycle
+            </Badge>
+            <h2 className="mt-3 text-3xl sm:text-4xl font-bold text-[var(--text-primary)]">
+              From syllabus draft to audited grades in three steps.
+            </h2>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
-                step: '01',
-                title: 'Author & Synthesize',
-                desc: 'Draft manually across 7 formats or ingest raw course PDFs with Gemini Multimodal AI, set passing standards, and publish.',
+                num: '01',
+                title: 'Author & Generate',
+                body: 'Create exams manually across 7 question modalities or prompt the Gemini Multimodal AI Studio with syllabus topics and images.',
               },
               {
-                step: '02',
-                title: 'Proctor in Isolation',
-                desc: 'Candidates verify conduct rules, enter an isolated exam workspace with countdown persistence, keystroke autosave & focus sentinel.',
+                num: '02',
+                title: 'Launch & Proctor',
+                body: 'Candidates enter a locked fullscreen environment where every focus shift, shortcut attempt, and answer edit is logged securely.',
               },
               {
-                step: '03',
-                title: 'Auto-Grade & Audit',
-                desc: 'Instant objective evaluation, student score rings with instructor rationales, and full proctoring violation logs with CSV export.',
+                num: '03',
+                title: 'Evaluate & Export',
+                body: 'Review instant automated scoring, inspect flagged proctoring logs side-by-side, and download structured CSV reports.',
               },
-            ].map((item) => (
-              <div
-                key={item.step}
-                className="p-6 rounded-2xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] space-y-3"
-              >
-                <div className="font-mono text-2xl font-bold text-[var(--accent-signal)]">{item.step}</div>
-                <h3 className="text-lg font-bold text-[var(--text-primary)]">{item.title}</h3>
-                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{item.desc}</p>
+            ].map((step) => (
+              <div key={step.num} className="ui-card p-6 sm:p-8 space-y-3">
+                <span className="inline-block text-sm font-mono font-bold text-[var(--accent-primary)]">
+                  STEP {step.num}
+                </span>
+                <h3 className="text-xl font-bold text-[var(--text-primary)]">{step.title}</h3>
+                <p className="text-base text-[var(--text-secondary)] leading-relaxed">{step.body}</p>
               </div>
             ))}
           </div>
+        </div>
+      </section>
 
-          {/* Final Call-To-Action Strip */}
-          <div className="rounded-2xl border border-[var(--border-strong)] bg-[#141413] dark:bg-[#12141A] text-[#F4F3EF] p-8 sm:p-12 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-            <div className="space-y-2 max-w-2xl">
-              <div className="font-mono text-xs uppercase tracking-widest text-[#FF5A36]">
-                Ready to Launch
-              </div>
-              <h2 className="text-2xl sm:text-4xl font-bold tracking-tight">
-                Choose your role and step inside the live platform.
-              </h2>
-              <p className="text-sm text-[#9297A5]">
-                Both Student Workspace and Admin Console run against the unified Express, Prisma & SQLite backend with zero mock walls.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-3">
-              <button
-                type="button"
-                onClick={openGateway}
-                className="btn-signal px-7 py-3.5 text-sm inline-flex items-center gap-2"
-              >
-                <span>Get Started</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+      {/* 6. BOTTOM CTA & INSTITUTIONAL FOOTER */}
+      <section className="py-16">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="ui-card p-8 sm:p-12 text-center space-y-5 bg-[var(--bg-surface)]">
+            <h2 className="text-3xl sm:text-4xl font-bold text-[var(--text-primary)]">
+              Ready to launch your assessment workspace?
+            </h2>
+            <p className="text-base text-[var(--text-secondary)] max-w-xl mx-auto">
+              Choose Student or Admin mode in one click, explore pre-seeded exams, or register your own institutional credentials.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              <Button variant="primary" size="lg" onClick={openGateway} rightIcon={<ArrowRight className="w-5 h-5" />}>
+                Get Started
+              </Button>
               <Link
                 to="/register"
-                className="px-5 py-3.5 rounded-xl text-sm font-semibold border border-white/15 hover:bg-white/10 transition-colors"
+                className="min-h-[48px] px-6 inline-flex items-center justify-center rounded-[12px] border border-[var(--border-default)] bg-[var(--bg-tray)] text-base font-semibold text-[var(--text-primary)] hover:border-[var(--border-strong)] transition-colors"
               >
                 Create Account
               </Link>
             </div>
           </div>
-
-          {/* Minimal Architectural Footer */}
-          <footer className="pt-8 border-t border-[var(--border-hairline)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--text-tertiary)]">
-            <div className="font-mono">
-              EXAMSECURE // DUAL-INTERFACE EXAMINATION ARCHITECTURE
-            </div>
-            <div className="flex items-center gap-5 font-medium">
-              <button type="button" onClick={openGateway} className="hover:text-[var(--text-primary)] transition-colors">
-                Role Selector
-              </button>
-              <Link to="/login" className="hover:text-[var(--text-primary)] transition-colors">
-                Sign In
-              </Link>
-              <Link to="/register" className="hover:text-[var(--text-primary)] transition-colors">
-                Register
-              </Link>
-            </div>
-          </footer>
         </div>
       </section>
+
+      <footer className="border-t border-[var(--border-default)] bg-[var(--bg-surface)] py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <BrandMark size="sm" />
+          <div className="flex flex-wrap items-center gap-4 text-sm text-[var(--text-secondary)]">
+            <a href="#sandbox" className="hover:text-[var(--text-primary)] transition-colors">
+              Live Sandbox
+            </a>
+            <Link to="/login" className="hover:text-[var(--text-primary)] transition-colors">
+              Sign In
+            </Link>
+            <Link to="/register" className="hover:text-[var(--text-primary)] transition-colors">
+              Register
+            </Link>
+            <span className="text-[var(--text-muted)]">© 2026 ExamSecure</span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
