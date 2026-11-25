@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { config } from '../config/index.js';
+import { prisma } from '../config/prisma.js';
 
 export interface AuthUser {
   id: string;
@@ -14,11 +15,11 @@ export interface AuthenticatedRequest extends Request {
   user?: AuthUser;
 }
 
-export const authenticate = (
+export const authenticate = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
-): void => {
+): Promise<void> => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     res.status(401).json({ error: 'Access denied. No authorization token provided.' });
@@ -28,7 +29,30 @@ export const authenticate = (
   const token = authHeader.split(' ')[1];
   try {
     const decoded = jwt.verify(token, config.jwtSecret) as AuthUser;
-    req.user = decoded;
+
+    const dbUser = await prisma.user.findUnique({
+      where: { id: decoded.id },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        studentId: true
+      }
+    });
+
+    if (!dbUser) {
+      res.status(401).json({ error: 'Session account no longer exists. Please sign in again.' });
+      return;
+    }
+
+    req.user = {
+      id: dbUser.id,
+      email: dbUser.email,
+      name: dbUser.name,
+      role: dbUser.role as 'ADMIN' | 'STUDENT',
+      studentId: dbUser.studentId
+    };
     next();
   } catch (error) {
     res.status(401).json({ error: 'Invalid or expired authorization token.' });

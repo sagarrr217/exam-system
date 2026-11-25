@@ -27,11 +27,12 @@ export interface FileAttachment {
 }
 
 const CANDIDATE_MODELS = [
-  'gemini-flash-lite-latest',
-  'gemini-flash-latest',
+  'gemini-3.5-flash',
+  'gemini-3.5-flash-lite',
+  'gemini-3.7-flash',
   'gemini-3.8-flash',
-  'gemini-2.0-flash',
-  'gemini-1.5-flash'
+  'gemini-flash-latest',
+  'gemini-flash-lite-latest'
 ];
 
 /**
@@ -60,11 +61,30 @@ async function callGeminiApi(payload: any): Promise<any> {
       }
 
       const errText = await response.text();
-      lastError = new Error(`Gemini (${model}) returned status ${response.status}: ${errText}`);
-      console.warn(`Gemini model ${model} failed, trying next candidate...`, lastError.message);
+      let cleanReason = errText;
+      try {
+        const parsedErr = JSON.parse(errText);
+        cleanReason = parsedErr?.error?.message || errText;
+      } catch {
+        // keep raw text
+      }
+      const errObj = new Error(`Gemini (${model}) returned ${response.status}: ${cleanReason}`);
+      // Prefer keeping the most informative transient error (503/429) over 404 if all fail
+      if (!lastError || response.status !== 404) {
+        lastError = errObj;
+      }
+      console.warn(`Gemini model ${model} failed, trying next candidate...`, errObj.message);
     } catch (err: any) {
-      lastError = err;
-      console.warn(`Network error with model ${model}, trying next...`, err.message);
+      const causeCode = err?.cause?.code || err?.code;
+      const causeHost = err?.cause?.hostname;
+      if (causeCode === 'ENOTFOUND' || causeCode === 'ECONNREFUSED' || causeCode === 'ETIMEDOUT' || err?.message === 'fetch failed') {
+        lastError = new Error(
+          `Network error reaching Gemini API (${causeCode || 'OFFLINE'}${causeHost ? `: ${causeHost}` : ''}). Please check your internet connection and DNS access.`
+        );
+      } else {
+        lastError = err;
+      }
+      console.warn(`Network error with model ${model}, trying next...`, lastError.message);
     }
   }
 

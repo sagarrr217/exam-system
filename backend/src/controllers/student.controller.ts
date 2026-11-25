@@ -81,6 +81,11 @@ export const startExamAttempt = async (req: AuthenticatedRequest, res: Response)
       return;
     }
 
+    if (!examId) {
+      res.status(400).json({ error: 'Examination ID is required.' });
+      return;
+    }
+
     const exam = await prisma.exam.findUnique({
       where: { id: examId },
       include: {
